@@ -1,0 +1,53 @@
+.navbarCustom {
+    background-color: var(--primary-color);
+}
+
+.linkCustom {
+    color: var(--white);
+    text-decoration: none;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.linkCustom:hover {
+    color: #EDF7F6;
+}
+
+.btnBranco {
+    color: #000;
+    background-color: #fff;
+    border-color: #5bc2c2;
+    border-radius: 10px;
+}
+
+.btnBranco:hover {
+    color: #212529;
+    background-color: #EDF7F6;
+    border-color: #8ad3d3
+}
+
+.btnBranco:focus,
+.btnBranco.focus {
+    box-shadow: 0 0 0 .2rem rgba(91, 194, 194, 0.5)
+}
+
+.btnBranco.disabled,
+.btnBranco:disabled {
+    color: #212529;
+    background-color: #7cc;
+    border-color: #5bc2c2
+}
+
+.btnBranco:not(:disabled):not(.disabled):active,
+.btnBranco:not(:disabled):not(.disabled).active,
+.show > .btnBranco.dropdown-toggle {
+    color: #212529;
+    background-color: #9cdada;
+    border-color: #2e7c7c
+}
+
+.btnBranco:not(:disabled):not(.disabled):active:focus,
+.btnBranco:not(:disabled):not(.disabled).active:focus,
+.show > .btnBranco.dropdown-toggle:focus {
+    box-shadow: 0 0 0 .2rem rgba(91, 194, 194, 0.5)
+}
