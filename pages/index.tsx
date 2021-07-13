@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Navbar from "@components/Navbar";
+import MainBanner from "@components/MainBanner";
 
 
 export default function Home() {
@@ -13,7 +14,10 @@ export default function Home() {
 
                 <main>
                     <Navbar/>
-                    teste
+
+
+                    <MainBanner/>
+
                 </main>
 
                 <footer>
