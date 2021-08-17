@@ -1,4 +1,10 @@
 .divCard {
     width: 18rem;
+    height: 20vh;
     cursor: pointer;
+}
+
+.titulo {
+    padding-top: 20%;
+    color: var(--white);
 }
