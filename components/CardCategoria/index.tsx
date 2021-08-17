@@ -6,21 +6,21 @@ export interface CardProps {
     index: number;
     titulo: string;
     descricao: string;
+    cor: string;
 
 }
 
+
 export default function CardCategoria(props: CardProps) {
     return (
-        <div className={"card " + styles.divCard} onClick={() => {
+        <div className={"card text-center " + styles.divCard} style={{backgroundColor: props.cor}} onClick={() => {
             alert("teste")
         }}>
-            <Image src={`https://via.placeholder.com/500x400/e66?text=${props.index}`} width={500} height={400}
-                   alt={"teste"}/>
             <div className="card-body">
-                <h5 className="card-title">{props.titulo + props.index}</h5>
-                <p className="card-text">{props.descricao}</p>
+                <h5 className={"card-title  " + styles.titulo}>{props.titulo}</h5>
+
             </div>
-            <div className={"card-footer"}>Data: 23/08/2021</div>
+
         </div>
     );
 };
