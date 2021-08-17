@@ -8,23 +8,23 @@ export default function MainBanner() {
     return (
         <div className={'container-fluid ' + styles.main}>
             <div className={'row'}>
-                <div className={'col-4'}>
+                <div className={'col-lg-4 col-sm-4 col-md-4'}>
                     <h1 className={styles.titulo}>
                         Explore e econtre os melhores eventos acadêmicos disponíveis
                     </h1>
                 </div>
-                <div className={'col-3'}>
+                <div className={'col-lg-3 col-sm-12 col-md-2'}>
                     <Image src={banner} alt={'Imagem de um computador cheio de avatares de pessoas'}/>
                 </div>
             </div>
             <div className={'row'}>
-                <div className={'col-8'}>
-                    teste teste teste
+                <div className={'col-lg-8 col-md-8 col-sm-1'}>
+
                 </div>
 
-                <div className={'col-4 ' + styles.barra}>
+                <div className={'col-lg-4 col-sm-12 ' + styles.barra}>
                     <div className={'row'}>
-                        <div className={'col-8'}>
+                        <div className={'col-lg-8 col-sm-6'}>
                             <input
                                 className={styles.search}
                                 // onChange={onChange}
@@ -34,7 +34,7 @@ export default function MainBanner() {
                                 // value={query}
                             />
                         </div>
-                        <div className={'col-2'}>
+                        <div className={'col-lg-2 col-sm-6'}>
                             <button className={'btn btn-primary ' + styles.botao}>
                                 <FontAwesomeIcon
                                     icon={faSearch}/>
