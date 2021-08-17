@@ -5,44 +5,49 @@ import CardCategoria from "@components/CardCategoria";
 
 
 export default function CarouselCustom() {
-    let eventos = [
+    let categorias = [
         {
-            imagem: 1,
-            titulo: "Titulo", descricao: "Longa descrição teste teste teste teste"
+            index: 1,
+            titulo: "Palestra",
+            descricao: "Longa descrição teste teste teste teste",
+            cor: "#2A9D8F"
         },
         {
-            imagem: 2,
-            titulo: "Titulo",
-            descricao: "Longa descrição teste teste teste teste"
+            index: 2,
+            titulo: "Mesa redonda",
+            descricao: "Longa descrição teste teste teste teste",
+            cor: "#E9C46A"
         },
         {
-            imagem: 3,
-            titulo: "Titulo",
-            descricao: "Longa descrição teste teste teste teste"
+            index: 3,
+            titulo: "Discussão",
+            descricao: "Longa descrição teste teste teste teste",
+            cor: "#E76F51"
         },
         {
-            imagem: 4,
-            titulo: "Titulo",
-            descricao: "Longa descrição teste teste teste teste"
+            index: 4,
+            titulo: "Minicurso",
+            descricao: "Longa descrição teste teste teste teste",
+            cor: "#E76F51"
         },
         {
-            imagem: 5,
-            titulo: "Titulo",
-            descricao: "Longa descrição teste teste teste teste"
+            index: 5,
+            titulo: "Next level",
+            descricao: "Longa descrição teste teste teste teste",
+            cor: "#2A9D8F"
         },
 
     ];
 
     const responsive = {
         superLargeDesktop: {
-            // the naming can be any, depends on you.
             breakpoint: {max: 4000, min: 3000},
             items: 5,
             slidesToSlide: 2
         },
         desktop: {
             breakpoint: {max: 3000, min: 1024},
-            items: 4,
+            items: 3,
             slidesToSlide: 2
         },
         tablet: {
@@ -58,34 +63,37 @@ export default function CarouselCustom() {
     };
 
     return (
-        <div className={styles.linha}>
-            <Carousel
-                swipeable={false}
-                draggable={false}
-                // showDots={true}
-                responsive={responsive}
-                ssr={true} // means to render carousel on server-side.
-                infinite={true}
-                // autoPlay={this.props.deviceType !== "mobile" ? true : false}
-                autoPlay={false}
-                keyBoardControl={true}
+        <div className={"container-fluid " + styles.area}>
+            <h3>Explore nossas categorias</h3>
+            <div className={styles.linha}>
 
-                containerClass="carousel-container"
-                removeArrowOnDeviceType={["tablet", "mobile"]}
-                // deviceType={this.props.deviceType}
-                itemClass="carousel-item-padding-40-px"
+                <Carousel
+                    swipeable={true}
+                    draggable={false}
+                    arrows={true}
+                    // showDots={true}
+                    responsive={responsive}
+                    ssr={true} // means to render carousel on server-side.
+                    infinite={true}
+                    // autoPlay={this.props.deviceType !== "mobile" ? true : false}
+                    autoPlay={true}
+                    keyBoardControl={true}
+                    containerClass="carousel-container"
+                    removeArrowOnDeviceType={["tablet", "mobile"]}
+                    // deviceType={this.props.deviceType}
+                    itemClass="carousel-item-padding-40-px">
+                    {categorias.map(e =>
+                        (<CardCategoria
+                            key={e.index}
+                            index={e.index}
+                            titulo={e.titulo}
+                            descricao={e.descricao}
+                            cor={e.cor}/>)
+                    )}
 
-            >
-                {eventos.map(e =>
-                    (<CardCategoria
-                        key={e.imagem}
-                        index={e.imagem}
-                        titulo={e.titulo}
-                        descricao={e.descricao}/>)
-                )}
 
-
-            </Carousel>
+                </Carousel>
+            </div>
         </div>
     );
 }
