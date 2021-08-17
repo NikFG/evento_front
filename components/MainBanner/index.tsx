@@ -6,7 +6,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export default function MainBanner() {
     return (
-        <div className={'container-fluid '+styles.main}>
+        <div className={'container-fluid ' + styles.main}>
             <div className={'row'}>
                 <div className={'col-4'}>
                     <h1 className={styles.titulo}>
