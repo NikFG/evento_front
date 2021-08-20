@@ -1,0 +1,14 @@
+.teste {
+
+    filter: blur(30px);
+}
+
+.justificar {
+    margin: 0;
+    text-indent: 2rem;
+    text-align: justify;
+}
+.imagemPrincipal{
+    width: 100vw;
+    height: 40vh;
+}
