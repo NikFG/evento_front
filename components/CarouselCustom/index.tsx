@@ -66,12 +66,11 @@ export default function CarouselCustom() {
         <div className={"container-fluid " + styles.area}>
             <h3>Explore nossas categorias</h3>
             <div className={styles.linha}>
-
                 <Carousel
                     swipeable={true}
                     draggable={false}
                     arrows={true}
-                    // showDots={true}
+                    showDots={false}
                     responsive={responsive}
                     ssr={true} // means to render carousel on server-side.
                     infinite={true}
@@ -81,7 +80,8 @@ export default function CarouselCustom() {
                     containerClass="carousel-container"
                     removeArrowOnDeviceType={["tablet", "mobile"]}
                     // deviceType={this.props.deviceType}
-                    itemClass="carousel-item-padding-40-px">
+                    itemClass="carousel-item-padding-40-px"
+                renderButtonGroupOutside={true}>
                     {categorias.map(e =>
                         (<CardCategoria
                             key={e.index}

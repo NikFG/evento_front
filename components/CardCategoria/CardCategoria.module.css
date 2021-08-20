@@ -8,3 +8,18 @@
     padding-top: 20%;
     color: var(--white);
 }
+@media (max-width: 2000px) {
+    .divPrincipal{
+        margin: 0 20%;
+    }
+}
+@media (max-width: 1000px) {
+    .divPrincipal{
+        margin: 0 4.5%;
+    }
+}
+@media (min-width: 2001px){
+    .divPrincipal{
+        margin: 0 30%;
+    }
+}
