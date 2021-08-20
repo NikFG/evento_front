@@ -12,10 +12,13 @@ import CardEvento from "@components/CardEvento";
 import TimeLine from "@components/TimeLine";
 import Footer from "@components/Footer";
 
+export interface EventoProps{
+    id: number
+}
 
-export default function Evento(props: number) {
+export default function Evento(props: EventoProps) {
     let evento = {
-        id: props,
+        id: props.id,
         nome: "Evento laravel",
         descricao: " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut eget finibus risus, at egestas libero. Integer id lacus eget libero tempus tempor. Nullam et pharetra metus. Vestibulum et ultricies purus. Mauris et purus neque. Vestibulum non quam egestas nulla pulvinar dapibus in sit amet urna. Nunc at dapibus augue. Quisque aliquam, quam sit amet sollicitudin tristique, quam augue ullamcorper metus, non molestie nulla augue ac mauris. Mauris eget tellus vel nisl vehicula accumsan. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc quis elit ac urna vulputate ullamcorper aliquet vitae lorem. Cras at gravida orci.\n" +
             "\n" +
@@ -72,7 +75,7 @@ export default function Evento(props: number) {
                             <Tab>Dia 2</Tab>
                         </TabList>
                         <TabPanel>
-                            <VerticalTimeline layout={"1-column-left"}>
+                            <VerticalTimeline layout={"1-column"}>
                                 <TimeLine descricao={"descrição da atividade"} autor={"Nikollas Ferreira Gonçcalves"}
                                           horarioInicial={"09:30"} horarioFinal={"10:30"}
                                           instituicao={"IFMG - Campus Formiga"}/>
@@ -85,7 +88,7 @@ export default function Evento(props: number) {
                             </VerticalTimeline>
                         </TabPanel>
                         <TabPanel>
-                            <VerticalTimeline layout={"1-column-left"}>
+                            <VerticalTimeline layout={"1-column"}>
                                 <TimeLine descricao={"descrição da atividade"} autor={"Nikollas Ferreira Gonçcalves"}
                                           horarioInicial={"09:30"} horarioFinal={"10:30"}
                                           instituicao={"IFMG - Campus Formiga"}/>
