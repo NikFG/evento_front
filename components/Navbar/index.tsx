@@ -11,13 +11,13 @@ export default function Navbar() {
                 </Link>
 
                 <div className="d-flex flex-row bd-highlight">
-                    <Link href={'/'}>
+                    <Link href={'/eventos'}>
                         <a className={'p-2 bd-highlight ' + style.linkCustom}>Eventos</a>
                     </Link>
                     <Link href={'/'}>
                         <a className={'btn p-2 bd-highlight ' + style.btnBranco}>Criar evento</a>
                     </Link>
-                    <Link href={'/'}>
+                    <Link href={'/login'}>
                         <a className={'p-2 bd-highlight ' + style.linkCustom}>Login</a>
                     </Link>
                 </div>

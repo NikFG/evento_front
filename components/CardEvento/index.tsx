@@ -1,5 +1,6 @@
 import styles from "./CardEvento.module.css";
 import Image from "next/image";
+import {useRouter} from 'next/router';
 
 export interface EventoProps {
     id: number,
@@ -11,9 +12,10 @@ export interface EventoProps {
 }
 
 export default function CardEvento(props: EventoProps) {
+    const router = useRouter();
     return (
         <div className={"card " + styles.divCard} onClick={() => {
-            alert("teste")
+           router.push(`/eventos/${props.id}`)
         }}>
             <div className={"card-header"}><h5 className="card-title">{props.nome}</h5></div>
             <Image src={`https://via.placeholder.com/500x400/e66?text=${props.id}`} width={500} height={400}

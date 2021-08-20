@@ -55,7 +55,7 @@ export default function GridEventosHome() {
             <div className={"row"}>
                 {eventos.map(e => (
                     <div className={`col-md-4 col-lg-3 col-sm-1 ${styles.cartao}`} key={e.index}>
-                        <CardEventoHome index={e.index} titulo={e.titulo} descricao={e.descricao}/>
+                        <CardEventoHome id={e.index} titulo={e.titulo} descricao={e.descricao}/>
                     </div>
                 ))}
             </div>
