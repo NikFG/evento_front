@@ -1,4 +1,5 @@
 import styles from "./LoginForm.module.css"
+import Link from "next/link";
 
 export default function LoginForm() {
     return (
@@ -22,7 +23,8 @@ export default function LoginForm() {
                     <div className="form-group">
                         <div className="mb-3 form-check">
                             <input type="checkbox" className="form-check-input" id="lembrar" name="lembrar"/>
-                            <label htmlFor="lembrar" className={"custom-control-label " + styles.unselectable}>Lembrar</label>
+                            <label htmlFor="lembrar"
+                                   className={"custom-control-label " + styles.unselectable}>Lembrar</label>
                         </div>
                     </div>
                     <div className={"row form-group " + styles.botao}>
@@ -33,12 +35,18 @@ export default function LoginForm() {
                     <div className={"row mt-2"}>
                         <div className={"col-2"}>
                             <p className={"text-start"}>
-                                <a href={""}>Voltar</a>
+                                <Link href={"/"}>
+                                    <a>Voltar</a>
+                                </Link>
                             </p></div>
 
                         <div className={"col-10"}>
                             <p className={"text-end"}>
-                                <a href={""}>Criar conta</a>
+                                <Link href={"/cadastro"}>
+
+                                    <a>Criar conta</a>
+
+                                </Link>
                             </p>
                         </div>
                     </div>
@@ -47,5 +55,6 @@ export default function LoginForm() {
                 </form>
             </div>
         </div>
-    );
+    )
+        ;
 }
