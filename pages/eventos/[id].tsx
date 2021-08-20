@@ -7,7 +7,7 @@ export default function EventoPage() {
     return (
         <>
             <Navbar/>
-            <Evento/>
+            <Evento id={1}/>
         </>
     );
 }
