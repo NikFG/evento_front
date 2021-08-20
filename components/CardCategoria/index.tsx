@@ -12,6 +12,7 @@ export interface CardProps {
 
 export default function CardCategoria(props: CardProps) {
     return (
+            <div className={styles.divPrincipal}>
         <div className={"card text-center " + styles.divCard} style={{backgroundColor: props.cor}} onClick={() => {
 
         }}>
@@ -21,5 +22,6 @@ export default function CardCategoria(props: CardProps) {
             </div>
 
         </div>
+            </div>
     );
 };
