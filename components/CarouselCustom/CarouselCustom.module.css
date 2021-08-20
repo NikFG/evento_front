@@ -1,9 +1,10 @@
-.linha{
+.linha {
     padding-top: 2vh;
     padding-left: 5%;
     padding-right: 5%;
 }
-.area{
+
+.area {
     margin-top: 20px;
     background-color: var(--background-home);
     padding-bottom: 30px;
