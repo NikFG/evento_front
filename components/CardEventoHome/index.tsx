@@ -1,12 +1,10 @@
 import styles from './CardEventoHome.module.css';
 import Image from "next/image";
-import {AppProps} from 'next/app';
 
 export interface EventoProps {
     index: number;
     titulo: string;
     descricao: string;
-
 }
 
 
