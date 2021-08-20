@@ -1,64 +1,72 @@
-import CardEventoHome from "@components/CardEventoHome";
-import styles from "./GridEventos.module.css"
+import styles from "./GridEventos.module.css";
+import CardEvento from "@components/CardEvento";
 
 
 export default function GridEventos() {
-
     let eventos = [
         {
-            index: 1,
-            titulo: "Título",
-            descricao: "Longa descrição teste teste teste teste",
-            cor: "#2A9D8F"
+            id: 1,
+            nome: "Evento de laravel",
+            breve_descricao: "evento muito legal e chamativo",
+            instituicao: "IFMG",
+            categoria: "Evento",
+            tipo: "minicruso"
         },
         {
-            index: 2,
-            titulo: "Título",
-            descricao: "Longa descrição teste teste teste teste",
-            cor: "#E9C46A"
+            id: 2,
+            nome: "Evento de laravel",
+            breve_descricao: "evento muito legal e chamativo",
+            instituicao: "IFMG",
+            categoria: "Evento",
+            tipo: "minicruso"
         },
         {
-            index: 3,
-            titulo: "Título",
-            descricao: "Longa descrição teste teste teste teste",
-            cor: "#E76F51"
+            id: 3,
+            nome: "Evento de laravel",
+            breve_descricao: "evento muito legal e chamativo",
+            instituicao: "IFMG",
+            categoria: "Evento",
+            tipo: "minicruso"
         },
         {
-            index: 4,
-            titulo: "Título",
-            descricao: "Longa descrição teste teste teste teste",
-            cor: "#E76F51"
+            id: 4,
+            nome: "Evento de laravel",
+            breve_descricao: "evento muito legal e chamativo",
+            instituicao: "IFMG",
+            categoria: "Evento",
+            tipo: "minicruso"
         },
         {
-            index: 5,
-            titulo: "Título",
-            descricao: "Longa descrição teste teste teste teste",
-            cor: "#2A9D8F"
+            id: 5,
+            nome: "Evento de laravel",
+            breve_descricao: "evento muito legal e chamativo",
+            instituicao: "IFMG",
+            categoria: "Evento",
+            tipo: "minicruso"
         },
         {
-            index: 6,
-            titulo: "Título",
-            descricao: "Longa descrição teste teste teste teste",
-            cor: "#E76F51"
+            id: 6,
+            nome: "Evento de laravel",
+            breve_descricao: "evento muito legal e chamativo",
+            instituicao: "IFMG",
+            categoria: "Evento",
+            tipo: "minicruso"
         },
-        {
-            index: 7,
-            titulo: "Título",
-            descricao: "Longa descrição teste teste teste teste",
-            cor: "#E9C46A"
-        },
-
-    ];
+    ]
     return (
         <div className={"container-fluid " + styles.area}>
             <h3>Veja os incríveis eventos mais próximos</h3>
             <div className={"row"}>
                 {eventos.map(e => (
-                    <div className={`col-md-4 col-lg-3 col-sm-1 ${styles.cartao}`} key={e.index}>
-                        <CardEventoHome index={e.index} titulo={e.titulo} descricao={e.descricao}/>
+                    <div className={`col-md-4 col-lg-3 col-sm-1 ${styles.cartao}`} key={e.id}>
+                        <CardEvento id={e.id}
+                                    nome={e.nome}
+                                    categoria={e.categoria}
+                                    tipo={e.tipo}
+                                    instituicao={e.instituicao}
+                                    breve_descricao={e.breve_descricao}/>
                     </div>
                 ))}
-
             </div>
         </div>
     );
