@@ -4,9 +4,26 @@ import MainBanner from "@components/MainBanner";
 import CarouselCustom from "@components/CarouselCustom";
 import GridEventosHome from "@components/GridEventosHome";
 import Footer from "@components/Footer";
+import {GetStaticProps, InferGetStaticPropsType} from "next";
+import {Evento, Categoria} from "types/types";
 
 
-export default function Home() {
+export const getStaticProps: GetStaticProps = async (context) => {
+    const axios = require('axios');
+    const eventosResp = await axios.get('http://localhost:8000/api/eventos');
+    const categoriasResp = await axios.get("http://localhost:8000/api/categorias")
+    const eventos: Evento[] = eventosResp.data;
+    const categorias: Categoria[] = categoriasResp.data
+    return {
+        props: {
+            eventos,
+            categorias,
+
+        },
+    }
+}
+
+export default function Home({eventos, categorias}: InferGetStaticPropsType<typeof getStaticProps>) {
     return (
         <>
             <div>
@@ -20,9 +37,9 @@ export default function Home() {
 
                     <MainBanner/>
 
-                    <CarouselCustom/>
+                    <CarouselCustom categorias={categorias}/>
 
-                    <GridEventosHome/>
+                    <GridEventosHome eventos={eventos}/>
                 </main>
 
                 <footer>
