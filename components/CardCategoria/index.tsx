@@ -1,27 +1,27 @@
 import styles from './CardCategoria.module.css';
-import {router} from "next/client";
+import {useRouter} from "next/router";
+import {Categoria} from "@types";
 
-export interface CardProps {
-    index: number;
-    titulo: string;
-    descricao: string;
-    cor: string;
-
+export interface CategoriaProps {
+    cor: string,
+    categoria: Categoria
 }
 
 
-export default function CardCategoria(props: CardProps) {
+export default function CardCategoria(props: CategoriaProps) {
+    const router = useRouter();
     return (
-            <div className={styles.divPrincipal}>
-        <div className={"card text-center " + styles.divCard} style={{backgroundColor: props.cor}} onClick={() => {
+        <div className={styles.divPrincipal}>
+            <div className={"card text-center " + styles.divCard} style={{backgroundColor: props.cor}} onClick={() => {
 
-        }}>
-            <div className="card-body">
-                <h5 className={"card-title  " + styles.titulo}>{props.titulo}</h5>
+               router.push(`/eventos/categorias/${props.categoria.id}`)
+            }}>
+                <div className="card-body">
+                    <h5 className={"card-title  " + styles.titulo}>{props.categoria.nome}</h5>
+
+                </div>
 
             </div>
-
         </div>
-            </div>
     );
 };

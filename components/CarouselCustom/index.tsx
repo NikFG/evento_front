@@ -2,10 +2,14 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import styles from './CarouselCustom.module.css'
 import CardCategoria from "@components/CardCategoria";
+import {Categoria} from "@types";
 
+export interface CategoriaProps {
+    categorias: Categoria[]
+}
 
-export default function CarouselCustom() {
-    let categorias = [
+export default function CarouselCustom(props: CategoriaProps) {
+    /*let categorias = [
         {
             index: 1,
             titulo: "Palestra",
@@ -37,7 +41,7 @@ export default function CarouselCustom() {
             cor: "#2A9D8F"
         },
 
-    ];
+    ];*/
 
     const responsive = {
         superLargeDesktop: {
@@ -81,14 +85,12 @@ export default function CarouselCustom() {
                     removeArrowOnDeviceType={["tablet", "mobile"]}
                     // deviceType={this.props.deviceType}
                     itemClass="carousel-item-padding-40-px"
-                renderButtonGroupOutside={true}>
-                    {categorias.map(e =>
+                    renderButtonGroupOutside={true}>
+                    {props.categorias.map(c =>
                         (<CardCategoria
-                            key={e.index}
-                            index={e.index}
-                            titulo={e.titulo}
-                            descricao={e.descricao}
-                            cor={e.cor}/>)
+                            key={c.id}
+                            categoria={c}
+                            cor={"#E76F51"}/>)
                     )}
 
 
