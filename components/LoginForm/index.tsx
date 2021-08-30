@@ -1,11 +1,36 @@
 import styles from "./LoginForm.module.css"
 import Link from "next/link";
+import {useRouter} from "next/router";
+import {AxiosResponse} from "axios";
+import {User} from "@types";
+
 
 export default function LoginForm() {
+    const router = useRouter();
+
+    async function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        const axios = require("axios");
+        const user = {
+            "email": e.target.email.value,
+            "password": e.target.senha.value
+        }
+        await axios.post("http://localhost:8000/api/user/login", user).then((value: AxiosResponse) => {
+            // console.log(value)
+            localStorage.setItem("USER_TOKEN", value.data.access_token)
+            const user_logado: User = value.data.user
+            console.log(user_logado);
+            // router.push("/")
+        })
+            .catch((error: any) => {
+                console.error(error)
+            });
+    }
+
     return (
         <div className={styles.outer}>
             <div className={styles.inner}>
-                <form>
+                <form method={"POST"} onSubmit={handleSubmit}>
                     <h3>Log in</h3>
                     <div className="form-group mb-3">
                         <label htmlFor={"email"} className={"form-label"}>Email</label>
@@ -55,6 +80,5 @@ export default function LoginForm() {
                 </form>
             </div>
         </div>
-    )
-        ;
+    );
 }
