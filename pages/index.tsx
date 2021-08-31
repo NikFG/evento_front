@@ -5,7 +5,7 @@ import CarouselCustom from "@components/CarouselCustom";
 import GridEventosHome from "@components/GridEventosHome";
 import Footer from "@components/Footer";
 import {GetStaticProps, InferGetStaticPropsType} from "next";
-import {Evento, Categoria} from "types/types";
+import {Evento, Categoria} from "@types";
 
 
 export const getStaticProps: GetStaticProps = async (context) => {

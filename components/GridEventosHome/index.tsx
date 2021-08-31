@@ -2,6 +2,8 @@ import CardEventoHome from "@components/CardEventoHome";
 import styles from "./GridEventosHome.module.css"
 import {Evento} from 'types/types';
 
+
+
 export interface EventoProps {
     eventos: Evento[]
 }
@@ -9,7 +11,6 @@ export interface EventoProps {
 export default function GridEventosHome(props: EventoProps) {
     const eventos = props.eventos;
 
-    // return (<h1>teste</h1>);
     return (
         <div className={"container-fluid " + styles.area}>
             <h3>Veja os incríveis eventos mais próximos</h3>
