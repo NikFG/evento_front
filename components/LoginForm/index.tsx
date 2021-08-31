@@ -3,7 +3,7 @@ import Link from "next/link";
 import {useRouter} from "next/router";
 import {AxiosResponse} from "axios";
 import {User} from "@types";
-
+import nookies, {setCookie} from 'nookies'
 
 export default function LoginForm() {
     const router = useRouter();
@@ -12,15 +12,21 @@ export default function LoginForm() {
         e.preventDefault();
         const axios = require("axios");
         const user = {
-            "email": e.target.email.value,
-            "password": e.target.senha.value
+            email: e.target.email.value,
+            password: e.target.senha.value
         }
+        localStorage.setItem("user", JSON.stringify(user))
         await axios.post("http://localhost:8000/api/user/login", user).then((value: AxiosResponse) => {
-            // console.log(value)
-            localStorage.setItem("USER_TOKEN", value.data.access_token)
-            const user_logado: User = value.data.user
-            console.log(user_logado);
-            // router.push("/")
+            sessionStorage.setItem("USER_TOKEN", value.data.access_token)
+            const user_logado: User = value.data.user;
+
+            localStorage.setItem("user", JSON.stringify(user_logado))
+            setCookie(null, "USER_DATA", JSON.stringify(user_logado), {
+                path: "/",
+                maxAge: 3600
+            });
+
+            router.push("/")
         })
             .catch((error: any) => {
                 console.error(error)
