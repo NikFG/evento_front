@@ -1,5 +1,5 @@
 export interface Atividade {
-    id: number
+    id?: number
     nome: string
     data: string
     horario_inicio: string
@@ -8,9 +8,9 @@ export interface Atividade {
     link_transmissao: string
     imagem: string
     descricao: string
-    evento: string
-    tipo_atividade: string
-    apresentador: User
+    evento?: string
+    tipo_atividade: number
+    apresentador?: User
 }
 
 export interface Categoria {
@@ -19,17 +19,19 @@ export interface Categoria {
 }
 
 export interface Evento {
-    id: number
+    id?: number
     nome: string
     expectativa_participantes: number
     descricao: string
     link_evento: string
     breve_descricao: string
-    categoria: Categoria
+    categoria?: Categoria
+    categoria_id?: number
     tipo: string
-    instituicao: Instituicao
-    usuario: User
+    instituicao?: Instituicao
+    usuario?: User
     atividades: Atividade[]
+    local: string
 }
 
 export interface Instituicao {
