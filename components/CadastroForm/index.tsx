@@ -19,7 +19,7 @@ export default function CadastroForm() {
             "telefone": e.target.telefone.value
         }
 
-        await axios.post("http://localhost:8000/api/user/register", user)
+        await axios.post(process.env.API_SERVER + "/user/register", user)
             .then((r: AxiosResponse) => {
                 console.log(r);
                 router.push("/login");

@@ -46,7 +46,7 @@ export default function CriarEvento({categorias}: CategoriaProps) {
             } else
                 formData.append(k, v)
         }
-        axios.post("http://localhost:8000/api/eventos/store", formData, {
+        axios.post(process.env.API_SERVER + "/eventos/store", formData, {
             headers: {
                 "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
             }

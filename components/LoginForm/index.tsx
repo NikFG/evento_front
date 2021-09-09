@@ -3,10 +3,16 @@ import Link from "next/link";
 import {useRouter} from "next/router";
 import {AxiosResponse} from "axios";
 import {User} from "@types";
-import nookies, {setCookie} from 'nookies'
+import {encrypt} from "@utils";
+import nookies, {setCookie} from 'nookies';
 
-export default function LoginForm() {
+export interface LoginProps {
+    secret: string
+}
+
+export default function LoginForm(props: LoginProps) {
     const router = useRouter();
+
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -15,17 +21,18 @@ export default function LoginForm() {
             email: e.target.email.value,
             password: e.target.senha.value
         }
-        localStorage.setItem("user", JSON.stringify(user))
         await axios.post("http://localhost:8000/api/user/login", user).then((value: AxiosResponse) => {
             sessionStorage.setItem("USER_TOKEN", value.data.access_token)
+            let usuario_criptografado = encrypt(user)
             const user_logado: User = value.data.user;
+            sessionStorage.setItem("USER_DATA", JSON.stringify(user_logado))
+            localStorage.setItem("USER_LOGIN", usuario_criptografado)
+            setCookie(null, 'USER_TOKEN', value.data.access_token, {
+                path: '/',
+                maxAge: 3600,
+                sameSite: 'strict'
 
-            localStorage.setItem("user", JSON.stringify(user_logado))
-            setCookie(null, "USER_DATA", JSON.stringify(user_logado), {
-                path: "/",
-                maxAge: 3600
-            });
-
+            })
             router.push("/")
         })
             .catch((error: any) => {

@@ -5,8 +5,13 @@
 .linkCustom {
     color: var(--white);
     text-decoration: none;
-    margin-left: 20px;
+    margin-left: 5px;
     margin-right: 20px;
+}
+
+.userName {
+    cursor: pointer;
+    align-items: baseline;
 }
 
 .linkCustom:hover {
