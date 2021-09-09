@@ -8,9 +8,13 @@ export interface Atividade {
     link_transmissao: string
     imagem: string
     descricao: string
-    evento?: string
+    evento?: Evento
     tipo_atividade: number
     apresentador?: User
+    pivot?: {
+        participou: number
+        orador: number
+    }
 }
 
 export interface Categoria {
