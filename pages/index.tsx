@@ -10,20 +10,19 @@ import {Evento, Categoria} from "@types";
 
 export const getStaticProps: GetStaticProps = async (context) => {
     const axios = require('axios');
-    const eventosResp = await axios.get('http://localhost:8000/api/eventos');
-    const categoriasResp = await axios.get("http://localhost:8000/api/categorias")
+    const eventosResp = await axios.get(process.env.API_SERVER + "/eventos");
+    const categoriasResp = await axios.get(process.env.API_SERVER + "/categorias")
     const eventos: Evento[] = eventosResp.data;
     const categorias: Categoria[] = categoriasResp.data
     return {
         props: {
             eventos,
             categorias,
-
         },
     }
 }
 
-export default function Home({eventos, categorias}: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Home({eventos, categorias, secret}: InferGetStaticPropsType<typeof getStaticProps>) {
     return (
         <>
             <div>
