@@ -11,7 +11,7 @@ interface IParams extends ParsedUrlQuery {
 
 export const getStaticPaths: GetStaticPaths = async () => {
     const axios = require('axios');
-    const res = await axios.get('http://localhost:8000/api/eventos');
+    const res = await axios.get(process.env.API_SERVER + "/eventos/");
     const data = res.data;
     const paths = data.map((e: any) => {
         return {
@@ -20,12 +20,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
     });
     return {
         paths,
-        fallback: false
+        fallback: true
     }
 }
 export const getStaticProps: GetStaticProps = async (context) => {
     const {id} = context.params as IParams
-    const res = await axios.get(`http://localhost:8000/api/eventos/${id}`);
+    const res = await axios.get(process.env.API_SERVER + `/eventos/${id}`);
     const evento: Evento = res.data;
     return {
         props: {

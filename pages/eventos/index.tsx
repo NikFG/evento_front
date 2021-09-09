@@ -6,7 +6,7 @@ import {Categoria, Evento} from "@types";
 
 export const getStaticProps: GetStaticProps = async (context) => {
     const axios = require('axios');
-    const res = await axios.get('http://localhost:8000/api/eventos');
+    const res = await axios.get(process.env.API_SERVER + '/eventos');
 
     const eventos: Evento[] = res.data;
 

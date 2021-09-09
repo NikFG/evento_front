@@ -1,7 +1,6 @@
 import CardEventoHome from "@components/CardEventoHome";
 import styles from "./GridEventosHome.module.css"
-import {Evento} from 'types/types';
-
+import {Evento} from '@types';
 
 
 export interface EventoProps {
