@@ -4,21 +4,26 @@ import 'react-tabs/style/react-tabs.css';
 import {Atividade, Evento, User} from "@types";
 import InputMask from "react-input-mask";
 import React from "react";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTrash, faEdit} from "@fortawesome/free-solid-svg-icons";
+import EventoCriado from "@components/EventoCriado";
+import EventoParticipado from "@components/EventoParticipado";
 
 export interface UsuarioProps {
-    eventos: Evento[];
+    eventos_participados: Evento[];
+    eventos_criados: Evento[];
 
 }
 
 export default function Usuario(props: UsuarioProps) {
-    const eventos = props.eventos;
+    const eventos_participados = props.eventos_participados;
+    const eventos_criados = props.eventos_criados;
+    console.log(eventos_criados)
     const [nome, setNome] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [telefone, setTelefone] = React.useState("");
 
-    function handleCertificado() {
 
-    }
 
     React.useEffect(() => {
         let usuario: User = JSON.parse(sessionStorage.getItem("USER_DATA") as string);
@@ -44,7 +49,6 @@ export default function Usuario(props: UsuarioProps) {
                             <div className="form-group mb-3">
                                 <label htmlFor={"nome"} className={"form-label"}>Nome completo</label>
                                 <input id="nome" type="text" className="form-control" placeholder="Digite seu nome"
-                                       defaultValue={nome}
                                        value={nome} onChange={(e) => {
                                     setNome(e.target.value)
                                 }}
@@ -90,41 +94,21 @@ export default function Usuario(props: UsuarioProps) {
 
                         {/*Meus eventos*/}
                         <TabPanel>
-                            teste
+                            {eventos_criados.length == 0 ? <h3>não há eventos criados</h3> :
+                                eventos_criados.map(e =>
+                                    <EventoCriado evento={e} key={e.id}/>
+                                )
+                            }
+
                         </TabPanel>
 
                         {/*Eventos participados*/}
                         <TabPanel>
                             {/*criar collpase*/}
                             {
-                                eventos.map(e => {
-                                    return (
-                                        <div key={e.id}>
-                                            <h3>{e.nome}</h3>
-                                            <div>
-                                                {
-
-                                                    e.atividades?.map(a => {
-                                                        return (
-
-                                                            <div className={"my-3"} key={a.id}>
-                                                                <span>{a.nome}</span>
-                                                                {a.pivot?.participou == 1 ?
-                                                                    <button className={"btn btn-primary mx-2"}
-                                                                            onClick={() => handleCertificado()}>
-                                                                        Gerar certificado
-                                                                    </button> :
-                                                                    <span className={"mx-2"}>Você ainda não participou do evento para possuir certificado</span>}
-
-                                                            </div>
-                                                        )
-                                                    })
-                                                }
-                                            </div>
-                                            <hr/>
-                                        </div>
-                                    );
-                                })
+                                eventos_participados.map(e =>
+                                    <EventoParticipado evento={e} key={e.id}/>
+                                )
                             }
                         </TabPanel>
 
