@@ -12,29 +12,35 @@ interface CategoriaProps {
 }
 
 export default function CriarEvento({categorias}: CategoriaProps) {
-    const [catSelecionada, setCatSelecionada] = React.useState(0);
+    const [nomeEvento, setNomeEvento] = React.useState("");
+    const [catSelecionada, setCatSelecionada] = React.useState({label: "", value: ""});
+    const [breveEvento, setBreveEvento] = React.useState("");
+    const [local, setLocal] = React.useState("");
+    const [descricaoEvento, setDescricaoEvento] = React.useState("");
+
+    //atividades
     const [atividades, setAtividades] = React.useState<Atividade[]>([]);
     const [idAtividade, setIdAtividade] = React.useState(0);
-    const [nome, setNome] = React.useState("");
+    const [nomeAtividade, setNomeAtividade] = React.useState("");
     const [data, setData] = React.useState("");
     const [inicio, setInicio] = React.useState("");
     const [fim, setFim] = React.useState("");
     const [apresentador, setApresentador] = React.useState("");
-    const [tipo, setTipo] = React.useState(0);
+    const [tipo, setTipo] = React.useState({value: 0});
     const [descricaoAtividade, setDescricaoAtividade] = React.useState("");
 
+    //TODO
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         let evento: Evento = {
-            atividades: atividades,
-            breve_descricao: e.target.breve_descricao.value,
-            categoria_id: catSelecionada.value,
-            descricao: e.target.breve_descricao.value,
+            breve_descricao: breveEvento,
+            descricao: descricaoEvento,
             expectativa_participantes: 0,
             link_evento: "",
-            nome: e.target.nome.value,
+            local,
+            nome: nomeEvento,
             tipo: "",
-            local: e.target.local.value,
+            atividades
 
         }
         console.log(evento)
@@ -48,7 +54,7 @@ export default function CriarEvento({categorias}: CategoriaProps) {
         }
         axios.post(process.env.API_SERVER + "/eventos/store", formData, {
             headers: {
-                "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+                "Content-Type": `multipart/form-data`,//; boundary=${formData._boundary}`,
             }
         }).then((r: AxiosResponse) => {
             console.log(r.data)
@@ -59,12 +65,12 @@ export default function CriarEvento({categorias}: CategoriaProps) {
     }
 
     function limpaDados() {
-        setNome("")
+        setNomeAtividade("")
         setIdAtividade(0)
         setData("")
         setInicio("")
         setFim("")
-        setTipo(0)
+        setTipo({value: 0})
         setApresentador("")
         setDescricaoAtividade("")
     }
@@ -74,7 +80,7 @@ export default function CriarEvento({categorias}: CategoriaProps) {
         if (idAtividade != 0) {
             a = {
                 id: idAtividade,
-                nome,
+                nome: nomeAtividade,
                 descricao: descricaoAtividade,
                 horario_fim: fim,
                 horario_inicio: inicio,
@@ -87,7 +93,7 @@ export default function CriarEvento({categorias}: CategoriaProps) {
             let atividades_temp = atividades.find((atv) => atv.id == idAtividade);
             if (atividades_temp) {
                 let temp_id = atividades.indexOf(atividades_temp)
-                atividades_temp.nome = nome;
+                atividades_temp.nome = nomeAtividade;
                 atividades[temp_id] = atividades_temp;
                 setAtividades(atividades);
             }
@@ -100,7 +106,7 @@ export default function CriarEvento({categorias}: CategoriaProps) {
             // console.log("[TEMP_INDEX]" + temp_index)
             a = {
                 id: temp_index,
-                nome,
+                nome: nomeAtividade,
                 descricao: descricaoAtividade,
                 horario_fim: fim,
                 horario_inicio: inicio,
@@ -153,7 +159,12 @@ export default function CriarEvento({categorias}: CategoriaProps) {
                         <div className="form-group mb-3">
                             <label htmlFor={"nome"} className={"form-label"}>Nome do evento</label>
                             <input id="nome" type="text" className="form-control" max={100}
-                                   placeholder="Digite o nome para seu evento"/>
+                                   placeholder="Digite o nome para seu evento"
+                                   value={nomeEvento}
+                                   onChange={(e) => {
+                                       setNomeEvento(e.target.value)
+                                   }}
+                            />
                         </div>
                         <div className={"form-group mb-3"}>
                             <label htmlFor={"categoria"} className={"form-label"}>Selecione a categoria do
@@ -163,9 +174,11 @@ export default function CriarEvento({categorias}: CategoriaProps) {
                                 id={"categoria"}
                                 placeholder={"Selecione aqui"}
                                 value={catSelecionada}
-                                onChange={(e: any) => {
-                                    setCatSelecionada(e)
+                                onChange={(e) => {
+                                    if (e)
+                                        setCatSelecionada(e)
                                 }}
+                                // @ts-ignore
                                 options={categoriasSelect}
                                 required
                             />
@@ -174,17 +187,32 @@ export default function CriarEvento({categorias}: CategoriaProps) {
                             <label htmlFor={"breve_descricao"} className={"form-label"}>Descreva brevemente seu
                                 evento</label>
                             <input id="breve_descricao" type="text" className="form-control" max={100}
-                                   placeholder=""/>
+                                   placeholder="" required
+                                   value={breveEvento}
+                                   onChange={(e) => {
+                                       setBreveEvento(e.target.value);
+                                   }}
+                            />
                         </div>
                         <div className="form-group mb-3">
                             <label htmlFor={"local"} className={"form-label"}>Local de realização do evento</label>
                             <input id="local" type="text" className="form-control" max={100}
-                                   placeholder=""/>
+                                   placeholder=""
+                                   value={local}
+                                   onChange={(e) => {
+                                       setLocal(e.target.value);
+                                   }}
+                            />
                         </div>
 
                         <div className="mb-3">
                             <label htmlFor="descricao" className="form-label">Descreva seu evento</label>
-                            <textarea className="form-control" id="descricao" rows={4}/>
+                            <textarea className="form-control" id="descricao" rows={4} required
+                                      value={descricaoEvento}
+                                      onChange={(e) => {
+                                          setDescricaoEvento(e.target.value);
+                                      }}
+                            />
                         </div>
 
 
@@ -208,9 +236,9 @@ export default function CriarEvento({categorias}: CategoriaProps) {
 
                                             <div className="modal-body">
                                                 <div className={"form-group"}>
-                                                    <input className={"form-control mb-3"} value={nome}
+                                                    <input className={"form-control mb-3"} value={nomeAtividade}
                                                            onChange={(e) => {
-                                                               setNome(e.target.value)
+                                                               setNomeAtividade(e.target.value)
                                                            }}/>
                                                     <div className="input-group mb-3">
                                                         <span className="input-group-text"
@@ -292,10 +320,10 @@ export default function CriarEvento({categorias}: CategoriaProps) {
                                         <button className={"btn btn-outline-secondary"} data-bs-toggle="modal"
                                                 data-bs-target="#modal-atividade"
                                                 onClick={() => {
-                                                    setNome(a.nome)
+                                                    setNomeAtividade(a.nome)
                                                     setDescricaoAtividade(a.descricao)
                                                     setData(a.data)
-                                                    setTipo(tipo.value);
+                                                    setTipo(tipo);
                                                     setInicio(a.horario_inicio);
                                                     setFim(a.horario_fim);
                                                     setIdAtividade(a.id ?? 0)

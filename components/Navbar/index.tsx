@@ -55,7 +55,7 @@ export default function Navbar() {
         <nav className={"navbar navbar-light navbar-expand-lg " + style.navbarCustom}>
             <div className="container-fluid">
                 <Link href='/'>
-                    <a className={"navbar-brand"}>e-ventos</a>
+                    <a className={"navbar-brand"} href={""}>e-ventos</a>
                 </Link>
 
                 <div className="d-flex flex-row bd-highlight">

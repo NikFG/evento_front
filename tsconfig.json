@@ -5,18 +5,15 @@
       "@components/*": [
         "components/*"
       ],
-      "@styles/*": [
-        "styles/*"
-      ],
       "@images/*": [
         "images/*"
       ],
       "@types": [
         "types/types"
       ],
-      "@utils":[
+      "@utils": [
         "utils/"
-      ],
+      ]
     },
     "target": "es5",
     "lib": [

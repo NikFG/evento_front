@@ -5,6 +5,7 @@ import {AxiosResponse} from "axios";
 import {User} from "@types";
 import {encrypt} from "@utils";
 import nookies, {setCookie} from 'nookies';
+import React from "react";
 
 export interface LoginProps {
     secret: string
@@ -12,14 +13,15 @@ export interface LoginProps {
 
 export default function LoginForm(props: LoginProps) {
     const router = useRouter();
-
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         const axios = require("axios");
         const user = {
-            email: e.target.email.value,
-            password: e.target.senha.value
+            email,
+            password
         }
         await axios.post("http://localhost:8000/api/user/login", user).then((value: AxiosResponse) => {
             sessionStorage.setItem("USER_TOKEN", value.data.access_token)
@@ -47,12 +49,24 @@ export default function LoginForm(props: LoginProps) {
                     <h3>Log in</h3>
                     <div className="form-group mb-3">
                         <label htmlFor={"email"} className={"form-label"}>Email</label>
-                        <input id="email" type="email" className="form-control" placeholder="Digite seu email"/>
+                        <input id="email" type="email" className="form-control" placeholder="Digite seu email"
+                               value={email}
+                               onChange={(e) => {
+                                   setEmail(e.target.value)
+                               }}
+                               required
+                        />
                     </div>
 
                     <div className="form-group mb-3">
                         <label htmlFor="senha" className={"form-label"}>Senha</label>
-                        <input id="senha" type="password" className="form-control" placeholder="Digite sua senha"/>
+                        <input id="senha" type="password" className="form-control" placeholder="Digite sua senha"
+                               value={password}
+                               onChange={(e) => {
+                                   setPassword(e.target.value)
+                               }}
+                               required
+                        />
                         <p className="text-end">
                             Esqueceu sua <a href="#">senha?</a>
                         </p>

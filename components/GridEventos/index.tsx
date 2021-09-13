@@ -1,6 +1,6 @@
 import styles from "./GridEventos.module.css";
 import CardEvento from "@components/CardEvento";
-import {Evento, Instituicao, User} from "@types";
+import {Evento} from "@types";
 
 export interface EventoProps {
     eventos: Evento[]
@@ -15,7 +15,7 @@ export default function GridEventos(props: EventoProps) {
                     <div className={`col-md-4 col-lg-3 col-sm-1 ${styles.cartao}`} key={e.id}>
                         <CardEvento id={e.id}
                                     nome={e.nome}
-                                    categoria={e.categoria.nome}
+                                    categoria={e.categoria ? e.categoria.nome : ""}
                                     tipo={e.tipo}
                                     breve_descricao={e.breve_descricao}
                                     instituicao={"123"}/>

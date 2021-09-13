@@ -1,5 +1,4 @@
 import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
 import styles from './CarouselCustom.module.css'
 import CardCategoria from "@components/CardCategoria";
 import {Categoria} from "@types";
