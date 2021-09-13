@@ -3,11 +3,11 @@ import Image from "next/image";
 import {useRouter} from 'next/router';
 
 export interface EventoProps {
-    id: number,
+    id?: number,
     nome: string,
     breve_descricao: string,
     instituicao: string,
-    categoria: string,
+    categoria?: string,
     tipo: string,
 }
 
