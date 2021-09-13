@@ -32,7 +32,7 @@ export default function EventoComp(props: EventoProps) {
             const token = sessionStorage.getItem("USER_TOKEN");
             const formData = new FormData();
             formData.append("atividades", JSON.stringify(atvSelecionadas));
-            let res = await axios.post("http://localhost:8000/api/eventos/ingressos", formData, {
+            let res = await axios.post(`${process.env.API_SERVER}/eventos/ingressos`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": `multipart/form-data`,//; boundary=${formData._boundary}`,
