@@ -9,7 +9,7 @@ import {AxiosResponse} from "axios";
 import {encrypt} from "@utils";
 
 export default function Navbar() {
-        // window.onscroll()
+    // window.onscroll()
 
     const [nome, setNome] = React.useState("");
     React.useEffect(() => {
@@ -28,7 +28,7 @@ export default function Navbar() {
                     email,
                     password
                 }
-                axios.post("http://localhost:8000/api/user/login", user).then((value: AxiosResponse) => {
+                axios.post(`${process.env.API_SERVER}/user/login`, user).then((value: AxiosResponse) => {
                     sessionStorage.setItem("USER_TOKEN", value.data.access_token)
                     let usuario_criptografado = encrypt(user)
                     const user_logado: User = value.data.user;
