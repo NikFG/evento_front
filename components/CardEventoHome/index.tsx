@@ -3,9 +3,10 @@ import Image from "next/image";
 import {useRouter} from "next/router";
 
 export interface EventoProps {
-    id: number;
-    titulo: string;
-    descricao: string;
+    id: number,
+    titulo: string,
+    descricao: string,
+    data_inicio: string
 }
 
 
@@ -19,10 +20,9 @@ export default function CardEventoHome(props: EventoProps) {
             <Image src={`https://via.placeholder.com/500x400/e66?text=${props.id}`} width={500} height={400}
                    alt={"teste"}/>
             <div className="card-body">
-
                 <p className="card-text">{props.descricao}</p>
             </div>
-            <div className={"card-footer"}>Data: 23/08/2021</div>
+            <div className={"card-footer"}>Data de ínicio: {props.data_inicio}</div>
         </div>
     );
 };

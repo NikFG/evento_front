@@ -1,11 +1,49 @@
 import styles from "./LoginForm.module.css"
 import Link from "next/link";
+import {useRouter} from "next/router";
+import {AxiosResponse} from "axios";
+import {User} from "@types";
+import {encrypt} from "@utils";
+import nookies, {setCookie} from 'nookies';
 
-export default function LoginForm() {
+export interface LoginProps {
+    secret: string
+}
+
+export default function LoginForm(props: LoginProps) {
+    const router = useRouter();
+
+
+    async function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        const axios = require("axios");
+        const user = {
+            email: e.target.email.value,
+            password: e.target.senha.value
+        }
+        await axios.post("http://localhost:8000/api/user/login", user).then((value: AxiosResponse) => {
+            sessionStorage.setItem("USER_TOKEN", value.data.access_token)
+            let usuario_criptografado = encrypt(user)
+            const user_logado: User = value.data.user;
+            sessionStorage.setItem("USER_DATA", JSON.stringify(user_logado))
+            localStorage.setItem("USER_LOGIN", usuario_criptografado)
+            setCookie(null, 'USER_TOKEN', value.data.access_token, {
+                path: '/',
+                maxAge: 3600,
+                sameSite: 'strict'
+
+            })
+            router.push("/")
+        })
+            .catch((error: any) => {
+                console.error(error)
+            });
+    }
+
     return (
         <div className={styles.outer}>
             <div className={styles.inner}>
-                <form>
+                <form method={"POST"} onSubmit={handleSubmit}>
                     <h3>Log in</h3>
                     <div className="form-group mb-3">
                         <label htmlFor={"email"} className={"form-label"}>Email</label>
@@ -55,6 +93,5 @@ export default function LoginForm() {
                 </form>
             </div>
         </div>
-    )
-        ;
+    );
 }

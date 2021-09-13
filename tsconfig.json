@@ -10,7 +10,13 @@
       ],
       "@images/*": [
         "images/*"
-      ]
+      ],
+      "@types": [
+        "types/types"
+      ],
+      "@utils":[
+        "utils/"
+      ],
     },
     "target": "es5",
     "lib": [
