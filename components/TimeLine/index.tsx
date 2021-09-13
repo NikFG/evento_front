@@ -1,8 +1,5 @@
 import styles from "./TimeLine.module.css";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
 import {VerticalTimelineElement} from 'react-vertical-timeline-component';
-import 'react-vertical-timeline-component/style.min.css';
 import {ChangeEvent} from "react";
 
 export interface TimeLineProps {

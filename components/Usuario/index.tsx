@@ -1,11 +1,9 @@
 import styles from "./Usuario.module.css";
 import {TabList, Tabs, Tab, TabPanel} from "react-tabs";
-import 'react-tabs/style/react-tabs.css';
+
 import {Atividade, Evento, User} from "@types";
 import InputMask from "react-input-mask";
 import React from "react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faTrash, faEdit} from "@fortawesome/free-solid-svg-icons";
 import EventoCriado from "@components/EventoCriado";
 import EventoParticipado from "@components/EventoParticipado";
 

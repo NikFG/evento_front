@@ -3,13 +3,12 @@ import Image from "next/image";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCalendarAlt} from "@fortawesome/free-regular-svg-icons";
 import {faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
-import 'react-tabs/style/react-tabs.css';
-import 'react-vertical-timeline-component/style.min.css';
 import teste from "@images/teste.jpg";
 import TimeLine from "@components/TimeLine";
 import Footer from "@components/Footer";
 import {Atividade, Evento} from "@types";
 import React, {ChangeEvent} from "react";
+// @ts-ignore
 import {toast, ToastContainer} from 'react-nextjs-toast';
 
 export interface EventoProps {
@@ -36,7 +35,7 @@ export default function EventoComp(props: EventoProps) {
             let res = await axios.post("http://localhost:8000/api/eventos/ingressos", formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+                    "Content-Type": `multipart/form-data`,//; boundary=${formData._boundary}`,
                 }
             });
             console.log(res.data);
@@ -116,7 +115,7 @@ export default function EventoComp(props: EventoProps) {
 
                                     <div className={"col-12"}>
                                         <TimeLine
-                                            id={a.id}
+                                            id={a.id ?? 0}
                                             descricao={a.descricao}
                                             autor={"teste"}
                                             nome={a.nome}
