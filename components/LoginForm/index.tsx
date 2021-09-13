@@ -23,7 +23,7 @@ export default function LoginForm(props: LoginProps) {
             email,
             password
         }
-        await axios.post("http://localhost:8000/api/user/login", user).then((value: AxiosResponse) => {
+        await axios.post(`${process.env.API_SERVER}/api/user/login`, user).then((value: AxiosResponse) => {
             sessionStorage.setItem("USER_TOKEN", value.data.access_token)
             let usuario_criptografado = encrypt(user)
             const user_logado: User = value.data.user;
