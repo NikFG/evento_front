@@ -1,11 +1,11 @@
 import Navbar from "@components/Navbar";
 import Usuario from "@components/Usuario";
-import {GetServerSideProps, GetStaticProps, InferGetServerSidePropsType, NextPage} from "next";
-import {Evento, User} from "@types";
-import nookies, {parseCookies} from 'nookies';
+import {GetServerSideProps, InferGetServerSidePropsType} from "next";
+import {Evento} from "@types";
+import {parseCookies} from 'nookies';
 import React from "react";
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+const getServerSideProps: GetServerSideProps = async (context) => {
     const axios = require('axios');
     const cookies = parseCookies(context)
     const token = cookies.USER_TOKEN;

@@ -36,7 +36,7 @@ export default function EventoComp(props: EventoProps) {
             let res = await axios.post(`${props.api}/eventos/ingressos`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    "Content-Type": `multipart/form-data`,//; boundary=${formData._boundary}`,
+                    "Content-Type": `multipart/form-data`,
                 }
             });
             console.log(res.data);

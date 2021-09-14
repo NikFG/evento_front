@@ -4,14 +4,16 @@ import {faPlusCircle, faEdit, faTrash, faCalendar, faClock} from "@fortawesome/f
 import Navbar from "@components/Navbar";
 import Select from 'react-select';
 import React from "react";
-import {Atividade, Categoria, Evento} from "@types";
+import {Atividade, Categoria, Evento, TipoAtividade} from "@types";
 import {AxiosResponse} from "axios";
 
 interface CategoriaProps {
-    categorias: Categoria[]
+    categorias: Categoria[],
+    tipo_atividades: TipoAtividade[],
+    api: string
 }
 
-export default function CriarEvento({categorias}: CategoriaProps) {
+export default function CriarEvento({categorias, tipo_atividades, api}: CategoriaProps) {
     const [nomeEvento, setNomeEvento] = React.useState("");
     const [catSelecionada, setCatSelecionada] = React.useState({label: "", value: ""});
     const [breveEvento, setBreveEvento] = React.useState("");
@@ -52,7 +54,7 @@ export default function CriarEvento({categorias}: CategoriaProps) {
             } else
                 formData.append(k, v)
         }
-        axios.post(process.env.API_SERVER + "/eventos/store", formData, {
+        axios.post(`${api}/eventos/store`, formData, {
             headers: {
                 "Content-Type": `multipart/form-data`,//; boundary=${formData._boundary}`,
             }
@@ -126,11 +128,11 @@ export default function CriarEvento({categorias}: CategoriaProps) {
         return {value: c.id, label: c.nome}
     })
 
-    const tipoSelect = [
-        {value: 1, label: "teste"},
-        {value: 2, label: "Palestra"},
-        {value: 3, label: "mesa redonda"},
-    ]
+    const tipoSelect = tipo_atividades.map((ta) => {
+        return {value: ta.id, label: ta.nome}
+    });
+    console.log(tipoSelect);
+
 
     function handleChange(selectedOption: any) {
         setCatSelecionada(selectedOption);
