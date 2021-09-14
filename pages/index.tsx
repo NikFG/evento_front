@@ -7,22 +7,25 @@ import Footer from "@components/Footer";
 import {GetStaticProps, InferGetStaticPropsType} from "next";
 import {Evento, Categoria} from "@types";
 
-
 export const getStaticProps: GetStaticProps = async (context) => {
     const axios = require('axios');
     const eventosResp = await axios.get(process.env.API_SERVER + "/eventos");
     const categoriasResp = await axios.get(process.env.API_SERVER + "/categorias")
+    const api = process.env.API_SERVER;
     const eventos: Evento[] = eventosResp.data;
     const categorias: Categoria[] = categoriasResp.data
+
     return {
         props: {
             eventos,
             categorias,
+            api
         },
     }
 }
 
-export default function Home({eventos, categorias, secret}: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Home({eventos, categorias, api}: InferGetStaticPropsType<typeof getStaticProps>) {
+
     return (
         <>
             <div>
@@ -32,7 +35,7 @@ export default function Home({eventos, categorias, secret}: InferGetStaticPropsT
                 </Head>
 
                 <main>
-                    <Navbar/>
+                    <Navbar api={api}/>
 
                     <MainBanner/>
 
