@@ -27,19 +27,21 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const {id} = context.params as IParams
     const res = await axios.get(process.env.API_SERVER + `/eventos/${id}`);
     const evento: Evento = res.data;
+    const api = process.env.API_SERVER
     return {
         props: {
-            evento
+            evento,
+            api
         }
     }
 }
 
 
-export default function EventoPage({evento}: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function EventoPage({evento, api}: InferGetStaticPropsType<typeof getStaticProps>) {
     return (
         <>
-            <Navbar/>
-            <EventoComp evento={evento}/>
+            <Navbar api={api}/>
+            <EventoComp evento={evento} api={api}/>
         </>
     );
 }

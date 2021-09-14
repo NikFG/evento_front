@@ -9,6 +9,7 @@ import React from "react";
 
 export interface LoginProps {
     secret: string
+    api: string
 }
 
 export default function LoginForm(props: LoginProps) {
@@ -23,7 +24,7 @@ export default function LoginForm(props: LoginProps) {
             email,
             password
         }
-        await axios.post(`${process.env.API_SERVER}/api/user/login`, user).then((value: AxiosResponse) => {
+        await axios.post(`${props.api}/user/login`, user).then((value: AxiosResponse) => {
             sessionStorage.setItem("USER_TOKEN", value.data.access_token)
             let usuario_criptografado = encrypt(user)
             const user_logado: User = value.data.user;
