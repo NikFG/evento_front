@@ -22,7 +22,6 @@ export default function Usuario(props: UsuarioProps) {
     const [telefone, setTelefone] = React.useState("");
 
 
-
     React.useEffect(() => {
         let usuario: User = JSON.parse(sessionStorage.getItem("USER_DATA") as string);
         setNome(usuario.nome);
@@ -92,10 +91,11 @@ export default function Usuario(props: UsuarioProps) {
 
                         {/*Meus eventos*/}
                         <TabPanel>
-                            {eventos_criados.length == 0 ? <h3>não há eventos criados</h3> :
+                            {eventos_criados ?
+                                eventos_criados.length > 0 ??
                                 eventos_criados.map(e =>
                                     <EventoCriado evento={e} key={e.id}/>
-                                )
+                                ) : <h3>não há eventos criados</h3>
                             }
 
                         </TabPanel>
@@ -103,10 +103,10 @@ export default function Usuario(props: UsuarioProps) {
                         {/*Eventos participados*/}
                         <TabPanel>
                             {/*criar collpase*/}
-                            {
+                            {eventos_participados ?
                                 eventos_participados.map(e =>
                                     <EventoParticipado evento={e} key={e.id}/>
-                                )
+                                ) : <h3>Ainda não participou em nenhum evento</h3>
                             }
                         </TabPanel>
 
