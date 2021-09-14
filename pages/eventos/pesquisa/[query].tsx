@@ -18,7 +18,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const axios = require('axios')
     const api = process.env.API_SERVER
     const {query} = context.params as IParams
-    const url = api + "/eventos/pesquisa/" + encodeURIComponent(query.trim())
+    const url = api + "/eventos/pesquisa/" + (query.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, ""))
     console.log(url)
     const res = await axios.get(url);
     const eventos: Evento[] = res.data;
