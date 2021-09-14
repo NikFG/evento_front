@@ -3,8 +3,17 @@ import Image from 'next/image'
 import banner from '@images/imagem_evento-removebg.png'
 import {faSearch} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import React from "react";
+import {useRouter} from "next/router";
 
 export default function MainBanner() {
+    const [pesquisa, setPesquisa] = React.useState("");
+    const router = useRouter();
+
+    function handleSearch() {
+        router.push(`/eventos/pesquisa/${encodeURIComponent(pesquisa)}`)
+    }
+
     return (
         <div className={'container-fluid ' + styles.main}>
             <div className={'row'}>
@@ -27,15 +36,17 @@ export default function MainBanner() {
                         <div className={'col-lg-8 col-sm-6 col-md-3'}>
                             <input
                                 className={styles.search}
-                                // onChange={onChange}
+                                onChange={(e) => {
+                                    setPesquisa(e.target.value)
+                                }}
                                 // onFocus={onFocus}
                                 placeholder='Pesquise eventos'
                                 type='text'
-                                // value={query}
+                                value={pesquisa}
                             />
                         </div>
                         <div className={'col-lg-2 col-sm-6 col-md-1'}>
-                            <button className={'btn btn-primary ' + styles.botao}>
+                            <button className={'btn btn-primary ' + styles.botao} onClick={handleSearch}>
                                 <FontAwesomeIcon
                                     icon={faSearch}/>
                             </button>
