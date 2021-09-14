@@ -39,13 +39,14 @@ export interface Evento {
 }
 
 export interface Instituicao {
-    id: number
+    id?: number
     nome: string
     cnpj: string
     endereco: string
     latitude: string
     longitude: string
-    // administrador: User
+    logo?: string
+    administrador?: number
 }
 
 export interface User {
@@ -56,4 +57,9 @@ export interface User {
     password: string
     telefone: string
     remember_token: string
+}
+
+export interface TipoAtividade {
+    id: number
+    nome: string
 }
