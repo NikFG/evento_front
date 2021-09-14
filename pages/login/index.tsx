@@ -12,6 +12,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         }
     }
 }
+
 export default function Login({secret,api}: InferGetStaticPropsType<typeof getStaticProps>) {
 
     return (
