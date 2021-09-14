@@ -9,7 +9,7 @@ interface IParams extends ParsedUrlQuery {
     id: string
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = async (context) => {
     const axios = require('axios');
     const res = await axios.get(process.env.API_SERVER + "/eventos/");
     const data = res.data;
@@ -23,6 +23,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
         fallback: 'blocking'
     }
 }
+
 export const getStaticProps: GetStaticProps = async (context) => {
     const {id} = context.params as IParams
     const res = await axios.get(process.env.API_SERVER + `/eventos/${id}`);
