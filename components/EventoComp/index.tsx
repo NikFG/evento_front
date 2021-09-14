@@ -12,7 +12,8 @@ import React, {ChangeEvent} from "react";
 import {toast, ToastContainer} from 'react-nextjs-toast';
 
 export interface EventoProps {
-    evento: Evento
+    evento: Evento,
+    api:string
 }
 
 export default function EventoComp(props: EventoProps) {
@@ -32,7 +33,7 @@ export default function EventoComp(props: EventoProps) {
             const token = sessionStorage.getItem("USER_TOKEN");
             const formData = new FormData();
             formData.append("atividades", JSON.stringify(atvSelecionadas));
-            let res = await axios.post(`${process.env.API_SERVER}/eventos/ingressos`, formData, {
+            let res = await axios.post(`${props.api}/eventos/ingressos`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": `multipart/form-data`,//; boundary=${formData._boundary}`,

@@ -4,7 +4,11 @@ import React from "react";
 import {AxiosResponse} from "axios";
 import {useRouter} from 'next/router'
 
-export default function CadastroForm() {
+export interface Props {
+    api: string
+}
+
+export default function CadastroForm(props: Props) {
     const router = useRouter();
     const [nome, setNome] = React.useState("");
     const [email, setEmail] = React.useState("");
@@ -25,7 +29,7 @@ export default function CadastroForm() {
 
         }
 
-        await axios.post(process.env.API_SERVER + "/user/register", user)
+        await axios.post(`${props.api}/user/register`, user)
             .then((r: AxiosResponse) => {
                 console.log(r);
                 router.push("/login");
