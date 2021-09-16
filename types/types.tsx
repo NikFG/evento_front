@@ -9,11 +9,14 @@ export interface Atividade {
     imagem: string
     descricao: string
     evento?: Evento
-    tipo_atividade: number
-    apresentador?: User
+    tipo_atividade_id: number
+    nome_apresentador: string
+    email_apresentador: string
     pivot?: {
         participou: number
-        orador: number
+        apresentador_id: number
+        nome_apresentador: string
+        email_apresentador: string
     }
 }
 
