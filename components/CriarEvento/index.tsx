@@ -6,16 +6,20 @@ import Select from 'react-select';
 import React from "react";
 import {Atividade, Categoria, Evento, TipoAtividade} from "@types";
 import {AxiosResponse} from "axios";
+import {parseCookies} from "nookies";
+import {useRouter} from "next/router";
 
 interface CategoriaProps {
     categorias: Categoria[],
     tipo_atividades: TipoAtividade[],
-    api: string
+    api: string,
+    evento_edit?: Evento
 }
 
-export default function CriarEvento({categorias, tipo_atividades, api}: CategoriaProps) {
+export default function CriarEvento({categorias, tipo_atividades, api, evento_edit}: CategoriaProps) {
+    const router = useRouter();
     const [nomeEvento, setNomeEvento] = React.useState("");
-    const [catSelecionada, setCatSelecionada] = React.useState({label: "", value: ""});
+    const [catSelecionada, setCatSelecionada] = React.useState({label: "", value: 0});
     const [breveEvento, setBreveEvento] = React.useState("");
     const [local, setLocal] = React.useState("");
     const [descricaoEvento, setDescricaoEvento] = React.useState("");
@@ -27,11 +31,12 @@ export default function CriarEvento({categorias, tipo_atividades, api}: Categori
     const [data, setData] = React.useState("");
     const [inicio, setInicio] = React.useState("");
     const [fim, setFim] = React.useState("");
-    const [apresentador, setApresentador] = React.useState("");
-    const [tipo, setTipo] = React.useState({value: 0});
+    const [nomeApresentador, setNomeApresentador] = React.useState("");
+    const [tipo, setTipo] = React.useState({value: 0, label: ""});
     const [descricaoAtividade, setDescricaoAtividade] = React.useState("");
+    const [emailApresentador, setEmailApresentador] = React.useState("");
 
-    //TODO
+
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         let evento: Evento = {
@@ -42,10 +47,11 @@ export default function CriarEvento({categorias, tipo_atividades, api}: Categori
             local,
             nome: nomeEvento,
             tipo: "",
-            atividades
+            atividades,
+            categoria_id: catSelecionada.value,
+            id: evento_edit ? evento_edit.id : undefined
 
         }
-        console.log(evento)
         const axios = require('axios')
         const formData = new FormData();
         for (const [k, v] of Object.entries(evento)) {
@@ -54,12 +60,20 @@ export default function CriarEvento({categorias, tipo_atividades, api}: Categori
             } else
                 formData.append(k, v)
         }
-        axios.post(`${api}/eventos/store`, formData, {
+        let url = `${api}/eventos/store`;
+        if (evento_edit) {
+            url = `${api}/eventos/update/${evento.id}`
+        }
+        const token = sessionStorage.getItem("USER_TOKEN");
+        await axios.post(url, formData, {
             headers: {
+                Authorization: `Bearer ${token}`,
                 "Content-Type": `multipart/form-data`,//; boundary=${formData._boundary}`,
             }
         }).then((r: AxiosResponse) => {
-            console.log(r.data)
+            if (r.status === 201) {
+                router.push('/')
+            }
         }).catch((err: any) => {
             console.log(err)
         });
@@ -72,12 +86,15 @@ export default function CriarEvento({categorias, tipo_atividades, api}: Categori
         setData("")
         setInicio("")
         setFim("")
-        setTipo({value: 0})
-        setApresentador("")
+        setTipo({value: 0, label: ""})
+        setNomeApresentador("")
         setDescricaoAtividade("")
+        setEmailApresentador("");
+
     }
 
     function handleAtividadeSubmit() {
+        //melhorar datas
         let a: Atividade;
         if (idAtividade != 0) {
             a = {
@@ -89,13 +106,15 @@ export default function CriarEvento({categorias, tipo_atividades, api}: Categori
                 imagem: "",
                 link_transmissao: "",
                 local: "",
-                tipo_atividade: tipo.value,
-                data
+                tipo_atividade_id: tipo.value,
+                data,
+                nome_apresentador: nomeApresentador,
+                email_apresentador: emailApresentador
             }
             let atividades_temp = atividades.find((atv) => atv.id == idAtividade);
             if (atividades_temp) {
                 let temp_id = atividades.indexOf(atividades_temp)
-                atividades_temp.nome = nomeAtividade;
+                atividades_temp = a
                 atividades[temp_id] = atividades_temp;
                 setAtividades(atividades);
             }
@@ -105,7 +124,6 @@ export default function CriarEvento({categorias, tipo_atividades, api}: Categori
             if (atividades.length > 0) {
                 temp_index = (atividades[atividades.length - 1].id ?? 0) + 1
             }
-            // console.log("[TEMP_INDEX]" + temp_index)
             a = {
                 id: temp_index,
                 nome: nomeAtividade,
@@ -115,8 +133,10 @@ export default function CriarEvento({categorias, tipo_atividades, api}: Categori
                 imagem: "",
                 link_transmissao: "",
                 local: "",
-                tipo_atividade: tipo.value,
-                data
+                tipo_atividade_id: tipo.value,
+                data,
+                nome_apresentador: nomeApresentador,
+                email_apresentador: emailApresentador
             }
             setAtividades(atividades => [...atividades, a]);
         }
@@ -131,23 +151,30 @@ export default function CriarEvento({categorias, tipo_atividades, api}: Categori
     const tipoSelect = tipo_atividades.map((ta) => {
         return {value: ta.id, label: ta.nome}
     });
-    console.log(tipoSelect);
 
-
-    function handleChange(selectedOption: any) {
-        setCatSelecionada(selectedOption);
-    }
 
     function deletaAtividade(id: number) {
-
-
         if (id) {
             let index = atividades.indexOf(atividades.find(a => a.id == id) as Atividade)
             setAtividades(atividades.filter((_, i) => i !== index))
-
         }
     }
 
+    React.useEffect(() => {
+        if (evento_edit) {
+            setBreveEvento(evento_edit.breve_descricao);
+            setDescricaoEvento(evento_edit.descricao);
+            setLocal(evento_edit.local);
+            setNomeEvento(evento_edit.nome);
+            setAtividades(evento_edit.atividades);
+            let cat = categorias.find((c) => {
+                return c.id == evento_edit.categoria_id;
+
+            });
+
+            setCatSelecionada({value: (cat?.id) ?? 0, label: cat?.nome ?? ""});
+        }
+    }, []);
     return (
         <>
             <Navbar/>
@@ -219,6 +246,7 @@ export default function CriarEvento({categorias, tipo_atividades, api}: Categori
 
 
                     </div>
+                    {/*Modal de atividade*/}
                     <div className={"mt-3 " + styles.inner}>
                         <h3>Cadastro de atividades</h3>
                         <div className={"row"}>
@@ -236,6 +264,7 @@ export default function CriarEvento({categorias, tipo_atividades, api}: Categori
                                                         aria-label="Close" onClick={() => limpaDados()}/>
                                             </div>
 
+                                            {/*Corpo do modal*/}
                                             <div className="modal-body">
                                                 <div className={"form-group"}>
                                                     <input className={"form-control mb-3"} value={nomeAtividade}
@@ -285,10 +314,15 @@ export default function CriarEvento({categorias, tipo_atividades, api}: Categori
                                                         options={tipoSelect}
                                                     />
                                                 </div>
-                                                <input className={"form-control mb-3"} type={"email"}
+                                                <input className={"form-control mb-3"} type={"text"}
                                                        placeholder={"Apresentador"}
-                                                       value={apresentador} onChange={(e) => {
-                                                    setApresentador(e.target.value)
+                                                       value={nomeApresentador} onChange={(e) => {
+                                                    setNomeApresentador(e.target.value)
+                                                }}/>
+                                                <input className={"form-control mb-3"} type={"email"}
+                                                       placeholder={"Email apresentador"}
+                                                       value={emailApresentador} onChange={(e) => {
+                                                    setEmailApresentador(e.target.value)
                                                 }}/>
                                                 <textarea className="form-control mb-3" id="descricao_atividade"
                                                           rows={4}
@@ -322,13 +356,24 @@ export default function CriarEvento({categorias, tipo_atividades, api}: Categori
                                         <button className={"btn btn-outline-secondary"} data-bs-toggle="modal"
                                                 data-bs-target="#modal-atividade"
                                                 onClick={() => {
-                                                    setNomeAtividade(a.nome)
-                                                    setDescricaoAtividade(a.descricao)
-                                                    setData(a.data)
-                                                    setTipo(tipo);
+                                                    setNomeAtividade(a.nome);
+                                                    setDescricaoAtividade(a.descricao ?? "");
+                                                    if (a.data.includes("/")) {
+                                                        let temp_data = a.data.split("/");
+                                                        let temp_data2 = temp_data[2] + "-" + temp_data[1] + "-" + temp_data[0]
+                                                        setData(temp_data2);
+                                                    } else {
+                                                        setData(a.data)
+                                                    }
+                                                    let ta = tipo_atividades.find((t) => {
+                                                        return t.id === a.tipo_atividade_id;
+                                                    });
+                                                    setTipo({value: ta?.id ?? 0, label: ta?.nome ?? ""});
                                                     setInicio(a.horario_inicio);
                                                     setFim(a.horario_fim);
                                                     setIdAtividade(a.id ?? 0)
+                                                    setNomeApresentador(a.nome_apresentador)
+                                                    setEmailApresentador(a.email_apresentador)
                                                 }}>
                                             <FontAwesomeIcon icon={faEdit}/>
                                         </button>
