@@ -91,11 +91,11 @@ export default function Usuario(props: UsuarioProps) {
 
                         {/*Meus eventos*/}
                         <TabPanel>
-                            {eventos_criados ?
-                                eventos_criados.length > 0 ??
-                                eventos_criados.map(e =>
-                                    <EventoCriado evento={e} key={e.id}/>
-                                ) : <h3>não há eventos criados</h3>
+                            {
+                                eventos_criados.length > 0 ?
+                                    eventos_criados.map(e =>
+                                        <EventoCriado evento={e} key={e.id}/>
+                                    ) : <h3>não há eventos criados</h3>
                             }
 
                         </TabPanel>
