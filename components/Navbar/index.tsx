@@ -41,7 +41,8 @@ export default function Navbar(props: Props) {
                     setCookie(null, 'USER_TOKEN', value.data.access_token, {
                         path: '/',
                         maxAge: 3600,
-                        sameSite: 'strict'
+                        sameSite: 'strict',
+                        secure: true
                     });
                     setNome(user_logado.nome);
                 })
