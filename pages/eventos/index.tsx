@@ -2,7 +2,8 @@ import Navbar from "@components/Navbar";
 import GridEventos from "@components/GridEventos";
 import {GetStaticProps, InferGetStaticPropsType} from "next";
 import axios from "axios";
-import {Categoria, Evento} from "@types";
+import {Evento} from "@types";
+import GridEventos from "@components/GridEventos";
 
 export const getStaticProps: GetStaticProps = async (context) => {
     const axios = require('axios');
