@@ -1,11 +1,11 @@
 import Head from 'next/head'
-import Navbar from "@components/Navbar";
 import MainBanner from "@components/MainBanner";
 import CarouselCustom from "@components/CarouselCustom";
-import GridEventosHome from "@components/GridEventosHome";
+import GridEventos from "@components/GridEventos";
 import Footer from "@components/Footer";
 import {GetStaticProps, InferGetStaticPropsType} from "next";
 import {Evento, Categoria} from "@types";
+import Navbar from "@components/Navbar";
 
 export const getStaticProps: GetStaticProps = async (context) => {
     const axios = require('axios');
@@ -32,6 +32,7 @@ export default function Home({eventos, categorias, api}: InferGetStaticPropsType
                 <Head>
                     <title>Eventos</title>
                     <meta name="description" content="test"/>
+
                 </Head>
 
                 <main>
@@ -41,7 +42,7 @@ export default function Home({eventos, categorias, api}: InferGetStaticPropsType
 
                     <CarouselCustom categorias={categorias}/>
 
-                    <GridEventosHome eventos={eventos}/>
+                    <GridEventos eventos={eventos}/>
                 </main>
 
                 <footer>
