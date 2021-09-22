@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1920.183" height="1075.636" viewBox="0 0 1920.183 1075.636">
   <defs>
     <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
-      <stop offset="0" stop-color="#2A9D8F"/>
+      <stop offset="0" stop-color="#00A6A6"/>
       <stop offset="1" stop-color="#c4ea77"/>
     </linearGradient>
     <clipPath id="clip-path">
