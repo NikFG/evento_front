@@ -39,6 +39,7 @@ export interface Evento {
     usuario?: User
     atividades: Atividade[]
     local: string
+    apresentadores_count?: number
 }
 
 export interface Instituicao {
