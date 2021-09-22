@@ -1,5 +1,4 @@
 import Navbar from "@components/Navbar";
-import GridEventos from "@components/GridEventos";
 import {GetStaticProps, InferGetStaticPropsType} from "next";
 import axios from "axios";
 import {Evento} from "@types";
