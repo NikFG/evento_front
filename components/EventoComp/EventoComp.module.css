@@ -1,6 +1,45 @@
-.teste {
+.siteHeader {
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    position: relative;
+    text-align: center;
+    background: url("../../images/banner_aux.jpg") no-repeat center center/cover;
+    display: table;
+}
 
-    filter: blur(30px);
+.siteHeader::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.intro {
+    color: #fff;
+    position: relative;
+    text-align: center;
+    text-transform: uppercase;
+    width: 100%;
+    z-index: 1;
+    padding: 0 15px;
+    display: table-cell;
+    vertical-align: middle;
+    height: 100vh;
+}
+
+.valignCenter {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
 }
 
 .justificar {
@@ -8,7 +47,79 @@
     text-indent: 2rem;
     text-align: justify;
 }
-.imagemPrincipal{
-    width: 100vw;
-    height: 40vh;
+
+/*.botaoDivSelecionado div {*/
+/*    background: #F4F3EF*/
+/*}*/
+
+.botaoDiv {
+    padding: 40px 55px;
+    margin-right: 20px;
+    margin-left: 20px;
+    border: 1px blue solid;
+    -webkit-transition: all 0.2s ease-out 0s;
+    -moz-transition: all 0.2s ease-out 0s;
+    -ms-transition: all 0.2s ease-out 0s;
+    -o-transition: all 0.2s ease-out 0s;
+    transition: all 0.2s ease-out 0s;
+}
+
+.botaoDiv:hover {
+    color: blue;
+}
+
+
+.eventTab {
+    border: 3px solid rgba(24, 99, 255, 0.1);
+    padding: 40px 70px;
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+    .eventTab {
+        padding: 40px;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .eventTab {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 767px) {
+    .eventTab {
+        padding: 0 10px 10px;
+    }
+}
+
+.botaoDivSelecionado div {
+    background: -webkit-linear-gradient(left, #102baf 0%, #1664ff 100%);
+    background: -o-linear-gradient(left, #102baf 0%, #1664ff 100%);
+    background: linear-gradient(to right, #102baf 0%, #1664ff 100%);
+    -webkit-transition: all 0.2s ease-out 0s;
+    -moz-transition: all 0.2s ease-out 0s;
+    -ms-transition: all 0.2s ease-out 0s;
+    -o-transition: all 0.2s ease-out 0s;
+    transition: all 0.2s ease-out 0s;
+    color: white;
+    padding: 40px 55px;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.event-tab .nav .nav-item a.active {
+
+    padding: 18px 0;
+}
+.eventContent{
+    padding-left: 0;
+    padding-bottom: 20px;
+    margin-top: 15px;
+    background: #F4F7FE;
+}
+.eventTitle{
+    font-size: 24px;
+}
+.fab{
+    background-color: var(--primary-color);
 }

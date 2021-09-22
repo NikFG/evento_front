@@ -1,23 +1,39 @@
-import Link from "next/link";
-import style from './Navbar.module.css';
+import styles from "./Navbar.module.css";
 import React from "react";
-import {parseCookies, setCookie} from "nookies";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTimes, faBars} from "@fortawesome/free-solid-svg-icons";
 import {User} from "@types";
-import {decrypt} from '@utils';
+import axios, {AxiosResponse} from "axios";
+import {setCookie} from "nookies";
+import {decrypt, encrypt} from "utils";
+import Link from "next/link";
 import Image from "next/image";
-import {AxiosResponse} from "axios";
-import {encrypt} from "@utils";
 
 export interface Props {
     api?: string
 }
 
 export default function Navbar(props: Props) {
-
-
+    const [click, setClick] = React.useState(false);
+    const [button, setButton] = React.useState(true);
+    const [navbar, setNavbar] = React.useState(false);
     const [nome, setNome] = React.useState("");
-    React.useEffect(() => {
 
+    const handleClick = () => setClick(!click);
+    const closeMobileMenu = () => setClick(false);
+
+    const showButton = () => {
+        if (window.innerWidth <= 960) {
+            setButton(false);
+        } else {
+            setButton(true);
+        }
+    };
+
+    React.useEffect(() => {
+        window.addEventListener('resize', showButton);
+        window.addEventListener('scroll', changeBackground);
+        showButton();
         let user_data = sessionStorage.getItem("USER_DATA")
 
         if (user_data) {
@@ -52,46 +68,79 @@ export default function Navbar(props: Props) {
                 console.log(email)
             }
         }
+    }, []);
 
+    const changeBackground = () => {
+        if (window.scrollY >= 60) {
+            setNavbar(true)
+        } else {
+            setNavbar(false);
+        }
+    }
 
-    }, [])
     return (
-
-        <nav className={"navbar navbar-light navbar-expand-lg " + style.navbarCustom}>
-            <div className="container-fluid">
-                <Link href='/'>
-                    <a className={"navbar-brand"} href={""}>e-ventos</a>
-                </Link>
-
-                <div className="d-flex flex-row bd-highlight">
-                    <Link href={'/eventos'}>
-                        <a className={'p-2 bd-highlight ' + style.linkCustom}>Eventos</a>
+        <>
+            <nav className={navbar ? styles.navbarActive : styles.navbar}>
+                <div className={styles.navbarContainer}>
+                    <Link href={"/"}>
+                        <a className={styles.navbarLogo} onClick={closeMobileMenu}>
+                            e-ventos
+                        </a>
                     </Link>
-                    <Link href={'/eventos/criar'}>
-                        <a className={'btn p-2 bd-highlight ' + style.btnBranco}>Criar evento</a>
-                    </Link>
-                    {nome === "" ?
-                        <Link href={'/login'}>
-                            <a className={'p-2 bd-highlight ' + style.linkCustom}>Login</a>
-                        </Link> :
-                        <div className={"mx-3 " + style.userName}>
-
-                            <Link href={'/usuario'}>
-                                <div>
-                                    <Image className={""}
-                                           src={`https://avatars.dicebear.com/api/initials/${nome}.svg?radius=50`}
-                                           alt={"usuario"}
-                                           width={35} height={35}/>
-                                    <a className={' ' + style.linkCustom}>{nome}</a>
-                                </div>
+                    <div className={styles.menuIcon} onClick={handleClick}>
+                        <FontAwesomeIcon icon={click ? faTimes : faBars}/>
+                    </div>
+                    <ul className={click ? styles.navMenuActive : styles.navMenu}>
+                        <li className={styles.navItem}>
+                            <Link href={"/eventos"}>
+                                <a className={styles.navLinks} onClick={closeMobileMenu}>
+                                    Eventos
+                                </a>
                             </Link>
 
-                        </div>}
+                        </li>
+                        <li className={styles.navItem}>
+                            <Link href={"/eventos/criar"}>
+                                <a
+                                    className={styles.navLinks}
+                                    onClick={closeMobileMenu}>
+                                    Criar evento
+                                </a>
+                            </Link>
+                        </li>
+                        <li className={styles.navItem}>
+                            {nome ? <Link href={"/usuario"}>
+                                    <div className={styles.navLinks}>
+                                        <Image
+                                            src={`https://avatars.dicebear.com/api/initials/${nome}.svg?radius=50`}
+                                            alt={"usuario"}
+                                            width={35} height={35}/>
+                                        <span style={{marginLeft: "5px"}}>{nome}</span>
+                                    </div>
+                                </Link>
+                                : <Link href={"/login"}>
 
+                                    <a
+                                        className={styles.navLinks}
+                                        onClick={closeMobileMenu}>
+                                        Login
+                                    </a>
+                                </Link>}
+                        </li>
+
+                        <li>
+                            <a
+
+                                className={styles.navLinksMobile}
+                                onClick={closeMobileMenu}
+                            >
+                                Sign Up
+                            </a>
+                        </li>
+                    </ul>
+                    {/*button && <Button buttonStyle='btn--outline'>SIGN UP</Button>*/}
                 </div>
-
-
-            </div>
-        </nav>
+            </nav>
+        </>
     );
 }
