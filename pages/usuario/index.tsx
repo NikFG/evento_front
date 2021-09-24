@@ -10,7 +10,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const cookies = parseCookies(context)
     const token = cookies.USER_TOKEN;
     console.log(token);
-    let res = await axios.get(process.env.API_SERVER + "/eventos/user/atividades", {
+    let res = await axios.get(process.env.API_SERVER + "/eventos/user", {
         headers: {
             Authorization: `Bearer ${token}`
         }
