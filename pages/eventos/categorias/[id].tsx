@@ -3,7 +3,7 @@ import {Evento} from "@types";
 import Navbar from "@components/Navbar";
 import GridEventos from "@components/GridEventos";
 import {ParsedUrlQuery} from "querystring";
-import axios from "axios";
+
 
 interface IParams extends ParsedUrlQuery {
     id: string
@@ -20,6 +20,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         props: {
             eventos,
         },
+        revalidate: 60
     }
 }
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -33,7 +34,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     });
     return {
         paths,
-        fallback: false
+        fallback: 'blocking'
     }
 }
 
