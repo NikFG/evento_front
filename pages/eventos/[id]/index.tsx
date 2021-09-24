@@ -2,7 +2,6 @@ import Navbar from "@components/Navbar";
 import EventoComp from "@components/EventoComp";
 import {GetStaticPaths, GetStaticProps, InferGetStaticPropsType} from 'next'
 import {ParsedUrlQuery} from 'querystring'
-import axios from "axios";
 import {Evento} from "@types";
 
 interface IParams extends ParsedUrlQuery {
@@ -25,7 +24,8 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    const {id} = context.params as IParams
+    const {id} = context.params as IParams;
+    const axios = require('axios');
     const res = await axios.get(process.env.API_SERVER + `/eventos/${id}`);
     const evento: Evento = res.data;
     const api = process.env.API_SERVER
@@ -33,7 +33,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
         props: {
             evento,
             api
-        }
+        },
+        revalidate: 60
     }
 }
 
