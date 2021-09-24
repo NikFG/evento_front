@@ -7,6 +7,7 @@ import Image from 'next/image';
 import {Evento} from "@types";
 import React from "react";
 import {Fab, Action} from 'react-tiny-fab';
+import {useRouter} from "next/router";
 
 export interface EventoProps {
     evento: Evento,
@@ -15,6 +16,7 @@ export interface EventoProps {
 
 
 export default function EventoComp({evento, api}: EventoProps) {
+    const router = useRouter();
     let atividades = evento.atividades;
     const [tabs, setTabs] = React.useState(Array());
     const [tabContent, setTabContent] = React.useState(Array());
@@ -22,6 +24,10 @@ export default function EventoComp({evento, api}: EventoProps) {
     React.useEffect(() => {
         criaTabs();
     }, []);
+
+    function handleCompra() {
+        router.push(`/eventos/${evento.id}/checkout`);
+    }
 
     return (
         <>
@@ -36,7 +42,9 @@ export default function EventoComp({evento, api}: EventoProps) {
 
                     <p>{evento.breve_descricao}</p>
 
-                    <a className="btn btn-primary">Garanta já seu ingresso</a>
+                    <button className="btn btn-primary" onClick={() => handleCompra()}>
+                        Garanta já seu ingresso
+                    </button>
                 </div>
             </header>
             <main>
@@ -118,7 +126,7 @@ export default function EventoComp({evento, api}: EventoProps) {
                     <Fab
                         icon={<FontAwesomeIcon icon={faTicketAlt} size={"lg"}/>}
                         mainButtonStyles={{backgroundColor: "#00A6A6"}}
-                        onClick={() => alert('FAB ROCKS!')}
+                        onClick={() => handleCompra()}
                     />
                 </section>
             </main>
