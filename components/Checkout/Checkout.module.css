@@ -1,0 +1,21 @@
+.botao {
+    -webkit-transition: all 0.4s ease-out 0s;
+    -moz-transition: all 0.4s ease-out 0s;
+    -ms-transition: all 0.4s ease-out 0s;
+    -o-transition: all 0.4s ease-out 0s;
+    transition: all 0.4s ease-out 0s;
+}
+
+.atividade h4 {
+    margin-bottom: 6px;
+    padding-top: 5px;
+    font-size: 18px;
+    font-weight: 501;
+    text-align: justify;
+}
+
+.atividade span  {
+    display: block;
+    font-size: 13px;
+    text-align: justify;
+}

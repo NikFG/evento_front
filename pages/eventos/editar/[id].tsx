@@ -1,7 +1,7 @@
 import CriarEvento from "@components/CriarEvento";
 import {GetStaticPaths, GetStaticProps, GetStaticPropsContext, InferGetStaticPropsType} from "next";
 import {Categoria, Evento, TipoAtividade} from "@types";
-import axios from "axios";
+
 import {ParsedUrlQuery} from "querystring";
 import {parseCookies} from "nookies";
 
@@ -26,7 +26,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
             tipo_atividades,
             api,
             evento,
-        }
+        },
+        revalidate: 120
     }
 }
 export const getStaticPaths: GetStaticPaths = async (context) => {
@@ -47,7 +48,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
 export default function EditarEventoPage({
                                              categorias,
                                              tipo_atividades,
-                                             api, evento,token
+                                             api, evento, token
                                          }: InferGetStaticPropsType<typeof getStaticProps>) {
     return (
         <CriarEvento categorias={categorias} api={api} tipo_atividades={tipo_atividades} evento_edit={evento}/>
