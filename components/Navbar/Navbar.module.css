@@ -54,7 +54,7 @@
 .navbarLogo:hover {
     transition: all 0.2s ease-out;
     cursor: pointer;
-    color: #264653;
+    color: var(--white);
 }
 
 
@@ -86,7 +86,7 @@
     border-bottom: 4px solid #fff;
     transition: all 0.2s ease-out;
     cursor: pointer;
-    color: #264653;
+    color: var(--white);
 }
 
 

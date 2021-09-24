@@ -3,7 +3,7 @@ import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTimes, faBars} from "@fortawesome/free-solid-svg-icons";
 import {User} from "@types";
-import axios, {AxiosResponse} from "axios";
+import {AxiosResponse} from "axios";
 import {setCookie} from "nookies";
 import {decrypt, encrypt} from "utils";
 import Link from "next/link";
