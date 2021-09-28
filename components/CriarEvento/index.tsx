@@ -8,6 +8,8 @@ import {Atividade, Categoria, Evento, TipoAtividade} from "@types";
 import {AxiosResponse} from "axios";
 import {parseCookies} from "nookies";
 import {useRouter} from "next/router";
+import {toast, ToastContainer} from "react-toastify";
+
 
 interface CategoriaProps {
     categorias: Categoria[],
@@ -75,8 +77,19 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                 router.push('/')
             }
         }).catch((err: any) => {
-            console.log(err)
+            for (const v of Object.values(err.response.data)) {
+                toast.error(`${v}`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
         });
+
 
     }
 
@@ -178,7 +191,19 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     return (
         <>
             <Navbar/>
-
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme={"colored"}
+                style={{width: "500px", maxWidth: "1000px", whiteSpace: "pre-line"}}
+            />
             <div className={styles.outer}>
                 <form method={"POST"} onSubmit={handleSubmit}>
                     <div className={"mt-3 " + styles.inner}>
