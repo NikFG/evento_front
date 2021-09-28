@@ -5,7 +5,7 @@ import 'animate.css/animate.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import 'react-tiny-fab/dist/styles.css';
-
+import 'react-toastify/dist/ReactToastify.css';
 config.autoAddCss = false
 import Head from "next/head";
 import {AppProps} from "next/app";
