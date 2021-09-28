@@ -129,16 +129,8 @@ export default function Navbar(props: Props) {
                         </li>
 
                         <li>
-                            <a
-
-                                className={styles.navLinksMobile}
-                                onClick={closeMobileMenu}
-                            >
-                                Sign Up
-                            </a>
                         </li>
                     </ul>
-                    {/*button && <Button buttonStyle='btn--outline'>SIGN UP</Button>*/}
                 </div>
             </nav>
         </>

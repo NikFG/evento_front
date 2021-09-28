@@ -33,7 +33,7 @@ export default function Pesquisa({handleSearch, count, categorias, instituicoes}
     return (
         <div className={"container " + styles.pesquisaForm}>
             <div className={"row"}>
-                <p className={"text-center " + styles.titulo}>Pesquise seus evento aqui</p>
+                <p className={"text-center " + styles.titulo}>Pesquise seus eventos aqui</p>
             </div>
 
             <div className={"row justify-content-center"}>
