@@ -82,11 +82,14 @@ export default function Navbar(props: Props) {
         <>
             <nav className={navbar ? styles.navbarActive : styles.navbar}>
                 <div className={styles.navbarContainer}>
-                    <Link href={"/"}>
-                        <a className={styles.navbarLogo} onClick={closeMobileMenu}>
-                            e-ventos
-                        </a>
-                    </Link>
+                    <div className={styles.divLogo}>
+                        <Link href={"/"}>
+                            <a className={styles.navbarLogo} onClick={closeMobileMenu}>
+                                e-ventos
+                            </a>
+                        </Link>
+                    </div>
+
                     <div className={styles.menuIcon} onClick={handleClick}>
                         <FontAwesomeIcon icon={click ? faTimes : faBars}/>
                     </div>
