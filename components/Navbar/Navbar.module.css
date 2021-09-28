@@ -13,6 +13,7 @@
     -ms-transition: all 0.3s ease-out 0s;
     -o-transition: all 0.3s ease-out 0s;
     transition: all 0.3s ease-out 0s;
+
 }
 
 .navbarActive {
@@ -103,7 +104,7 @@
         position: relative;
     }
 
-    .navManu {
+    .navMenu {
         display: flex;
         flex-direction: column;
         width: 100%;
@@ -112,15 +113,18 @@
         top: 80px;
         left: -100%;
         opacity: 1;
+        list-style: none;
         transition: all 0.5s ease;
     }
 
-    .navManuctive {
-        background: #242222;
+    .navMenuActive {
+        background: #264653;
         left: 0;
         opacity: 1;
         transition: all 0.5s ease;
         z-index: 1;
+        margin-top: 140%;
+        list-style: none;
     }
 
     .navLinks {
@@ -128,6 +132,7 @@
         padding: 2rem;
         width: 100%;
         display: table;
+
     }
 
     .navLinks:hover {
@@ -140,7 +145,8 @@
         position: absolute;
         top: 0;
         left: 0;
-        transform: translate(25%, 50%);
+
+        transform: translate(10%, 20%);
     }
 
     .menuIcon {
@@ -148,7 +154,7 @@
         position: absolute;
         top: 0;
         right: 0;
-        transform: translate(-100%, 60%);
+        transform: translate(-100%, 40%);
         font-size: 1.8rem;
         cursor: pointer;
     }
