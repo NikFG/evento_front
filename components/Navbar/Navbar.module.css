@@ -41,6 +41,11 @@
     max-width: 1500px;
 }
 
+.divLogo {
+    min-width: 200px;
+    max-width: 1000px;
+}
+
 .navbarLogo {
     color: #fff;
     justify-self: start;
@@ -50,6 +55,7 @@
     font-size: 2rem;
     display: flex;
     align-items: center;
+
 }
 
 .navbarLogo:hover {
