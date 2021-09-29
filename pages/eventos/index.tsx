@@ -18,7 +18,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const eventos: Evento[] = res.data;
 
 
-
     res = await axios.get(api + "/categorias");
     const categorias: Categoria[] = res.data;
 
@@ -43,7 +42,7 @@ export default function Eventos({
     return (
         <>
             <Navbar/>
-            <GridEventos eventos={eventos} categorias={categorias} instituicoes={instituicoes}/>
+            <GridEventos eventos={eventos} categorias={categorias} instituicoes={instituicoes} pesquisa={true}/>
         </>
     );
 }
