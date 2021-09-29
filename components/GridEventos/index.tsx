@@ -10,9 +10,10 @@ export interface EventoProps {
     eventos: Evento[]
     categorias?: Categoria[]
     instituicoes?: Instituicao[]
+    pesquisa?: boolean
 }
 
-export default function GridEventos({eventos, categorias, instituicoes}: EventoProps) {
+export default function GridEventos({eventos, categorias, instituicoes, pesquisa = false}: EventoProps) {
     const router = useRouter();
 
     async function handleSearch(params: Array<any>) {
@@ -27,8 +28,9 @@ export default function GridEventos({eventos, categorias, instituicoes}: EventoP
 
     return (
         <div className={"container-fluid"}>
-            <Pesquisa handleSearch={handleSearch} count={eventos.length} categorias={categorias ?? []}
-                      instituicoes={instituicoes ?? []}/>
+            {pesquisa === true ?
+                <Pesquisa handleSearch={handleSearch} count={eventos.length} categorias={categorias ?? []}
+                          instituicoes={instituicoes ?? []}/> : <span/>}
             <div className="container mt-2">
                 <div className="row justify-content-center">
                     <div className="col-10">
@@ -43,7 +45,8 @@ export default function GridEventos({eventos, categorias, instituicoes}: EventoP
                 {eventos.map(e => (
                     <div className={`col-sm-12 col-md-6 col-lg-4 ${styles.cartao}`} key={e.id}>
                         <CardEvento id={e.id ?? 0} nome={e.nome} descricao={e.breve_descricao}
-                                    data_inicio={e.atividades[0].data} instituicao={e.instituicao?.nome ?? ""}/>
+                                    data_inicio={e.atividades[0].data} instituicao={e.instituicao?.nome ?? ""}
+                                    banner={e.banner}/>
                     </div>
                 ))}
             </div>
