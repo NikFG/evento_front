@@ -2,7 +2,6 @@ import styles from './CardEvento.module.css';
 import Image from "next/image";
 import {useRouter} from "next/router";
 import React from "react";
-import blur from '@images/blur.png'
 export interface EventoProps {
     id: number,
     nome: string,
@@ -29,8 +28,7 @@ export default function CardEvento({id, nome, descricao, data_inicio, instituica
                                        height={400} alt={"placeholder"}/> :
                                 <Image src={`data:image/jpeg;base64,${banner}`} width={500} height={400}
                                        blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="}
-                                       alt={"placeholder"}
-                                />
+                                       alt={"placeholder"}/>
                             }
                         </div>
                     </div>
