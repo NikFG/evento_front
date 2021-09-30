@@ -14,13 +14,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const api = process.env.API_SERVER;
     const eventos: Evento[] = eventosResp.data;
     const categorias: Categoria[] = categoriasResp.data
-
     return {
         props: {
             eventos,
             categorias,
             api
         },
+        revalidate: 60
     }
 }
 
@@ -40,7 +40,7 @@ export default function Home({eventos, categorias, api}: InferGetStaticPropsType
 
                     <MainBanner/>
 
-                    <CarouselCustom categorias={categorias}/>
+                    {/*<CarouselCustom categorias={categorias}/>*/}
 
                     <GridEventos eventos={eventos}/>
                 </main>

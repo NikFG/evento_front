@@ -8,6 +8,7 @@ import {Evento} from "@types";
 import React from "react";
 import {Fab, Action} from 'react-tiny-fab';
 import {useRouter} from "next/router";
+import CarouselBootstrap from "@components/CarouselBootstrap";
 
 export interface EventoProps {
     evento: Evento,
@@ -29,25 +30,38 @@ export default function EventoComp({evento, api}: EventoProps) {
         router.push(`/eventos/${evento.id}/checkout`);
     }
 
+
     return (
         <>
-
-            <header id="site-header" className={`${styles.siteHeader}`}>
-                <div className={styles.intro}>
-
-                    <h2><FontAwesomeIcon icon={faCalendarAlt}/> 10/01/2021 - 23/01/2021</h2>
-                    <h2><FontAwesomeIcon icon={faMapMarkerAlt}/> Divinópolis-MG</h2>
-
-                    <h1>{evento.nome}</h1>
-
-                    <p>{evento.breve_descricao}</p>
-
-                    <button className="btn btn-primary" onClick={() => handleCompra()}>
-                        Garanta já seu ingresso
-                    </button>
-                </div>
-            </header>
             <main>
+                <section id="site-header" className={''}>
+                    <div className={`d-flex justify-content-center ${styles.siteHeader}`}>
+                        <div className={styles.intro}>
+                            <h2><FontAwesomeIcon icon={faCalendarAlt}/> 10/01/2021 - 23/01/2021</h2>
+                            <h2><FontAwesomeIcon icon={faMapMarkerAlt}/> Divinópolis-MG</h2>
+
+                            <h1>{evento.nome}</h1>
+
+                            <p>{evento.breve_descricao}</p>
+
+                            <button className="btn btn-primary" onClick={() => handleCompra()}>
+                                Garanta já seu ingresso
+                            </button>
+                        </div>
+                        <div className={styles.divImagem}>
+                            <Image src={`data:image/jpeg;base64,${evento.banner}`} width={2000} height={1000}
+                                   className={styles.imagem}
+                                   objectFit={'cover'}
+                                   objectPosition={'center'}
+                                   blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="}
+                                   alt={"banner do evento"}
+                            />
+                        </div>
+                    </div>
+
+
+                </section>
+
                 <section id={"sobre o evento"} className={"mt-3 mb-3"}>
                     <div className={"container"}>
                         <div className={"row"}>
@@ -58,10 +72,25 @@ export default function EventoComp({evento, api}: EventoProps) {
                         </div>
                     </div>
                 </section>
+                {
+                    //@ts-ignore
+                    evento.imagens_str?.length > 0 ?
+                        <section id={"imagens do evento"} className={"mt-3 mb-3"}>
+                            <div className={"container"}>
+                                <div className={"row"}>
+                                    <h3>Imagens do evento</h3>
+                                </div>
+                                <div className={"row"}>
+                                    {/*<CarouselCustom imagens={evento.imagens ?? []}/>*/}
+
+                                    <CarouselBootstrap imagens={evento.imagens_str ?? []}/>
+                                </div>
+                            </div>
+                        </section> : <span/>}
                 <section id={"informacoes"} className={"section text-center mt-3 mb-3"}>
                     <div className={"container"}>
                         <div className="row">
-                            <div className="col-3">
+                            <div className="col-sm-12 col-md-6 col-lg-3">
                                 <FontAwesomeIcon icon={faCalendarAlt} size={"4x"}/>
                                 <h3 className={"mt-2"}>
                                     {atividades[0].data}<br/>
@@ -70,17 +99,17 @@ export default function EventoComp({evento, api}: EventoProps) {
                                 </h3>
 
                             </div>
-                            <div className="col-3">
+                            <div className="col-sm-12 col-md-6 col-lg-3">
                                 <FontAwesomeIcon icon={faMapMarkerAlt} size={"4x"}/>
                                 <h3 className={"mt-2"}>{evento.local}</h3>
 
                             </div>
-                            <div className="col-3">
+                            <div className="col-sm-12 col-md-6 col-lg-3">
                                 <FontAwesomeIcon icon={faTicketAlt} size={"4x"}/>
                                 <h3 className={"mt-2"}>{evento.expectativa_participantes}<br/>Ingressos</h3>
 
                             </div>
-                            <div className="col-3">
+                            <div className="col-sm-12 col-md-6 col-lg-3">
                                 <FontAwesomeIcon icon={faBullhorn} size={"4x"}/>
                                 <h3 className={"mt-2"}>
                                     {String(evento.apresentadores_count).padStart(2, '0')}<br/>Apresentadores
@@ -127,8 +156,17 @@ export default function EventoComp({evento, api}: EventoProps) {
                         icon={<FontAwesomeIcon icon={faTicketAlt} size={"lg"}/>}
                         mainButtonStyles={{backgroundColor: "#00A6A6"}}
                         onClick={() => handleCompra()}
+                        style={{bottom: 24, right: 24, margin: 0}}
                     />
                 </section>
+
+
+                <div className={styles.imagem}>
+                    <Image src={`data:image/jpeg;base64,${evento.banner}`} width={1000} height={1000}
+                           blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="}
+                           alt={"banner do evento"}
+                    />
+                </div>
             </main>
             <Footer/>
         </>
@@ -137,19 +175,17 @@ export default function EventoComp({evento, api}: EventoProps) {
     function criaTabs() {
         let tabTemp = Array();
         let tabTempContent = Array();
-        let aux = 0;
-        atividades.forEach(a => {
-            let data = atividades[aux].data;
-
-            if (data != a.data || aux == 0) {
-
+        let index = 0;
+        let data = "";
+        while (index < atividades.length) {
+            const a = atividades[index];
+            if (data != a.data) {
                 tabTemp.push(
                     <Tab key={a.id}>
                         <div className={styles.botaoDiv}>
-                            Dia {aux + 1} <br/>{a.data}
+                            Dia {index + 1} <br/>{a.data}
                         </div>
                     </Tab>)
-
                 tabTempContent.push(
                     <TabPanel key={a.id}>
                         {
@@ -160,7 +196,8 @@ export default function EventoComp({evento, api}: EventoProps) {
                                              style={{marginTop: "30px"}}>
                                             <div className={"container-fluid"}>
                                                 <Image src={"https://via.placeholder.com/168?text=168x168"}
-                                                       alt={"teste"} width={168} height={168}/>
+                                                       alt={"imagem de " + a2.nome_apresentador} width={168}
+                                                       height={168}/>
                                             </div>
                                             <div className={"row"}>
                                                 Por: {a2.nome_apresentador}
@@ -182,10 +219,10 @@ export default function EventoComp({evento, api}: EventoProps) {
                         }
                     </TabPanel>
                 )
-                aux++;
             }
-
-        });
+            data = atividades[index].data;
+            index++;
+        }
         setTabs(tabTemp);
         setTabContent(tabTempContent);
     }

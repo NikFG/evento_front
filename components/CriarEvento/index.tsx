@@ -21,10 +21,13 @@ interface CategoriaProps {
 export default function CriarEvento({categorias, tipo_atividades, api, evento_edit}: CategoriaProps) {
     const router = useRouter();
     const [nomeEvento, setNomeEvento] = React.useState("");
-    const [catSelecionada, setCatSelecionada] = React.useState({label: "", value: 0});
+    const [catSelecionada, setCatSelecionada] = React.useState<{ label: string, value: number }>();
     const [breveEvento, setBreveEvento] = React.useState("");
     const [local, setLocal] = React.useState("");
     const [descricaoEvento, setDescricaoEvento] = React.useState("");
+    const [imagens, setImagens] = React.useState<FileList | null>();
+    const [banner, setBanner] = React.useState<File | null>();
+
 
     //atividades
     const [atividades, setAtividades] = React.useState<Atividade[]>([]);
@@ -34,10 +37,10 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     const [inicio, setInicio] = React.useState("");
     const [fim, setFim] = React.useState("");
     const [nomeApresentador, setNomeApresentador] = React.useState("");
-    const [tipo, setTipo] = React.useState({value: 0, label: ""});
+    const [tipo, setTipo] = React.useState<{ value: number, label: string }>();
     const [descricaoAtividade, setDescricaoAtividade] = React.useState("");
     const [emailApresentador, setEmailApresentador] = React.useState("");
-
+    const [localAtividade, setLocalAtividade] = React.useState("");
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -50,7 +53,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
             nome: nomeEvento,
             tipo: "",
             atividades,
-            categoria_id: catSelecionada.value,
+            categoria_id: catSelecionada?.value,
             id: evento_edit ? evento_edit.id : undefined
 
         }
@@ -62,6 +65,14 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
             } else
                 formData.append(k, v)
         }
+        if (imagens) {
+            Array.from(imagens).forEach(i => {
+                formData.append("imagem[]", i);
+            });
+        }
+        if (banner)
+            formData.append("banner", banner)
+
         let url = `${api}/eventos/store`;
         if (evento_edit) {
             url = `${api}/eventos/update/${evento.id}`
@@ -70,7 +81,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
         await axios.post(url, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
-                "Content-Type": `multipart/form-data`,//; boundary=${formData._boundary}`,
+                "Content-Type": `multipart/form-data`,
             }
         }).then((r: AxiosResponse) => {
             if (r.status === 201) {
@@ -78,6 +89,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
             }
         }).catch((err: any) => {
             for (const v of Object.values(err.response.data)) {
+                console.log(v);
                 toast.error(`${v}`, {
                     position: "top-right",
                     autoClose: 5000,
@@ -103,6 +115,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
         setNomeApresentador("")
         setDescricaoAtividade("")
         setEmailApresentador("");
+        setLocalAtividade("");
 
     }
 
@@ -118,8 +131,8 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                 horario_inicio: inicio,
                 imagem: "",
                 link_transmissao: "",
-                local: "",
-                tipo_atividade_id: tipo.value,
+                local: localAtividade,
+                tipo_atividade_id: tipo?.value ?? 0,
                 data,
                 nome_apresentador: nomeApresentador,
                 email_apresentador: emailApresentador
@@ -145,8 +158,8 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                 horario_inicio: inicio,
                 imagem: "",
                 link_transmissao: "",
-                local: "",
-                tipo_atividade_id: tipo.value,
+                local: localAtividade,
+                tipo_atividade_id: tipo?.value ?? 0,
                 data,
                 nome_apresentador: nomeApresentador,
                 email_apresentador: emailApresentador
@@ -190,6 +203,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     }, []);
     return (
         <>
+
             <Navbar/>
             <ToastContainer
                 position="top-right"
@@ -234,14 +248,14 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                 }}
                                 // @ts-ignore
                                 options={categoriasSelect}
-                                required
+
                             />
                         </div>
                         <div className="form-group mb-3">
                             <label htmlFor={"breve_descricao"} className={"form-label"}>Descreva brevemente seu
                                 evento</label>
                             <input id="breve_descricao" type="text" className="form-control" max={100}
-                                   placeholder="" required
+                                   placeholder=""
                                    value={breveEvento}
                                    onChange={(e) => {
                                        setBreveEvento(e.target.value);
@@ -261,7 +275,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
 
                         <div className="mb-3">
                             <label htmlFor="descricao" className="form-label">Descreva seu evento</label>
-                            <textarea className="form-control" id="descricao" rows={4} required
+                            <textarea className="form-control" id="descricao" rows={4}
                                       value={descricaoEvento}
                                       onChange={(e) => {
                                           setDescricaoEvento(e.target.value);
@@ -276,7 +290,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                         <h3>Cadastro de atividades</h3>
                         <div className={"row"}>
                             <div className={"col-12"}>
-                                <button className={"btn mb-2"} data-bs-toggle="modal" data-bs-target="#modal-atividade">
+                                <button className={"btn mb-2"} data-bs-toggle="modal" data-bs-target="#modal-atividade" type={"button"}>
                                     <FontAwesomeIcon icon={faPlusCircle}/> Adicionar atividade
                                 </button>
                                 <div className="modal fade" id="modal-atividade" tabIndex={-1}
@@ -292,7 +306,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                             {/*Corpo do modal*/}
                                             <div className="modal-body">
                                                 <div className={"form-group"}>
-                                                    <input className={"form-control mb-3"} value={nomeAtividade}
+                                                    <input className={"form-control mb-3"} value={nomeAtividade} placeholder={"Nome da atividade"}
                                                            onChange={(e) => {
                                                                setNomeAtividade(e.target.value)
                                                            }}/>
@@ -333,12 +347,17 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                                         className={"mb-3"}
                                                         name={"tipoAtividade"}
                                                         id={"tipoAtividade"}
-                                                        placeholder={"Selecione aqui"}
+                                                        placeholder={"Tipo de atividade"}
                                                         value={tipo}
                                                         onChange={(e: any) => setTipo(e)}
                                                         options={tipoSelect}
                                                     />
                                                 </div>
+                                                <input className={"form-control mb-3"} type={"text"}
+                                                       placeholder={"Local da atividade"}
+                                                       value={localAtividade} onChange={(e) => {
+                                                    setLocalAtividade(e.target.value)
+                                                }}/>
                                                 <input className={"form-control mb-3"} type={"text"}
                                                        placeholder={"Apresentador"}
                                                        value={nomeApresentador} onChange={(e) => {
@@ -378,7 +397,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                         {a.nome}
                                     </div>
                                     <div className={"col-1 mx-2"}>
-                                        <button className={"btn btn-outline-secondary"} data-bs-toggle="modal"
+                                        <button className={"btn btn-outline-secondary"} data-bs-toggle="modal" type={"button"}
                                                 data-bs-target="#modal-atividade"
                                                 onClick={() => {
                                                     setNomeAtividade(a.nome);
@@ -404,7 +423,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                         </button>
                                     </div>
                                     <div className={"col-1"}>
-                                        <button className={"btn btn-outline-danger"}
+                                        <button className={"btn btn-outline-danger"} type={"button"}
                                                 onClick={() => deletaAtividade(a.id ?? 0)}>
                                             <FontAwesomeIcon icon={faTrash}/>
                                         </button>
@@ -419,13 +438,19 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                         <h3>Cadastro de imagens</h3>
                         <div className="mb-3">
                             <label htmlFor="formFile" className="form-label">Coloque a imagem de banner</label>
-                            <input className="form-control" type="file" id="formFile"/>
+                            <input className="form-control" type="file" id="formFile" onChange={e => {
+                                setBanner(e.target.files?.[0]);
+                            }}/>
                         </div>
 
                         <div className="mb-3">
                             <label htmlFor="formFileMultiple" className="form-label">Selecione as demais imagens para
                                 exibição</label>
-                            <input className="form-control" type="file" id="formFileMultiple" multiple/>
+                            <input className="form-control" type="file" id="formFileMultiple" multiple
+                                   onChange={(e) => {
+
+                                       setImagens(e.target.files)
+                                   }}/>
                         </div>
                     </div>
 

@@ -40,6 +40,15 @@ export interface Evento {
     atividades: Atividade[]
     local: string
     apresentadores_count?: number
+    banner?: string
+    imagens?: Imagem[]
+    imagens_str?: string[]
+}
+export interface Imagem {
+    id: number
+    imagem: string
+    tipo_imagem_id: number
+
 }
 
 export interface Instituicao {
