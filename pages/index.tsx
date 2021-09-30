@@ -1,6 +1,5 @@
 import Head from 'next/head'
 import MainBanner from "@components/MainBanner";
-import CarouselCustom from "@components/CarouselCustom";
 import GridEventos from "@components/GridEventos";
 import Footer from "@components/Footer";
 import {GetStaticProps, InferGetStaticPropsType} from "next";
