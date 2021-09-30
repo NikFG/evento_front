@@ -40,7 +40,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     const [tipo, setTipo] = React.useState<{ value: number, label: string }>();
     const [descricaoAtividade, setDescricaoAtividade] = React.useState("");
     const [emailApresentador, setEmailApresentador] = React.useState("");
-
+    const [localAtividade, setLocalAtividade] = React.useState("");
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -115,6 +115,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
         setNomeApresentador("")
         setDescricaoAtividade("")
         setEmailApresentador("");
+        setLocalAtividade("");
 
     }
 
@@ -130,7 +131,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                 horario_inicio: inicio,
                 imagem: "",
                 link_transmissao: "",
-                local: "",
+                local: localAtividade,
                 tipo_atividade_id: tipo?.value ?? 0,
                 data,
                 nome_apresentador: nomeApresentador,
@@ -157,7 +158,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                 horario_inicio: inicio,
                 imagem: "",
                 link_transmissao: "",
-                local: "",
+                local: localAtividade,
                 tipo_atividade_id: tipo?.value ?? 0,
                 data,
                 nome_apresentador: nomeApresentador,
@@ -289,7 +290,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                         <h3>Cadastro de atividades</h3>
                         <div className={"row"}>
                             <div className={"col-12"}>
-                                <button className={"btn mb-2"} data-bs-toggle="modal" data-bs-target="#modal-atividade">
+                                <button className={"btn mb-2"} data-bs-toggle="modal" data-bs-target="#modal-atividade" type={"button"}>
                                     <FontAwesomeIcon icon={faPlusCircle}/> Adicionar atividade
                                 </button>
                                 <div className="modal fade" id="modal-atividade" tabIndex={-1}
@@ -305,7 +306,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                             {/*Corpo do modal*/}
                                             <div className="modal-body">
                                                 <div className={"form-group"}>
-                                                    <input className={"form-control mb-3"} value={nomeAtividade}
+                                                    <input className={"form-control mb-3"} value={nomeAtividade} placeholder={"Nome da atividade"}
                                                            onChange={(e) => {
                                                                setNomeAtividade(e.target.value)
                                                            }}/>
@@ -346,12 +347,17 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                                         className={"mb-3"}
                                                         name={"tipoAtividade"}
                                                         id={"tipoAtividade"}
-                                                        placeholder={"Selecione aqui"}
+                                                        placeholder={"Tipo de atividade"}
                                                         value={tipo}
                                                         onChange={(e: any) => setTipo(e)}
                                                         options={tipoSelect}
                                                     />
                                                 </div>
+                                                <input className={"form-control mb-3"} type={"text"}
+                                                       placeholder={"Local da atividade"}
+                                                       value={localAtividade} onChange={(e) => {
+                                                    setLocalAtividade(e.target.value)
+                                                }}/>
                                                 <input className={"form-control mb-3"} type={"text"}
                                                        placeholder={"Apresentador"}
                                                        value={nomeApresentador} onChange={(e) => {
@@ -391,7 +397,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                         {a.nome}
                                     </div>
                                     <div className={"col-1 mx-2"}>
-                                        <button className={"btn btn-outline-secondary"} data-bs-toggle="modal"
+                                        <button className={"btn btn-outline-secondary"} data-bs-toggle="modal" type={"button"}
                                                 data-bs-target="#modal-atividade"
                                                 onClick={() => {
                                                     setNomeAtividade(a.nome);
@@ -417,7 +423,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                         </button>
                                     </div>
                                     <div className={"col-1"}>
-                                        <button className={"btn btn-outline-danger"}
+                                        <button className={"btn btn-outline-danger"} type={"button"}
                                                 onClick={() => deletaAtividade(a.id ?? 0)}>
                                             <FontAwesomeIcon icon={faTrash}/>
                                         </button>
