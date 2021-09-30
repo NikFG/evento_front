@@ -1,20 +1,21 @@
-import styles from "./Checkout.module.css";
 import React from "react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPlusCircle, faTimesCircle} from "@fortawesome/free-solid-svg-icons";
+
 import {Atividade, Evento} from "@types";
 import RowCheckout from "@components/Checkout/RowCheckout";
-// @ts-ignore
-import {ToastContainer, toast} from 'react-nextjs-toast';
+
+import {ToastContainer, toast} from 'react-toastify';
+import {useRouter} from "next/router";
 
 export interface CheckoutProps {
     taxa_evento: number
     atividades: Atividade[]
     api: string
     atividadesParticipadaProps: Atividade[]
+
 }
 
 export default function Checkout({taxa_evento, atividades, api, atividadesParticipadaProps}: CheckoutProps) {
+    const router = useRouter()
     const [horasTotais, setHorasTotais] = React.useState(0);
     const [atividadesParticipadas, setAtividadesParticipadas] = React.useState(Array());
 
@@ -45,19 +46,27 @@ export default function Checkout({taxa_evento, atividades, api, atividadesPartic
                 }
             );
             if (res.status === 201) {
-                await toast.notify("Ingresso adquirido!!", {
-                    duration: 5,
-                    type: "success",
-                    title: "Sucesso!"
+                await toast.success("Ingresso adquirido!!", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
                 });
             } else {
                 console.error("Erro no envio")
             }
         } else {
-            await toast.notify("Você deve selecionar pelo menos uma atividade!!", {
-                duration: 5,
-                type: "error",
-                title: "Erro!"
+            await toast.error("Você deve selecionar pelo menos uma atividade!!", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
             });
         }
     }
@@ -77,7 +86,18 @@ export default function Checkout({taxa_evento, atividades, api, atividadesPartic
 
     return (
         <>
-            <ToastContainer/>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme={"colored"}
+                style={{width: "500px", maxWidth: "1000px", whiteSpace: "pre-line"}}/>
 
             <div className={"container-fluid"}>
                 <div className={"row justify-content-center"}>
@@ -118,7 +138,9 @@ export default function Checkout({taxa_evento, atividades, api, atividadesPartic
                         <hr/>
                         <div className={"d-flex bd-highlight mb-3"}>
                             <div className={"ms-auto bd-highlight mx-2"}>
-                                <button className={"btn btn-outline-danger"}>
+                                <button className={"btn btn-outline-danger"} onClick={async () => {
+                                    router.back()
+                                }}>
                                     Cancelar
                                 </button>
                             </div>
