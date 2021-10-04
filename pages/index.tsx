@@ -3,27 +3,25 @@ import MainBanner from "@components/MainBanner";
 import GridEventos from "@components/GridEventos";
 import Footer from "@components/Footer";
 import {GetStaticProps, InferGetStaticPropsType} from "next";
-import {Evento, Categoria} from "@types";
+import {Evento} from "@types";
 import Navbar from "@components/Navbar";
 
 export const getStaticProps: GetStaticProps = async (context) => {
     const axios = require('axios');
     const eventosResp = await axios.get(process.env.API_SERVER + "/eventos");
-    const categoriasResp = await axios.get(process.env.API_SERVER + "/categorias")
     const api = process.env.API_SERVER;
     const eventos: Evento[] = eventosResp.data;
-    const categorias: Categoria[] = categoriasResp.data
+
     return {
         props: {
             eventos,
-            categorias,
             api
         },
         revalidate: 60
     }
 }
 
-export default function Home({eventos, categorias, api}: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Home({eventos, api}: InferGetStaticPropsType<typeof getStaticProps>) {
 
     return (
         <>
@@ -38,8 +36,6 @@ export default function Home({eventos, categorias, api}: InferGetStaticPropsType
                     <Navbar api={api}/>
 
                     <MainBanner/>
-
-                    {/*<CarouselCustom categorias={categorias}/>*/}
 
                     <GridEventos eventos={eventos}/>
                 </main>
