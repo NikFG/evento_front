@@ -125,17 +125,19 @@
 
     .navMenuActive {
         background: #264653;
-        left: 0;
-        opacity: 1;
+
+        opacity: 0.93;
         transition: all 0.5s ease;
         z-index: 1;
-        margin-top: 140%;
+        margin-top: 90%;
+        margin-right: 40%;
+        padding: 3rem;
         list-style: none;
     }
 
     .navLinks {
         text-align: center;
-        padding: 2rem;
+        padding: 1rem;
         width: 100%;
         display: table;
 
@@ -162,6 +164,11 @@
         right: 0;
         transform: translate(-100%, 40%);
         font-size: 1.8rem;
+        -webkit-transition: all 0.15s ease-out 0s;
+        -moz-transition: all 0.15s ease-out 0s;
+        -ms-transition: all 0.15s ease-out 0s;
+        -o-transition: all 0.15s ease-out 0s;
+        transition: all 0.15s ease-out 0s;
         cursor: pointer;
     }
 

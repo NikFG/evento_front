@@ -12,12 +12,7 @@ export interface Atividade {
     tipo_atividade_id: number
     nome_apresentador: string
     email_apresentador: string
-    pivot?: {
-        participou: number
-        apresentador_id: number
-        nome_apresentador: string
-        email_apresentador: string
-    }
+    users: User[]
 }
 
 export interface Categoria {
@@ -70,6 +65,12 @@ export interface User {
     password: string
     telefone: string
     remember_token: string
+    pivot?: {
+        participou: number
+        apresentador_id: number
+        nome_apresentador: string
+        email_apresentador: string
+    }
 }
 
 export interface TipoAtividade {
