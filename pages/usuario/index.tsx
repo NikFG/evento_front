@@ -1,9 +1,10 @@
 import Navbar from "@components/Navbar";
 import Usuario from "@components/Usuario";
 import {GetServerSideProps, InferGetServerSidePropsType} from "next";
-import {Evento} from "@types";
+import {Certificado, Evento, User} from "@types";
 import {parseCookies} from 'nookies';
 import React from "react";
+import axios from "axios";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const axios = require('axios');
