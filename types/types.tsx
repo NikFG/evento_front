@@ -12,7 +12,7 @@ export interface Atividade {
     tipo_atividade_id: number
     nome_apresentador: string
     email_apresentador: string
-    users: User[]
+    users?: User[]
 }
 
 export interface Categoria {
@@ -39,6 +39,7 @@ export interface Evento {
     imagens?: Imagem[]
     imagens_str?: string[]
 }
+
 export interface Imagem {
     id: number
     imagem: string
@@ -76,4 +77,13 @@ export interface User {
 export interface TipoAtividade {
     id: number
     nome: string
+}
+
+export interface Certificado {
+    id: number
+    descricao: string
+    codigo_verificacao: string
+    data_emissao: string
+    nome_evento: string
+    horas: number
 }
