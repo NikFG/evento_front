@@ -2,12 +2,12 @@ import styles from "./Certificado.module.css";
 import Image from "next/image";
 import banner from '@images/banner_aux.jpg'
 
-export default function Certificado() {
+
+
+export default function CertificadoComponente() {
     return (
         <>
             <div className={styles.main}>
-
-
                 <div className={styles.imgTexto}>
                     <div className={"row " + styles.logo}>
                         LOGO
