@@ -21,22 +21,32 @@ import {faGithub, faTwitter, faFacebook, faInstagram, faGoogle} from "@fortaweso
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import InputMask from "react-input-mask";
 import Image from "next/image";
-import {Evento} from "@types";
+import {Evento, User, Certificado} from "@types";
 import {useRouter} from "next/router";
 import ReactTooltip from 'react-tooltip';
+import {Document, Page, PDFDownloadLink, View} from "@react-pdf/renderer";
+import CertificadoComponente from "@components/Certificado";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import {marginTop} from "html2canvas/dist/types/css/property-descriptors/margin";
 
 export interface UsuarioProps {
     eventos_criados: Evento[]
     eventos_participados: Evento[]
+    certificados: Certificado[]
+
 }
 
 
-export default function Usuario({eventos_criados, eventos_participados}: UsuarioProps) {
+export default function Usuario({eventos_criados, eventos_participados, certificados}: UsuarioProps) {
     const [nome, setNome] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [telefone, setTelefone] = React.useState("");
     const [senha, setSenha] = React.useState("");
+    const [user, setUser] = React.useState<User>();
     const router = useRouter();
+
+    // const [instance, updateInstance] = usePDF({document: <CertificadoComponente/>});
 
     async function handleEdit(id: number | undefined) {
         await router.push(`/eventos/editar/${id}`)
@@ -47,8 +57,25 @@ export default function Usuario({eventos_criados, eventos_participados}: Usuario
     }
 
     async function handleCertificado(id: number | undefined) {
-
+        if (id) {
+            await router.push(`/certificados/atividade/${id}`)
+        }
     }
+
+async function imprimir(id: number) {
+       await router.push(`/certificados/imprimir/${id}`)
+
+}
+
+
+    React.useEffect(() => {
+        const aux: User = JSON.parse(sessionStorage.getItem('USER_DATA') ?? "");
+        setUser(aux);
+        setNome(aux.nome);
+        setEmail(aux.email);
+        setTelefone(aux.telefone);
+
+    }, []);
 
     return (
         <Container>
@@ -86,13 +113,13 @@ export default function Usuario({eventos_criados, eventos_participados}: Usuario
                                 <Card.Body>
                                     <div className="d-flex flex-column align-items-center text-center">
                                         <Image
-                                            src={`https://avatars.dicebear.com/api/initials/Nikollas Ferreira Gonçalves.svg?radius=50`}
+                                            src={`https://avatars.dicebear.com/api/initials/${user?.nome}.svg?radius=50`}
                                             alt={"usuario"} className={'rounded-circle'}
                                             width={150} height={150}/>
                                         <div className={"mt-3"}>
-                                            <h4>Nikollas Ferreira Gonçalves</h4>
-                                            <p className="text-secondary mb-1">Estudante</p>
-                                            <p className="text-muted font-size-sm">Divinópolis, MG</p>
+                                            <h4>{user?.nome}</h4>
+                                            <p className="text-secondary mb-1">{user?.email}</p>
+                                            <p className="text-muted font-size-sm">{user?.telefone}</p>
                                         </div>
                                     </div>
                                 </Card.Body>
@@ -210,7 +237,7 @@ export default function Usuario({eventos_criados, eventos_participados}: Usuario
                                         <div className={"bd-highlight p-2"}>
                                             {e.nome}
                                         </div>
-                                        <div className={"bd-highlight mx-2"}>
+                                        <div className={"bd-highlight ms-1 p-2"}>
                                             <Button variant={"outline-secondary"} onClick={async () => {
                                                 await handleEdit(e.id);
                                             }
@@ -218,7 +245,7 @@ export default function Usuario({eventos_criados, eventos_participados}: Usuario
                                                 <FontAwesomeIcon icon={faEdit}/>
                                             </Button>
                                         </div>
-                                        <div className={"bd-highlight mx-2"}>
+                                        <div className={"bd-highlight ms-2 p-2"}>
                                             <Button variant={"outline-danger"} onClick={async () => {
                                                 await handleDelete(e.id);
                                             }}>
@@ -237,11 +264,18 @@ export default function Usuario({eventos_criados, eventos_participados}: Usuario
 
                                         {e.atividades.map(a =>
                                             <Row key={a.id} className={"mb-2"}>
-                                                <Col>
-                                                    {a.nome}
-                                                    <hr/>
+                                                <Col sm={"auto"} md={"auto"} lg={"auto"}>
+                                                    <span className={"p-2"}>{a.nome}</span>
                                                 </Col>
-
+                                                <Col sm={"auto"} md={"auto"} lg={"auto"}>
+                                                    <Button className={"p-2 mb-2"} variant={"outline-primary"}
+                                                            onClick={async () => {
+                                                                await handleCertificado(a.id);
+                                                            }}>
+                                                        Verificar participantes
+                                                    </Button>
+                                                </Col>
+                                                <hr className={"mt-1"}/>
                                             </Row>
                                         )}
 
@@ -251,12 +285,10 @@ export default function Usuario({eventos_criados, eventos_participados}: Usuario
                         })}
 
                     </Accordion>
-
                 </TabPanel>
 
                 {/*Eventos participados*/}
                 <TabPanel>
-
                     <Accordion>
                         {eventos_participados.map(e => {
                             return <Card className={"mb-3"} key={e.id}>
@@ -277,7 +309,7 @@ export default function Usuario({eventos_criados, eventos_participados}: Usuario
                                     <Card.Body>
 
                                         {e.atividades.map(a => {
-                                                let u = a.users.find((u) => {
+                                                let u = a.users?.find((u) => {
                                                     return u.id === 2
                                                 });
 
@@ -313,14 +345,29 @@ export default function Usuario({eventos_criados, eventos_participados}: Usuario
 
                 {/*Certificados*/}
                 <TabPanel>
-                    Certificados
+
+                    <hr/>
+                    {certificados.map(c => {
+                        return <Row key={c.id} className={"mb-3"}>
+                            <Col sm={"auto"} md={"auto"} lg={"auto"}>
+                                {c.descricao}
+                            </Col>
+                            <Col sm={"auto"} md={"auto"} lg={"auto"}>
+                                <Button onClick={async () => await imprimir(c.id)}>
+                                    Imprimir certificado
+                                </Button>
+
+                            </Col>
+
+                        </Row>
+                    })}
+
                 </TabPanel>
             </Tabs>
 
         </Container>
 
-    )
-        ;
+    );
 }
 
 function CustomToggle({children, eventKey, callback}: any) {
@@ -342,3 +389,4 @@ function CustomToggle({children, eventKey, callback}: any) {
 
     );
 }
+
