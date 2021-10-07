@@ -1,9 +1,10 @@
 import Navbar from "@components/Navbar";
 import Usuario from "@components/Usuario";
 import {GetServerSideProps, InferGetServerSidePropsType} from "next";
-import {Evento} from "@types";
+import {Certificado, Evento, User} from "@types";
 import {parseCookies} from 'nookies';
 import React from "react";
+import axios from "axios";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const axios = require('axios');
@@ -21,24 +22,34 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     });
     const eventos_criados: Evento[] = res.data;
-
+    res = await axios.get(process.env.API_SERVER + "/certificados", {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    const certificados: Certificado[] = res.data
     return {
         props: {
             eventos_participados,
             eventos_criados,
+            certificados
         }
     }
 }
 
 export default function UsuarioPage({
                                         eventos_participados,
-                                        eventos_criados
+                                        eventos_criados, certificados
                                     }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
     return (
         <>
             <Navbar/>
-            <Usuario eventos_criados={eventos_criados} eventos_participados={eventos_participados}/>
+            <Usuario
+                eventos_criados={eventos_criados}
+                eventos_participados={eventos_participados}
+                certificados={certificados}
+            />
 
         </>
     );
