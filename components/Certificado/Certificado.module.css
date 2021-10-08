@@ -19,8 +19,10 @@
 }
 
 .logo {
-    justify-content: center;
-    height: 60px;
+    height: 100px;
+    width: 100%;
+    margin-left: 0;
+
 }
 
 .titulo {
