@@ -2,7 +2,7 @@ import Navbar from "@components/Navbar";
 import {GetServerSideProps, InferGetServerSidePropsType} from "next";
 import {Categoria, Evento, Instituicao} from "@types";
 import GridEventos from "@components/GridEventos";
-import axios from "axios";
+import {motion} from "framer-motion";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const axios = require('axios');
@@ -29,7 +29,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             eventos,
             categorias,
             instituicoes,
-
         },
     }
 }
@@ -40,9 +39,13 @@ export default function Eventos({
                                 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
     return (
-        <>
+        <motion.div
+            exit={{opacity: 0}}
+            initial='initial'
+            animate='animate'
+        >
             <Navbar/>
             <GridEventos eventos={eventos} categorias={categorias} instituicoes={instituicoes} pesquisa={true}/>
-        </>
+        </motion.div>
     );
 }
