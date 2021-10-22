@@ -14,6 +14,7 @@ export default function CadastroForm(props: Props) {
     const [email, setEmail] = React.useState("");
     const [cpf, setCpf] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const [password_confirmation, setPassword_confirmation] = React.useState("");
     const [telefone, setTelefone] = React.useState("");
 
     async function submitForm(e: React.FormEvent) {
@@ -25,7 +26,8 @@ export default function CadastroForm(props: Props) {
             email,
             cpf,
             password,
-            telefone
+            telefone,
+            password_confirmation
 
         }
 
@@ -104,7 +106,10 @@ export default function CadastroForm(props: Props) {
 
                     <div className="form-group mb-3">
                         <label htmlFor="senhaConfirm" className={"form-label"}>Confirme sua senha</label>
-                        <input id="senhaConfirm" type="password" className="form-control"
+                        <input id="senhaConfirm" type="password" className="form-control" value={password_confirmation}
+                               onChange={(e) => {
+                                   setPassword_confirmation(e.target.value);
+                               }}
                                placeholder="Digite sua senha novamente" required/>
                     </div>
 

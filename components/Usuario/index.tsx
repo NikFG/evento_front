@@ -24,11 +24,7 @@ import Image from "next/image";
 import {Evento, User, Certificado} from "@types";
 import {useRouter} from "next/router";
 import ReactTooltip from 'react-tooltip';
-import {Document, Page, PDFDownloadLink, View} from "@react-pdf/renderer";
-import CertificadoComponente from "@components/Certificado";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import {marginTop} from "html2canvas/dist/types/css/property-descriptors/margin";
+
 
 export interface UsuarioProps {
     eventos_criados: Evento[]
