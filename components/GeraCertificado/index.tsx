@@ -41,7 +41,7 @@ export default function GeraCertificado({atividade, api}: GeraCertificadoProps) 
                 <Col>
                     <Form method={"POST"} onSubmit={handleSubmit}>
                         {atividade.users?.map(u => {
-                            return <div className="form-check">
+                            return <div className="form-check" key={u.id}>
                                 <FormCheckInput value={u.id} onChange={handleChange}/>
                                 <FormCheckLabel>
                                     {u.nome}
@@ -49,35 +49,6 @@ export default function GeraCertificado({atividade, api}: GeraCertificadoProps) 
                                 <hr/>
                             </div>
                         })}
-                        {/*             <div className="form-check">
-                            <FormCheckInput value={"1"} onChange={handleChange}/>
-                            <FormCheckLabel>
-                                Nikollas Ferreira Gonçalves
-                            </FormCheckLabel>
-                            <hr/>
-                        </div>
-                        <div className="form-check">
-                            <FormCheckInput value={"2"} onChange={handleChange}/>
-                            <FormCheckLabel>
-                                Nikollas Ferreira Gonçalves
-                            </FormCheckLabel>
-                            <hr/>
-                        </div>
-                        <div className="form-check">
-                            <FormCheckInput value={"3"} onChange={handleChange}/>
-                            <FormCheckLabel>
-                                Nikollas Ferreira Gonçalves
-                            </FormCheckLabel>
-                            <hr/>
-                        </div>
-                        <div className="form-check">
-                            <FormCheckInput value={"4"} onChange={handleChange}/>
-                            <FormCheckLabel>
-                                Nikollas Ferreira Gonçalves
-                            </FormCheckLabel>
-                            <hr/>
-                        </div>*/}
-
                         <Col sm={"auto"} md={"auto"} lg={"auto"} className={"mt-2"}>
                             <Button type={'submit'}>
                                 Confirmar
