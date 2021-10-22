@@ -50,6 +50,21 @@ export default function Usuario({eventos_criados, eventos_participados}: Usuario
 
     }
 
+async function imprimir(id: number) {
+       await router.push(`/certificados/${id}`)
+
+}
+
+
+    React.useEffect(() => {
+        const aux: User = JSON.parse(sessionStorage.getItem('USER_DATA') ?? "");
+        setUser(aux);
+        setNome(aux.nome);
+        setEmail(aux.email);
+        setTelefone(aux.telefone);
+
+    }, []);
+
     return (
         <Container>
             <Tabs selectedTabClassName={styles.tabSelecionada}>
