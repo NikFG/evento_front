@@ -5,6 +5,7 @@ import Footer from "@components/Footer";
 import {GetStaticProps, InferGetStaticPropsType} from "next";
 import {Evento} from "@types";
 import Navbar from "@components/Navbar";
+import {motion} from "framer-motion";
 
 export const getStaticProps: GetStaticProps = async (context) => {
     const axios = require('axios');
@@ -24,26 +25,25 @@ export const getStaticProps: GetStaticProps = async (context) => {
 export default function Home({eventos, api}: InferGetStaticPropsType<typeof getStaticProps>) {
 
     return (
-        <>
-            <div>
-                <Head>
-                    <title>Eventos</title>
-                    <meta name="description" content="test"/>
 
-                </Head>
+        <motion.div exit={{opacity: 0}}>
+            <Head>
+                <title>Eventos</title>
+                <meta name="description" content="test"/>
 
-                <main>
-                    <Navbar api={api}/>
+            </Head>
 
-                    <MainBanner/>
+            <main>
+                <Navbar api={api}/>
 
-                    <GridEventos eventos={eventos}/>
-                </main>
+                <MainBanner/>
 
-                <footer>
-                    <Footer/>
-                </footer>
-            </div>
-        </>
+                <GridEventos eventos={eventos}/>
+            </main>
+
+            <footer>
+                <Footer/>
+            </footer>
+        </motion.div>
     )
 }
