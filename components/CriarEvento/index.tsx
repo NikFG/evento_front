@@ -29,7 +29,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     const [banner, setBanner] = React.useState<File | null>();
 
 
-    //atividades
+    //certificados
     const [atividades, setAtividades] = React.useState<Atividade[]>([]);
     const [idAtividade, setIdAtividade] = React.useState(0);
     const [nomeAtividade, setNomeAtividade] = React.useState("");
@@ -204,7 +204,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     return (
         <>
 
-            <Navbar/>
+
             <ToastContainer
                 position="top-right"
                 autoClose={5000}
