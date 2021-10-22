@@ -18,7 +18,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
             categorias,
             tipo_atividades,
             api
-        }
+        },
+        revalidate: 60
     }
 }
 export default function CriarEventoPage({
