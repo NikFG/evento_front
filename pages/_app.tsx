@@ -6,18 +6,19 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import 'react-tiny-fab/dist/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
+
 config.autoAddCss = false
 import Head from "next/head";
 import {AppProps} from "next/app";
 import 'react-vertical-timeline-component/style.min.css';
 import 'react-tabs/style/react-tabs.css';
 import "react-multi-carousel/lib/styles.css";
-
+import {AnimatePresence} from "framer-motion";
 
 function MyApp({Component, pageProps}: AppProps) {
 
     return (
-        <>
+        <AnimatePresence exitBeforeEnter>
             <Head>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <link href={"https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"} rel="stylesheet"
@@ -31,7 +32,7 @@ function MyApp({Component, pageProps}: AppProps) {
 
             </Head>
             <Component {...pageProps}/>
-        </>
+        </AnimatePresence>
     )
 
 }
