@@ -1,28 +1,30 @@
 import styles from "./Certificado.module.css";
 import Image from "next/image";
 import banner from '@images/banner_aux.jpg'
-import {Certificado} from "@types";
-import {Dispatch, SetStateAction} from "react";
+import {Row, Col} from "react-bootstrap";
 
 
 export interface CertificadoProps {
-    certificado?: Certificado
     titulo: string
     logo: string | undefined
     assinaturas: string
     background: string | undefined
 }
 
-export default function CertificadoComponente({certificado, titulo, logo, assinaturas, background}: CertificadoProps) {
+export default function CertificadoComponente({titulo, logo, assinaturas, background}: CertificadoProps) {
 
 
     return (
         <>
             <div className={styles.main}>
                 <div className={styles.imgTexto}>
-                    <div className={"row " + styles.logo}>
-                        {logo ? <Image src={logo} height={60} width={300} alt={"logo"}/> : <span/>}
-                    </div>
+                    <Row className={styles.logo}>
+                        {logo ?
+                            <Image src={logo} height={100} width={900} alt={"logo"}/>
+                            :
+                            <div style={{height: "100px", width: "100%", border: "1px solid black"}}>Cabeçalho</div>
+                        }
+                    </Row>
                     <div className={"row " + styles.titulo}>
                         {titulo}
                     </div>
@@ -39,11 +41,16 @@ export default function CertificadoComponente({certificado, titulo, logo, assina
                     <div className={"row mt-2 " + styles.cidade}>
                         Cidade, XX de mês de XXXX.
                     </div>
-                    <div className={"row " + styles.assinaturasRow}>
+                    <Row className={styles.assinaturasRow}>
                         {Array.from({length: parseInt(assinaturas)}).map((_, i) => {
+
                             return <>
-                                {/*{i < 3 ? <div className={"col-2"}/> : <div className={"col-12"}/>}*/}
-                                <div className={"col-2"}/>
+                                {
+                                    parseInt(assinaturas) === 1 ? <div className={"col-4"}/>
+                                        : parseInt(assinaturas) === 2 ? <div className={"col-2"}/>
+                                            : <div className={"col-1"} style={{marginLeft: "-10px"}}/>
+                                }
+
                                 <div className={"col-3"}>
                                     <div className={"row " + styles.assinatura}>
                                         a
@@ -58,20 +65,7 @@ export default function CertificadoComponente({certificado, titulo, logo, assina
 
                             </>
                         })}
-
-                        {/* <div className={"col-2"}/>
-                        <div className={"col-3"}>
-                            <div className={"row " + styles.assinatura}>
-                                a
-                            </div>
-                            <div className={"row"}>
-                                NOME_PESSOA
-                            </div>
-                            <div className={"row " + styles.cargo}>
-                                CARGO
-                            </div>
-                        </div>*/}
-                    </div>
+                    </Row>
                 </div>
 
                 <div className={styles.imgFundo}>
