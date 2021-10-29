@@ -18,7 +18,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
             eventos,
             api
         },
-        revalidate: 60
+        revalidate: 1
     }
 }
 
