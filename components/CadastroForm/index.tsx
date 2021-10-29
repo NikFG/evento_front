@@ -35,7 +35,7 @@ export default function CadastroForm(props: Props) {
         await axios.post(`${props.api}/user/register`, user)
             .then(async (r: AxiosResponse) => {
                 console.log(r);
-                toast.success(`Usuário cadastrador com sucesso!`, {
+                toast.success(`Usuário cadastrado com sucesso!`, {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
