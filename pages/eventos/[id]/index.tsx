@@ -42,7 +42,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 export default function EventoPage({evento, api}: InferGetStaticPropsType<typeof getStaticProps>) {
     return (
         <>
-            <Navbar api={api} titulo={evento.nome}/>
+            <Navbar api={api} titulo={'Evento'}/>
             <EventoComp evento={evento} api={api}/>
         </>
     );
