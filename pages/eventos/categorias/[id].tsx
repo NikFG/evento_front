@@ -41,7 +41,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export default function EventoCategoriaPage({eventos}: InferGetStaticPropsType<typeof getStaticProps>) {
     return (
         <>
-            <Navbar/>
+            <Navbar titulo={"Categorias evento"}/>
             <GridEventos eventos={eventos}/>
         </>
     );

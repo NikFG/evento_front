@@ -12,12 +12,7 @@ export interface Atividade {
     tipo_atividade_id: number
     nome_apresentador: string
     email_apresentador: string
-    pivot?: {
-        participou: number
-        apresentador_id: number
-        nome_apresentador: string
-        email_apresentador: string
-    }
+    users?: User[]
 }
 
 export interface Categoria {
@@ -44,6 +39,7 @@ export interface Evento {
     imagens?: Imagem[]
     imagens_str?: string[]
 }
+
 export interface Imagem {
     id: number
     imagem: string
@@ -70,9 +66,24 @@ export interface User {
     password: string
     telefone: string
     remember_token: string
+    pivot?: {
+        participou: number
+        apresentador_id: number
+        nome_apresentador: string
+        email_apresentador: string
+    }
 }
 
 export interface TipoAtividade {
     id: number
     nome: string
+}
+
+export interface Certificado {
+    id: number
+    descricao: string
+    codigo_verificacao: string
+    data_emissao: string
+    nome_evento: string
+    horas: number
 }

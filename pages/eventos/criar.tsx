@@ -1,6 +1,8 @@
 import CriarEvento from "@components/CriarEvento";
 import {GetStaticProps, InferGetStaticPropsType} from "next";
 import {Categoria, TipoAtividade} from "@types";
+import Navbar from "@components/Navbar";
+import React from "react";
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -16,7 +18,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
             categorias,
             tipo_atividades,
             api
-        }
+        },
+        revalidate: 60
     }
 }
 export default function CriarEventoPage({
@@ -25,6 +28,9 @@ export default function CriarEventoPage({
                                             api
                                         }: InferGetStaticPropsType<typeof getStaticProps>) {
     return (
-        <CriarEvento categorias={categorias} api={api} tipo_atividades={tipo_atividades}/>
+        <>
+            <Navbar api={api} titulo={"Criar evento"}/>
+            <CriarEvento categorias={categorias} api={api} tipo_atividades={tipo_atividades}/>
+        </>
     );
 }

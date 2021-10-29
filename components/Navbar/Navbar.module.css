@@ -50,30 +50,37 @@
     color: #fff;
     justify-self: start;
     margin-left: 20px;
-    cursor: pointer;
     text-decoration: none;
-    font-size: 2rem;
+    font-size: 1.5rem;
     display: flex;
     align-items: center;
-
 }
-
+.navLogoHome {
+    color: #fff;
+    align-items: center;
+    text-decoration: none;
+}
+.navLogoHome:hover {
+    color: #FFFFFF;
+    text-decoration: none;
+}
 .navbarLogo:hover {
     transition: all 0.2s ease-out;
-    cursor: pointer;
+    cursor: context-menu;
     color: var(--white);
 }
 
 
 .navMenu {
     display: grid;
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: repeat(5, auto);
     grid-gap: 10px;
     list-style: none;
     text-align: center;
     width: 60vw;
     justify-content: end;
     margin-right: 2rem;
+
 }
 
 .navItem {
@@ -105,6 +112,20 @@
     display: none;
 }
 
+@media (min-aspect-ratio: 21/9) {
+    .navMenu {
+        display: grid;
+        grid-template-columns: repeat(5, auto);
+        grid-gap: 10px;
+        list-style: none;
+        text-align: center;
+        width: 40vw;
+        justify-content: end;
+        margin-right: 2rem;
+
+    }
+}
+
 @media screen and (max-width: 960px) {
     .navbarItems {
         position: relative;
@@ -125,17 +146,19 @@
 
     .navMenuActive {
         background: #264653;
-        left: 0;
-        opacity: 1;
+
+        opacity: 0.93;
         transition: all 0.5s ease;
         z-index: 1;
-        margin-top: 140%;
+        margin-top: 90%;
+        margin-right: 40%;
+        padding: 3rem;
         list-style: none;
     }
 
     .navLinks {
         text-align: center;
-        padding: 2rem;
+        padding: 1rem;
         width: 100%;
         display: table;
 
@@ -151,7 +174,7 @@
         position: absolute;
         top: 0;
         left: 0;
-
+        font-size: 1.5rem;
         transform: translate(10%, 20%);
     }
 
@@ -162,6 +185,11 @@
         right: 0;
         transform: translate(-100%, 40%);
         font-size: 1.8rem;
+        -webkit-transition: all 0.15s ease-out 0s;
+        -moz-transition: all 0.15s ease-out 0s;
+        -ms-transition: all 0.15s ease-out 0s;
+        -o-transition: all 0.15s ease-out 0s;
+        transition: all 0.15s ease-out 0s;
         cursor: pointer;
     }
 

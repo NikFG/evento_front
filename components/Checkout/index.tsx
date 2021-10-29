@@ -10,11 +10,11 @@ export interface CheckoutProps {
     taxa_evento: number
     atividades: Atividade[]
     api: string
-    atividadesParticipadaProps: Atividade[]
+    atividades_participadas: Atividade[]
 
 }
 
-export default function Checkout({taxa_evento, atividades, api, atividadesParticipadaProps}: CheckoutProps) {
+export default function Checkout({taxa_evento, atividades, api, atividades_participadas}: CheckoutProps) {
     const router = useRouter()
     const [horasTotais, setHorasTotais] = React.useState(0);
     const [atividadesParticipadas, setAtividadesParticipadas] = React.useState(Array());
@@ -55,6 +55,7 @@ export default function Checkout({taxa_evento, atividades, api, atividadesPartic
                     draggable: true,
                     progress: undefined,
                 });
+                await router.push('/');
             } else {
                 console.error("Erro no envio")
             }
@@ -72,9 +73,9 @@ export default function Checkout({taxa_evento, atividades, api, atividadesPartic
     }
 
     React.useEffect(() => {
-        console.log(atividadesParticipadaProps?.filter(a2 => a2.id === atividades[0].id).length > 0)
-        if (atividadesParticipadaProps) {
-            atividadesParticipadaProps.forEach(a => {
+        console.log(atividades_participadas?.filter(a2 => a2.id === atividades[0].id).length > 0)
+        if (atividades_participadas) {
+            atividades_participadas.forEach(a => {
                 let inicio = new Date("01/01/2007 " + a.horario_inicio).getHours();
                 let fim = new Date("01/01/2007 " + a.horario_fim).getHours();
                 handleClickAtividade(a.id ?? 0, fim - inicio)
@@ -118,7 +119,7 @@ export default function Checkout({taxa_evento, atividades, api, atividadesPartic
 
                                     return <RowCheckout a={a} index={index} key={a.id}
                                                         handleClickAtividade={handleClickAtividade}
-                                                        inAtividades={atividadesParticipadaProps.filter(a2 => a2.id === a.id).length > 0}/>
+                                                        inAtividades={atividades_participadas.filter(a2 => a2.id === a.id).length > 0}/>
                                 })
                             }
 

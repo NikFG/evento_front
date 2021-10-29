@@ -12,7 +12,14 @@ export default function CarouselBootstrap({imagens}: CarouselProps) {
 
     return (
         <div className={styles.area}>
-            <Carousel controls={true} fade={true} slide={true} touch={true}>
+            <Carousel controls={true} fade={true} slide={true} touch={true} interval={3000} pause={'hover'}
+                      nextIcon={<div style={{backgroundColor: '#000', opacity: '0.9'}}>
+                          <span aria-hidden='true' className='carousel-control-next-icon'/>
+                      </div>}
+                      prevIcon={<div style={{backgroundColor: '#000', opacity: '0.9'}}>
+                          <span aria-hidden='true' className='carousel-control-prev-icon'/>
+                      </div>}
+            >
                 {imagens.map((i, index) => {
                     return <Carousel.Item key={index}>
                         <Image src={`data:image/jpeg;base64,${i}`} width={1600} height={800}

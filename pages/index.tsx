@@ -3,51 +3,47 @@ import MainBanner from "@components/MainBanner";
 import GridEventos from "@components/GridEventos";
 import Footer from "@components/Footer";
 import {GetStaticProps, InferGetStaticPropsType} from "next";
-import {Evento, Categoria} from "@types";
+import {Evento} from "@types";
 import Navbar from "@components/Navbar";
+import {motion} from "framer-motion";
 
 export const getStaticProps: GetStaticProps = async (context) => {
     const axios = require('axios');
     const eventosResp = await axios.get(process.env.API_SERVER + "/eventos");
-    const categoriasResp = await axios.get(process.env.API_SERVER + "/categorias")
     const api = process.env.API_SERVER;
     const eventos: Evento[] = eventosResp.data;
-    const categorias: Categoria[] = categoriasResp.data
+
     return {
         props: {
             eventos,
-            categorias,
             api
         },
         revalidate: 60
     }
 }
 
-export default function Home({eventos, categorias, api}: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Home({eventos, api}: InferGetStaticPropsType<typeof getStaticProps>) {
 
     return (
-        <>
-            <div>
-                <Head>
-                    <title>Eventos</title>
-                    <meta name="description" content="test"/>
 
-                </Head>
+        <motion.div exit={{opacity: 0}}>
+            <Head>
+                <title>Eventos</title>
+                <meta name="description" content="test"/>
 
-                <main>
-                    <Navbar api={api}/>
+            </Head>
 
-                    <MainBanner/>
+            <main>
+                <Navbar api={api} titulo={""}/>
 
-                    {/*<CarouselCustom categorias={categorias}/>*/}
+                <MainBanner/>
 
-                    <GridEventos eventos={eventos}/>
-                </main>
+                <GridEventos eventos={eventos}/>
+            </main>
 
-                <footer>
-                    <Footer/>
-                </footer>
-            </div>
-        </>
+            <footer>
+                <Footer/>
+            </footer>
+        </motion.div>
     )
 }

@@ -29,7 +29,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     const [banner, setBanner] = React.useState<File | null>();
 
 
-    //atividades
+    //certificados
     const [atividades, setAtividades] = React.useState<Atividade[]>([]);
     const [idAtividade, setIdAtividade] = React.useState(0);
     const [nomeAtividade, setNomeAtividade] = React.useState("");
@@ -89,7 +89,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
             }
         }).catch((err: any) => {
             for (const v of Object.values(err.response.data)) {
-                console.log(v);
+                console.error(v);
                 toast.error(`${v}`, {
                     position: "top-right",
                     autoClose: 5000,
@@ -204,7 +204,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     return (
         <>
 
-            <Navbar/>
+
             <ToastContainer
                 position="top-right"
                 autoClose={5000}

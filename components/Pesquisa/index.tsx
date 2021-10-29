@@ -31,12 +31,12 @@ export default function Pesquisa({handleSearch, count, categorias, instituicoes}
     });
 
     return (
-        <div className={"container " + styles.pesquisaForm}>
+        <div className={"row mx-3 " + styles.pesquisaForm}>
             <div className={"row"}>
                 <p className={"text-center " + styles.titulo}>Pesquise seus eventos aqui</p>
             </div>
 
-            <div className={"row justify-content-center"}>
+            <div className={"row justify-content-center mb-2"}>
                 <div className={"col-sm-9 col-md-5 col-lg-5"}>
                     <input className={"form-control"} value={query} placeholder={"Pesquise nome evento"}
                            onChange={(event => {

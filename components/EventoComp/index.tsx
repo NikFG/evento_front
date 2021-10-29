@@ -6,10 +6,10 @@ import Footer from "@components/Footer";
 import Image from 'next/image';
 import {Evento} from "@types";
 import React from "react";
-import {Fab, Action} from 'react-tiny-fab';
+import {Fab} from 'react-tiny-fab';
 import {useRouter} from "next/router";
 import CarouselBootstrap from "@components/CarouselBootstrap";
-
+import {isMobile} from 'react-device-detect';
 export interface EventoProps {
     evento: Evento,
     api: string
@@ -17,6 +17,7 @@ export interface EventoProps {
 
 
 export default function EventoComp({evento, api}: EventoProps) {
+    console.log(isMobile)
     const router = useRouter();
     let atividades = evento.atividades;
     const [tabs, setTabs] = React.useState(Array());
@@ -157,6 +158,9 @@ export default function EventoComp({evento, api}: EventoProps) {
                         mainButtonStyles={{backgroundColor: "#00A6A6"}}
                         onClick={() => handleCompra()}
                         style={{bottom: 24, right: 24, margin: 0}}
+                        alwaysShowTitle={isMobile}
+                        text={"Comprar ingresso"}
+
                     />
                 </section>
 
