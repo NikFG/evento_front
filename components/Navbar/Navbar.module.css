@@ -50,30 +50,37 @@
     color: #fff;
     justify-self: start;
     margin-left: 20px;
-    cursor: pointer;
     text-decoration: none;
-    font-size: 2rem;
+    font-size: 1.5rem;
     display: flex;
     align-items: center;
-
 }
-
+.navLogoHome {
+    color: #fff;
+    align-items: center;
+    text-decoration: none;
+}
+.navLogoHome:hover {
+    color: #FFFFFF;
+    text-decoration: none;
+}
 .navbarLogo:hover {
     transition: all 0.2s ease-out;
-    cursor: pointer;
+    cursor: context-menu;
     color: var(--white);
 }
 
 
 .navMenu {
     display: grid;
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: repeat(5, auto);
     grid-gap: 10px;
     list-style: none;
     text-align: center;
     width: 60vw;
     justify-content: end;
     margin-right: 2rem;
+
 }
 
 .navItem {
@@ -103,6 +110,20 @@
 
 .menuIcon {
     display: none;
+}
+
+@media (min-aspect-ratio: 21/9) {
+    .navMenu {
+        display: grid;
+        grid-template-columns: repeat(5, auto);
+        grid-gap: 10px;
+        list-style: none;
+        text-align: center;
+        width: 40vw;
+        justify-content: end;
+        margin-right: 2rem;
+
+    }
 }
 
 @media screen and (max-width: 960px) {
@@ -153,7 +174,7 @@
         position: absolute;
         top: 0;
         left: 0;
-
+        font-size: 1.5rem;
         transform: translate(10%, 20%);
     }
 
