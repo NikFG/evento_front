@@ -51,13 +51,17 @@ export default function CardEvento({id, nome, descricao, data_inicio, instituica
                             transition={{delay: 0.4}}
                             style={{margin: "5px"}}>
                             {!banner ?
-                                <Image src={`https://via.placeholder.com/500x400/e66?text=${id}`} width={500}
-                                       layout={'responsive'}
-                                       height={400} alt={"placeholder"}/> :
-                                <Image src={`data:image/jpeg;base64,${banner}`} width={500} height={400}
-                                       layout={'responsive'}
-                                       blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="}
-                                       alt={"placeholder"}/>
+                                <div style={{borderRadius: "10px", overflow: "hidden"}}>
+                                    <Image src={`https://via.placeholder.com/500x400/e66?text=${id}`} width={500}
+                                           height={400}
+                                           alt={"placeholder"}/>
+                                </div> :
+                                <div style={{borderRadius: "10px", overflow: "hidden"}}>
+                                    <Image src={`data:image/jpeg;base64,${banner}`} width={500} height={400}
+                                           layout={'responsive'}
+                                           blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="}
+                                           alt={"placeholder"}/>
+                                </div>
                             }
                         </motion.div>
                     </div>
