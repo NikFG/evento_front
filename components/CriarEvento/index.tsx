@@ -89,7 +89,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
             }
         }).catch((err: any) => {
             for (const v of Object.values(err.response.data)) {
-                console.log(v);
+                console.error(v);
                 toast.error(`${v}`, {
                     position: "top-right",
                     autoClose: 5000,

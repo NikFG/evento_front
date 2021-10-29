@@ -1,8 +1,11 @@
 .pesquisaForm {
-    -webkit-box-shadow: 0px 0px 6px 3px #264653;
-    box-shadow: 0px 0px 3px 2px #264653;
+    -webkit-box-shadow: 0 0 6px 2px #264653;
+    box-shadow: 0 0 3px 2px #264653;
     margin-top: 10px;
+    margin-bottom: 10px;
     padding-bottom: 20px;
+    border-radius: 10px;
+
 }
 
 .desc {
