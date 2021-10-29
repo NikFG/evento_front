@@ -8,12 +8,14 @@ import {setCookie} from "nookies";
 import {decrypt, encrypt} from "utils";
 import Link from "next/link";
 import Image from "next/image";
+import {faCheckCircle} from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 
 export interface Props {
     api?: string
+    titulo: string
 }
 
-export default function Navbar(props: Props) {
+export default function Navbar({api, titulo}: Props) {
     const [click, setClick] = React.useState(false);
     const [button, setButton] = React.useState(true);
     const [navbar, setNavbar] = React.useState(false);
@@ -48,7 +50,7 @@ export default function Navbar(props: Props) {
                     email,
                     password
                 }
-                axios.post(`${props.api}/user/login`, user).then((value: AxiosResponse) => {
+                axios.post(`${api}/user/login`, user).then((value: AxiosResponse) => {
                     sessionStorage.setItem("USER_TOKEN", value.data.access_token)
                     let usuario_criptografado = encrypt(user)
                     const user_logado: User = value.data.user;
@@ -83,17 +85,30 @@ export default function Navbar(props: Props) {
             <nav className={navbar ? styles.navbarActive : styles.navbar}>
                 <div className={styles.navbarContainer}>
                     <div className={styles.divLogo}>
-                        <Link href={"/"}>
-                            <a className={styles.navbarLogo} onClick={closeMobileMenu}>
-                                e-ventos
-                            </a>
-                        </Link>
+
+                            <span className={styles.navbarLogo}>
+                                <Link href={'/'}>
+                                    <a className={styles.navLogoHome}>
+                                    <FontAwesomeIcon className={"me-3"} icon={faCheckCircle}/>
+                                        </a>
+                                </Link>
+                                {titulo}
+                            </span>
+
                     </div>
 
                     <div className={styles.menuIcon} onClick={handleClick}>
                         <FontAwesomeIcon icon={click ? faTimes : faBars}/>
                     </div>
                     <ul className={click ? styles.navMenuActive : styles.navMenu}>
+                        <li className={styles.navItem}>
+                            <Link href={"/"}>
+                                <a className={styles.navLinks} onClick={closeMobileMenu}>
+                                    Home
+                                </a>
+                            </Link>
+
+                        </li>
                         <li className={styles.navItem}>
                             <Link href={"/eventos"}>
                                 <a className={styles.navLinks} onClick={closeMobileMenu}>
