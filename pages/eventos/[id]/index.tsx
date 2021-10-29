@@ -9,6 +9,7 @@ interface IParams extends ParsedUrlQuery {
 }
 
 export const getStaticPaths: GetStaticPaths = async (context) => {
+    console.log('STATIC PATHS');
     const axios = require('axios');
     const res = await axios.get(process.env.API_SERVER + "/eventos/");
     const data = res.data;
@@ -19,16 +20,17 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
     });
     return {
         paths,
-        fallback: true
+        fallback: 'blocking'
     }
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
+    console.log('STATIC PROPS');
     const {id} = context.params as IParams;
     const axios = require('axios');
     const res = await axios.get(process.env.API_SERVER + `/eventos/${id}`);
     const evento: Evento = res.data;
-    const api = process.env.API_SERVER
+    const api = process.env.API_SERVER;
     return {
         props: {
             evento,
@@ -43,7 +45,8 @@ export default function EventoPage({evento, api}: InferGetStaticPropsType<typeof
     return (
         <>
             <Navbar api={api} titulo={'Evento'}/>
-            <EventoComp evento={evento} api={api}/>
+            {evento? <EventoComp evento={evento} api={api}/>: <h1>Erro</h1>}
+
         </>
     );
 }
