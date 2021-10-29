@@ -13,7 +13,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 export default function InstituicaoPage({api}: InferGetStaticPropsType<typeof getStaticProps>) {
     return (
         <>
-            <Navbar/>
+            <Navbar titulo={""}/>
             <InstituicaoForm api={api}/>
         </>
     );
