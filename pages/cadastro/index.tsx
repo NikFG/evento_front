@@ -13,7 +13,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 export default function Login({api}: InferGetStaticPropsType<typeof getStaticProps>) {
     return (
         <>
-            <Navbar/>
+            <Navbar titulo={"Cadastrar"}/>
             <CadastroForm api={api}/>
         </>
     );

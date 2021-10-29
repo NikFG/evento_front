@@ -29,7 +29,7 @@ export default function CriarEventoPage({
                                         }: InferGetStaticPropsType<typeof getStaticProps>) {
     return (
         <>
-            <Navbar api={api}/>
+            <Navbar api={api} titulo={"Criar evento"}/>
             <CriarEvento categorias={categorias} api={api} tipo_atividades={tipo_atividades}/>
         </>
     );

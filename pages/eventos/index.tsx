@@ -44,7 +44,7 @@ export default function Eventos({
             initial='initial'
             animate='animate'
         >
-            <Navbar/>
+            <Navbar titulo={"Eventos"}/>
             <GridEventos eventos={eventos} categorias={categorias} instituicoes={instituicoes} pesquisa={true}/>
         </motion.div>
     );

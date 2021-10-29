@@ -41,9 +41,9 @@ export default function CheckoutPage({
                                      }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     return (
         <>
-            <Navbar api={api}/>
+            <Navbar api={api} titulo={"Checkout evento"}/>
             <Checkout atividades={evento.atividades} taxa_evento={10} api={api}
-                      atividadesParticipadaProps={atividades_participadas}/>
+                      atividades_participadas={atividades_participadas}/>
         </>
     );
 }

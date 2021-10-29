@@ -42,7 +42,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 export default function GeraCertificadoPage({atividade, api}: InferGetStaticPropsType<typeof getStaticProps>) {
     return (
         <>
-            <Navbar/>
+            <Navbar titulo={"Gerar certificado"}/>
             {
                 atividade.users?.length > 0 ?
                     <GeraCertificado atividade={atividade} api={api}/> :

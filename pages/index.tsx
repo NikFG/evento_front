@@ -34,7 +34,7 @@ export default function Home({eventos, api}: InferGetStaticPropsType<typeof getS
             </Head>
 
             <main>
-                <Navbar api={api}/>
+                <Navbar api={api} titulo={""}/>
 
                 <MainBanner/>
 
