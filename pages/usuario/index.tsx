@@ -46,13 +46,12 @@ export default function UsuarioPage({
 
     return (
         <>
-            <Navbar api={api}/>
+            <Navbar api={api} titulo={"Página de usuário"}/>
             <Usuario
                 eventos_criados={eventos_criados}
                 eventos_participados={eventos_participados}
                 certificados={certificados}
             />
-
         </>
     );
 
