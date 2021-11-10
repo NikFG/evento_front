@@ -20,7 +20,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
     });
     return {
         paths,
-        fallback: 'blocking'
+        fallback: true
     }
 }
 
@@ -45,7 +45,7 @@ export default function EventoPage({evento, api}: InferGetStaticPropsType<typeof
     return (
         <>
             <Navbar api={api} titulo={'Evento'}/>
-            {evento? <EventoComp evento={evento} api={api}/>: <h1>Erro</h1>}
+            {evento ? <EventoComp evento={evento} api={api}/> : <h1>Erro</h1>}
 
         </>
     );
