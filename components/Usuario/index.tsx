@@ -24,17 +24,20 @@ import Image from "next/image";
 import {Evento, User, Certificado} from "@types";
 import {useRouter} from "next/router";
 import ReactTooltip from 'react-tooltip';
+import {destroyCookie} from "nookies";
 
 
 export interface UsuarioProps {
     eventos_criados: Evento[]
     eventos_participados: Evento[]
     certificados: Certificado[]
+    token: string
+    api: string
 
 }
 
 
-export default function Usuario({eventos_criados, eventos_participados, certificados}: UsuarioProps) {
+export default function Usuario({eventos_criados, eventos_participados, certificados, token, api}: UsuarioProps) {
     const [nome, setNome] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [telefone, setTelefone] = React.useState("");
@@ -58,10 +61,26 @@ export default function Usuario({eventos_criados, eventos_participados, certific
         }
     }
 
-async function imprimir(id: number) {
-       await router.push(`/certificados/imprimir/${id}`)
+    async function imprimir(id: number) {
+        const axios = require('axios');
+        await axios.post(`${api}/certificados/${id}/gerar`);
 
-}
+    }
+
+    async function logout() {
+        console.log({token});
+        const axios = require('axios');
+        await axios.post(`${api}/user/logout`, null, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+
+            }
+        });
+        sessionStorage.clear();
+        localStorage.removeItem("USER_LOGIN");
+        destroyCookie(null, 'USER_TOKEN');
+        await router.push('/');
+    }
 
 
     React.useEffect(() => {
@@ -72,6 +91,7 @@ async function imprimir(id: number) {
         setTelefone(aux.telefone);
 
     }, []);
+
 
     return (
         <Container>
@@ -101,7 +121,7 @@ async function imprimir(id: number) {
                     </Tab>
                 </TabList>
 
-                {/*Meus dados*/}
+                {/*Perfil*/}
                 <TabPanel>
                     <Row>
                         <Col sm={12} md={4} lg={4} className={"mb-3"}>
@@ -116,6 +136,7 @@ async function imprimir(id: number) {
                                             <h4>{user?.nome}</h4>
                                             <p className="text-secondary mb-1">{user?.email}</p>
                                             <p className="text-muted font-size-sm">{user?.telefone}</p>
+                                            <Button onClick={() => logout()}>Sair</Button>
                                         </div>
                                     </div>
                                 </Card.Body>
@@ -141,7 +162,8 @@ async function imprimir(id: number) {
                                     <ListGroupItem
                                         className={"d-flex justify-content-between align-items-center flex-wrap"}>
                                         <h6 className={"mb-0"}>
-                                            <FontAwesomeIcon icon={faFacebook} className={"mx-1"} color={"#4267B2"}/>
+                                            <FontAwesomeIcon icon={faFacebook} className={"mx-1"}
+                                                             color={"#4267B2"}/>
                                             Facebook
                                         </h6>
                                         <span className="text-secondary">https://bootdey.com</span>
@@ -320,7 +342,8 @@ async function imprimir(id: number) {
                                                         {
                                                             u?.pivot?.participou === 1 ?
                                                                 <a data-tip={a.id} data-for='global' className={"ms-2"}>
-                                                                    <FontAwesomeIcon icon={faCheckCircle} color={"green"}/>
+                                                                    <FontAwesomeIcon icon={faCheckCircle}
+                                                                                     color={"green"}/>
                                                                 </a> : <span/>
 
                                                         }
@@ -350,7 +373,7 @@ async function imprimir(id: number) {
                             </Col>
                             <Col sm={"auto"} md={"auto"} lg={"auto"}>
                                 <Button onClick={async () => await imprimir(c.id)}>
-                                    Imprimir certificado
+                                    Enviar por email
                                 </Button>
 
                             </Col>
