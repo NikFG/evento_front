@@ -34,14 +34,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             eventos_participados,
             eventos_criados,
             certificados,
-            api
+            api,token
         }
     }
 }
 
 export default function UsuarioPage({
                                         eventos_participados,
-                                        eventos_criados, certificados, api
+                                        eventos_criados, certificados, api,token
                                     }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
     return (
@@ -51,6 +51,8 @@ export default function UsuarioPage({
                 eventos_criados={eventos_criados}
                 eventos_participados={eventos_participados}
                 certificados={certificados}
+                token={token}
+                api={api}
             />
         </>
     );
