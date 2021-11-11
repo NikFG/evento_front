@@ -5,6 +5,8 @@ import FormCheckInput from "react-bootstrap/FormCheckInput";
 import FormCheckLabel from "react-bootstrap/FormCheckLabel";
 import {useRouter} from "next/router";
 import {Atividade, User} from "@types";
+import {AxiosResponse} from "axios";
+import {toast, ToastContainer} from "react-toastify";
 
 export interface GeraCertificadoProps {
     api: string
@@ -22,7 +24,29 @@ export default function GeraCertificado({atividade, api}: GeraCertificadoProps) 
         const axios = require('axios');
         const formData = new FormData();
         formData.append('participantes', JSON.stringify(participantes));
-        await axios.post(`${api}/certificados/atividade/${id}`, formData);
+        await axios.post(`${api}/certificados/atividade/${id}`, formData).then(async (res: AxiosResponse<any>) => {
+            await toast.success(`Participantes confirmados com sucesso!`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            await router.back();
+        }).catch((error: any) => {
+            console.error({error});
+            toast.error(`${error.response.data.error}`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        });
     }
 
     function handleChange(e: ChangeEvent<HTMLInputElement>) {
@@ -36,28 +60,42 @@ export default function GeraCertificado({atividade, api}: GeraCertificadoProps) 
     }
 
     return (
-        <Container>
-            <Row className={"mt-2"}>
-                <Col>
-                    <Form method={"POST"} onSubmit={handleSubmit}>
-                        {atividade.users?.map(u => {
-                            return <div className="form-check" key={u.id}>
-                                <FormCheckInput value={u.id} onChange={handleChange}/>
-                                <FormCheckLabel>
-                                    {u.nome}
-                                </FormCheckLabel>
-                                <hr/>
-                            </div>
-                        })}
-                        <Col sm={"auto"} md={"auto"} lg={"auto"} className={"mt-2"}>
-                            <Button type={'submit'}>
-                                Confirmar
-                            </Button>
-                        </Col>
-                    </Form>
-                </Col>
+        <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme={"colored"}
+                style={{width: "500px", maxWidth: "1000px", whiteSpace: "pre-line"}}/>
+            <Container>
+                <Row className={"mt-2"}>
+                    <Col>
+                        <Form method={"POST"} onSubmit={handleSubmit}>
+                            {atividade.users?.map(u => {
+                                return <div className="form-check" key={u.id}>
+                                    <FormCheckInput value={u.id} onChange={handleChange}/>
+                                    <FormCheckLabel>
+                                        {u.nome}
+                                    </FormCheckLabel>
+                                    <hr/>
+                                </div>
+                            })}
+                            <Col sm={"auto"} md={"auto"} lg={"auto"} className={"mt-2"}>
+                                <Button type={'submit'}>
+                                    Confirmar
+                                </Button>
+                            </Col>
+                        </Form>
+                    </Col>
 
-            </Row>
-        </Container>
+                </Row>
+            </Container>
+        </>
     );
 }
