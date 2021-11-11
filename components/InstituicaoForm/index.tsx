@@ -18,7 +18,7 @@ export default function InstituicaoForm(props: Props) {
     const [logo, setLogo] = React.useState("");
     const [latitude, setLatitude] = React.useState("");
     const [longitude, setLongitude] = React.useState("");
-
+    const [cidade, setCidade] = React.useState("");
 
     async function submitForm(e: React.FormEvent) {
         e.preventDefault();
@@ -39,6 +39,7 @@ export default function InstituicaoForm(props: Props) {
         formData.append("endereco", endereco);
         formData.append("latitude", latitude);
         formData.append("longitude", longitude);
+        formData.append("cidade",cidade);
         await axios.post(`${props.api}/instituicao/store`, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -120,6 +121,16 @@ export default function InstituicaoForm(props: Props) {
                                    value={endereco}
                                    onChange={(e) => {
                                        setEndereco(e.target.value);
+                                   }}
+                                   required/>
+                        </div>
+
+                        <div className="form-group mb-3">
+                            <label htmlFor={"cidade"} className={"form-label"}>Endereço</label>
+                            <input id="cidade" type="text" className="form-control" placeholder="Cidade"
+                                   value={cidade}
+                                   onChange={(e) => {
+                                       setCidade(e.target.value);
                                    }}
                                    required/>
                         </div>
