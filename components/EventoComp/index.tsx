@@ -10,6 +10,7 @@ import {Fab} from 'react-tiny-fab';
 import {useRouter} from "next/router";
 import CarouselBootstrap from "@components/CarouselBootstrap";
 import {isMobile} from 'react-device-detect';
+
 export interface EventoProps {
     evento: Evento,
     api: string
@@ -17,7 +18,7 @@ export interface EventoProps {
 
 
 export default function EventoComp({evento, api}: EventoProps) {
-    console.log(isMobile)
+
     const router = useRouter();
     let atividades = evento.atividades;
     const [tabs, setTabs] = React.useState(Array());
@@ -50,7 +51,7 @@ export default function EventoComp({evento, api}: EventoProps) {
                             </button>
                         </div>
                         <div className={styles.divImagem}>
-                            <Image src={`data:image/jpeg;base64,${evento.banner}`} width={2000} height={1000}
+                            <Image src={evento.banner!} width={2000} height={1000}
                                    className={styles.imagem}
                                    objectFit={'cover'}
                                    objectPosition={'center'}
@@ -75,7 +76,7 @@ export default function EventoComp({evento, api}: EventoProps) {
                 </section>
                 {
                     //@ts-ignore
-                    evento.imagens_str?.length > 0 ?
+                    evento.imagens?.length > 0 ?
                         <section id={"imagens do evento"} className={"mt-3 mb-3"}>
                             <div className={"container"}>
                                 <div className={"row"}>
@@ -83,8 +84,7 @@ export default function EventoComp({evento, api}: EventoProps) {
                                 </div>
                                 <div className={"row"}>
                                     {/*<CarouselCustom imagens={evento.imagens ?? []}/>*/}
-
-                                    <CarouselBootstrap imagens={evento.imagens_str ?? []}/>
+                                    <CarouselBootstrap imagens={evento.imagens!}/>
                                 </div>
                             </div>
                         </section> : <span/>}
@@ -166,7 +166,7 @@ export default function EventoComp({evento, api}: EventoProps) {
 
 
                 <div className={styles.imagem}>
-                    <Image src={`data:image/jpeg;base64,${evento.banner}`} width={1000} height={1000}
+                    <Image src={evento.banner!} width={1000} height={1000}
                            blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="}
                            alt={"banner do evento"}
                     />

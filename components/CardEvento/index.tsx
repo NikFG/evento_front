@@ -57,7 +57,7 @@ export default function CardEvento({id, nome, descricao, data_inicio, instituica
                                            alt={"placeholder"}/>
                                 </div> :
                                 <div style={{borderRadius: "10px", overflow: "hidden"}}>
-                                    <Image src={`data:image/jpeg;base64,${banner}`} width={500} height={400}
+                                    <Image src={banner} width={500} height={400}
                                            layout={'responsive'}
                                            blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="}
                                            alt={"placeholder"}/>
