@@ -55,6 +55,10 @@ export default function Usuario({eventos_criados, eventos_participados, certific
 
     }
 
+    async function handleModelo() {
+        await router.push(`/certificados/modelo`)
+    }
+
     async function handleCertificado(id: number | undefined) {
         if (id) {
             await router.push(`/certificados/atividade/${id}`)
@@ -270,6 +274,15 @@ export default function Usuario({eventos_criados, eventos_participados, certific
                                                 <FontAwesomeIcon icon={faTrash}/>
                                             </Button>
                                         </div>
+                                        <div className={"bd-highlight ms-1 p-2"}>
+                                            <Button variant={"primary"} onClick={async () => {
+                                                await handleModelo();
+                                            }
+                                            }>
+                                                Criar modelo
+                                            </Button>
+                                        </div>
+
                                         <div className={"ms-auto bd-highlight flex-shrink"}>
                                             <CustomToggle eventKey={e.id}/>
 
