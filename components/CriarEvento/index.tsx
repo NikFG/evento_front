@@ -1,12 +1,10 @@
 import styles from "./CriarEvento.module.css";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlusCircle, faEdit, faTrash, faCalendar, faClock} from "@fortawesome/free-solid-svg-icons";
-import Navbar from "@components/Navbar";
 import Select from 'react-select';
 import React from "react";
 import {Atividade, Categoria, Evento, TipoAtividade} from "@types";
 import {AxiosResponse} from "axios";
-import {parseCookies} from "nookies";
 import {useRouter} from "next/router";
 import {toast, ToastContainer} from "react-toastify";
 
