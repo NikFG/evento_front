@@ -10,9 +10,16 @@ export interface Atividade {
     descricao: string
     evento?: Evento
     tipo_atividade_id: number
-    nome_apresentador: string
-    email_apresentador: string
+    apresentadores: Apresentador[]
     users?: User[]
+}
+
+export interface Apresentador {
+    id?: number
+    nome: string
+    email: string
+    user_id?: number
+
 }
 
 export interface Categoria {
