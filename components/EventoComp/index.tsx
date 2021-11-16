@@ -198,14 +198,21 @@ export default function EventoComp({evento, api}: EventoProps) {
                                     return <div className={"row " + styles.eventContent} key={a2.id}>
                                         <div className="col-sm-12 col-md-5 col-lg-3 mx-2"
                                              style={{marginTop: "30px"}}>
-                                            <div className={"container-fluid"}>
-                                                <Image src={"https://via.placeholder.com/168?text=168x168"}
-                                                       alt={"imagem de " + a2.nome_apresentador} width={168}
-                                                       height={168}/>
-                                            </div>
-                                            <div className={"row"}>
-                                                Por: {a2.nome_apresentador}
-                                            </div>
+                                            {a2.apresentadores.map(apr => {
+                                                return (
+                                                    <div key={apr.id}>
+                                                        <div className={"container-fluid"}>
+                                                            <Image src={"https://via.placeholder.com/168?text=168x168"}
+                                                                   alt={"imagem de " + apr.nome} width={168}
+                                                                   height={168}/>
+                                                        </div>
+                                                        <div className={"row mb-3"}>
+                                                            Por: {apr.nome}
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })}
+
                                         </div>
                                         <div className="col-sm-12 col-md-7 col-lg-8 media-body"
                                              style={{marginTop: "30px"}}>
