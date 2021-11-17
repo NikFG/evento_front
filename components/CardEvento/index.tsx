@@ -15,6 +15,7 @@ export interface EventoProps {
 
 
 export default function CardEvento({id, nome, descricao, data_inicio, instituicao, banner}: EventoProps) {
+
     const router = useRouter();
     const easing = [0.6, -0.05, 0.01, 0.99];
     const fadeInUp = {
