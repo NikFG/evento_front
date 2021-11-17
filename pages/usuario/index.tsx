@@ -11,6 +11,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const cookies = parseCookies(context)
     const token = cookies.USER_TOKEN;
     const api = process.env.API_SERVER;
+
     let res = await axios.get(api + "/eventos/user", {
         headers: {
             Authorization: `Bearer ${token}`
@@ -28,20 +29,29 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             Authorization: `Bearer ${token}`
         }
     });
-    const certificados: Certificado[] = res.data
+    const certificados: Certificado[] = res.data;
+    res = await axios.get(api + "/user/fromToken", {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    const user: User = res.data;
     return {
         props: {
             eventos_participados,
             eventos_criados,
             certificados,
-            api,token
+            api,
+            token,
+            user
+
         }
     }
 }
 
 export default function UsuarioPage({
                                         eventos_participados,
-                                        eventos_criados, certificados, api,token
+                                        eventos_criados, certificados, api, token, user
                                     }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
     return (
@@ -53,6 +63,7 @@ export default function UsuarioPage({
                 certificados={certificados}
                 token={token}
                 api={api}
+                user={user}
             />
         </>
     );
