@@ -16,7 +16,7 @@ export interface CheckoutProps {
 
 export default function Checkout({taxa_evento, atividades, api, atividades_participadas}: CheckoutProps) {
     const router = useRouter()
-    const [horasTotais, setHorasTotais] = React.useState(0);
+    const [horasTotais, setHorasTotais] = React.useState<number>(0.0);
     const [atividadesParticipadas, setAtividadesParticipadas] = React.useState(Array());
 
     function handleClickAtividade(id: number, horas: number) {
@@ -72,13 +72,18 @@ export default function Checkout({taxa_evento, atividades, api, atividades_parti
         }
     }
 
+    function formatTime(milliseconds: number) {
+        let hours = Math.floor(milliseconds / 3600000);
+        let minutes = Math.floor((milliseconds % 3600000) / 60000);
+        return hours + "h " + minutes + "min";
+    }
+
     React.useEffect(() => {
-        console.log(atividades_participadas?.filter(a2 => a2.id === atividades[0].id).length > 0)
         if (atividades_participadas) {
             atividades_participadas.forEach(a => {
-                let inicio = new Date("01/01/2007 " + a.horario_inicio).getHours();
-                let fim = new Date("01/01/2007 " + a.horario_fim).getHours();
-                handleClickAtividade(a.id ?? 0, fim - inicio)
+                let inicio = new Date(`01/01/2007 ${a.horario_inicio}`).getTime();
+                let fim = new Date(`01/01/2007 ${a.horario_fim}`).getTime();
+                handleClickAtividade(a.id!, (fim - inicio))
             });
         }
 
@@ -119,7 +124,8 @@ export default function Checkout({taxa_evento, atividades, api, atividades_parti
 
                                     return <RowCheckout a={a} index={index} key={a.id}
                                                         handleClickAtividade={handleClickAtividade}
-                                                        inAtividades={atividades_participadas.filter(a2 => a2.id === a.id).length > 0}/>
+                                                        inAtividades={atividades_participadas.filter(a2 => a2.id === a.id).length > 0}
+                                                        formatTime={formatTime}/>
                                 })
                             }
 
@@ -129,12 +135,12 @@ export default function Checkout({taxa_evento, atividades, api, atividades_parti
                         <hr/>
                         <div className={"d-flex bd-highlight mb-3"}>
                             <div className={"bd-highlight mx-2"}>
-                                Horas totais: {horasTotais}
+                                Horas totais: {formatTime(horasTotais)}
                             </div>
-                            <div className={"ms-auto bd-highlight mx-2"}>
-                                <p className={"fs-6"}>Taxa evento: R$10,00</p>
-                                <p className={"fs-6"}>Subtotal: R$100,00</p>
-                            </div>
+                            {/*<div className={"ms-auto bd-highlight mx-2"}>*/}
+                            {/*    <p className={"fs-6"}>Taxa evento: R$10,00</p>*/}
+                            {/*    <p className={"fs-6"}>Subtotal: R$100,00</p>*/}
+                            {/*</div>*/}
                         </div>
                         <hr/>
                         <div className={"d-flex bd-highlight mb-3"}>

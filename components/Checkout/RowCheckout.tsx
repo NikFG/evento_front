@@ -9,9 +9,10 @@ export interface RowProps {
     index: number
     handleClickAtividade: (id: number, horas: number) => void
     inAtividades: boolean
+    formatTime: (miliseconds: number) => string
 }
 
-export default function RowCheckout({a, index, handleClickAtividade, inAtividades}: RowProps) {
+export default function RowCheckout({a, index, handleClickAtividade, inAtividades, formatTime}: RowProps) {
     // console.log(inAtividades)
     const [participar, setParticipar] = React.useState(inAtividades);
     let diferenca = diferencaHorario();
@@ -21,12 +22,13 @@ export default function RowCheckout({a, index, handleClickAtividade, inAtividade
         handleClickAtividade(a.id ?? 0, diferenca);
     }
 
-    function diferencaHorario() {
-        let inicio = new Date("01/01/2007 " + a.horario_inicio).getHours();
-        let fim = new Date("01/01/2007 " + a.horario_fim).getHours();
-        return fim - inicio;
-    }
 
+    function diferencaHorario() {
+        let inicio = new Date(`01/01/2007 ${a.horario_inicio}`).getTime();
+        let fim = new Date(`01/01/2007 ${a.horario_fim}`).getTime();
+        return fim - inicio;
+
+    }
 
     return (
         <>
@@ -34,11 +36,14 @@ export default function RowCheckout({a, index, handleClickAtividade, inAtividade
                 <th scope={"row"}>{index + 1}</th>
                 <td className={styles.atividade}>
                     <h4>{a.nome}</h4>
-                    <span className={"mb-1"}>Por: {a.nome_apresentador}</span>
+                    <span className={"mb-1"}>Por: {a.apresentadores.map(apr => {
+                        return apr.nome
+                    }).join(", ")}</span>
+
                     <span>Dia {a.data} de {a.horario_inicio} as {a.horario_fim}</span>
                 </td>
                 <td>{/*diferenca.toLocaleString("pt-br",{style: 'currency',currency:"BRL"})*/}-</td>
-                <td>{diferenca} {diferenca <= 1 ? "hora" : "horas"}</td>
+                <td>{formatTime(diferenca)}</td>
                 <td>
                     {
                         !participar ?
