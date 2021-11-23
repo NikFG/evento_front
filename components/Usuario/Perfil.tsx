@@ -21,13 +21,15 @@ import {User} from "@types";
 export interface PerfilProps {
     logout: () => void
     user: User
+    atualizarDados: (id: number, nome: string, telefone: string, password?: string, password_confirmation?: string) => void
 }
 
-export default function Perfil({logout, user}: PerfilProps) {
+export default function Perfil({logout, user, atualizarDados}: PerfilProps) {
     const [nome, setNome] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [telefone, setTelefone] = React.useState("");
     const [senha, setSenha] = React.useState("");
+    const [confirmarSenha, setConfirmarSenha] = React.useState("");
 
 
     React.useEffect(() => {
@@ -144,13 +146,14 @@ export default function Perfil({logout, user}: PerfilProps) {
 
                             <FormGroup className={"mb-3"} controlId={"confirmaSenha"}>
                                 <FormLabel>Confirme a nova senha</FormLabel>
-                                <FormControl type={"password"} value={senha}
+                                <FormControl type={"password"} value={confirmarSenha}
                                              onChange={(e) => {
-                                                 setSenha(e.target.value)
+                                                 setConfirmarSenha(e.target.value)
                                              }}/>
                             </FormGroup>
                             <div className="d-flex flex-column align-items-center text-center">
-                                <Button variant={"primary"}>Modificar</Button>
+                                <Button variant={"primary"}
+                                        onClick={() => atualizarDados(user.id!, nome, telefone, senha === "" ? undefined : senha, confirmarSenha)}>Modificar</Button>
                             </div>
                         </Form>
                     </Card.Body>
