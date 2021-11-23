@@ -1,10 +1,10 @@
 import styles from "./ModeloCertificado.module.css";
 import CertificadoComponente from "@components/Certificado";
 import React, {FormEvent} from "react";
-import {Container, FormControl, FormGroup, FormLabel, Row, Col, Form, Button} from "react-bootstrap";
-import InputMask from "react-input-mask";
+import {FormControl, FormGroup, FormLabel, Row, Col, Form, Button} from "react-bootstrap";
 import {ToastContainer, toast} from "react-toastify";
 import {useRouter} from "next/router";
+import {AxiosError} from "axios";
 
 export interface ModeloCertificadoProps {
     api: string
@@ -24,6 +24,7 @@ export default function ModeloCertificado({api, token}: ModeloCertificadoProps) 
 
     const [nomeAssinatura, setNomeAssinatura] = React.useState("");
     const [cargoAssinatura, setCargoAssinatura] = React.useState("");
+    const [titulo, setTitulo] = React.useState("");
 
     React.useEffect(() => {
         if (logo) {
@@ -69,6 +70,7 @@ export default function ModeloCertificado({api, token}: ModeloCertificadoProps) 
         const formData = new FormData();
         formData.append('nome_assinatura', nomeAssinatura);
         formData.append('cargo_assinatura', cargoAssinatura);
+        formData.append('titulo', titulo);
         if (background) {
             formData.append('imagem_fundo', background);
         }
@@ -94,8 +96,8 @@ export default function ModeloCertificado({api, token}: ModeloCertificadoProps) 
                 progress: undefined,
             });
             await router.push('/');
-        }).catch((err: any) => {
-            for (const v of Object.values(err.response.data)) {
+        }).catch((err: AxiosError) => {
+            for (const v of Object.values(err.response!.data)) {
                 console.log(v);
                 toast.error(`${v}`, {
                     position: "top-right",
@@ -129,6 +131,15 @@ export default function ModeloCertificado({api, token}: ModeloCertificadoProps) 
                 <Form method={"POST"} onSubmit={handleSubmit}>
                     <div className={"mt-3 " + styles.inner}>
                         <Row className={"mb-3"}>
+                            <FormGroup className={'mb-3'}>
+                                <FormLabel htmlFor={"titulo"}>Título</FormLabel>
+                                <FormControl
+                                    id={"titulo"}
+                                    type={"text"}
+                                    value={titulo}
+                                    onChange={e => setTitulo(e.target.value)}
+                                    required={true}/>
+                            </FormGroup>
 
                             <FormGroup className={"mb-3"}>
                                 <FormLabel htmlFor={"logo"}>Logo</FormLabel>
