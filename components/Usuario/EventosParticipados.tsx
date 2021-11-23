@@ -1,70 +1,81 @@
 import styles from "./Usuario.module.css";
-import {Accordion, Card, Col, Row} from "react-bootstrap";
-import ReactTooltip from "react-tooltip";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCheckCircle} from "@fortawesome/free-regular-svg-icons/faCheckCircle";
+import {Accordion, Button, Card, Col, Row} from "react-bootstrap";
 import React from "react";
 import {Evento} from "@types";
+import {motion} from "framer-motion";
 
 export interface EventosParticipadosProps {
     eventos_participados: Evento[];
     CustomToggle: any;
     id_usuario: number;
+    handleEnviaCertificadoEmail: (id_usuario: number) => void;
 }
 
-export default function EventosParticipados({eventos_participados, CustomToggle, id_usuario}: EventosParticipadosProps) {
+export default function EventosParticipados({
+                                                eventos_participados,
+                                                CustomToggle,
+                                                id_usuario,
+                                                handleEnviaCertificadoEmail
+                                            }: EventosParticipadosProps) {
+    const easing = [0.6, -0.05, 0.01, 0.99];
+    const fadeInUp = {
+        initial: {
+            y: 60,
+            opacity: 0,
+        },
+        animate: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                duration: 0.6,
+                ease: easing
+            }
+        },
+    }
     return (
         <Accordion>
-            {eventos_participados.map(e => {
-                return <Card className={"mb-3"} key={e.id}>
-                    <Card.Header style={{background: "transparent", paddingBottom: "0"}}>
-                        <div className={"d-flex flex-row bd-highlight"}>
-                            <div className={"bd-highlight p-2"}>
-                                {e.nome}
-                            </div>
-
-                            <div className={"ms-auto bd-highlight flex-shrink"}>
-                                <CustomToggle eventKey={e.id}/>
-
-                            </div>
-                        </div>
-                    </Card.Header>
-                    {/* @ts-ignore*/}
-                    <Accordion.Collapse eventKey={e.id ?? ""}>
+            {eventos_participados.map(e => (
+                <motion.div variants={fadeInUp}
+                            whileHover={{scale: 1.05}}
+                            whileTap={{scale: 0.95}}
+                            className={"col-xxl-3 col-lg-4 col-md-3 col-sm-1 " + styles.eventos} key={e.id}>
+                    <Card>
+                        <Card.Header>
+                            {e.nome}
+                        </Card.Header>
                         <Card.Body>
+                            <Accordion>
+                                <div className={"d-flex justify-content-center "}>
+                                    <CustomToggle eventKey={e.id!.toString()}/>
+                                </div>
 
-                            {e.atividades.map(a => {
-                                    let u = a.users?.find((u) => {
-                                        return u.id === id_usuario
-                                    });
+                                <Accordion.Collapse eventKey={e.id!.toString()}>
+                                    <>
+                                        <hr/>
+                                        <Card.Body>
+                                            {e.atividades.map(a =>
+                                                <Row key={a.id} className={"mb-2"}>
+                                                    <Col sm={"auto"} md={"auto"} lg={"auto"}>
+                                                        <span className={"p-2"}>{a.nome}</span>
+                                                        <Button className={"mb-2"} variant={"outline-primary"}
+                                                                onClick={async () => {
+                                                                    await handleEnviaCertificadoEmail(a.id!);
+                                                                }}>
+                                                            Envia certificado
+                                                        </Button>
+                                                    </Col>
 
-                                    return <Row key={a.id} className={"mb-2"}>
-                                        <Col>
-                                            <span>{a.nome}</span>
-                                            <ReactTooltip id='global' aria-haspopup='true' effect="solid"
-                                                          type={"info"}>
-                                                Certificado gerado
-
-                                            </ReactTooltip>
-                                            {
-                                                u?.pivot?.participou === 1 ?
-                                                    <a data-tip={a.id} data-for='global' className={"ms-2"}>
-                                                        <FontAwesomeIcon icon={faCheckCircle}
-                                                                         color={"green"}/>
-                                                    </a> : <span/>
-
-                                            }
-                                            <hr/>
-                                        </Col>
-
-                                    </Row>
-                                }
-                            )}
-
+                                                </Row>
+                                            )}
+                                        </Card.Body>
+                                    </>
+                                </Accordion.Collapse>
+                            </Accordion>
                         </Card.Body>
-                    </Accordion.Collapse>
-                </Card>
-            })}
+                    </Card>
+                </motion.div>
+
+            ))}
 
         </Accordion>
     );
