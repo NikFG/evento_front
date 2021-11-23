@@ -23,12 +23,30 @@
 }
 
 .botaoExpand {
-    margin-left: 15px;
     bottom: 0.5rem;
     -webkit-transition: all 0.15s ease-out 0s;
     -moz-transition: all 0.15s ease-out 0s;
     -ms-transition: all 0.15s ease-out 0s;
     -o-transition: all 0.15s ease-out 0s;
     transition: all 0.15s ease-out 0s;
+    width: auto;
+}
+
+.eventos {
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+
+}
+
+.eventos:hover {
+
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
 
 }
