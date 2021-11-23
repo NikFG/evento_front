@@ -1,17 +1,24 @@
 import Navbar from "@components/Navbar";
 import Usuario from "@components/Usuario";
 import {GetServerSideProps, InferGetServerSidePropsType} from "next";
-import {Certificado, Evento, User} from "@types";
+import {Certificado, Evento, Instituicao, ModeloCertificado, User} from "@types";
 import {parseCookies} from 'nookies';
 import React from "react";
 import axios from "axios";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const axios = require('axios');
-    const cookies = parseCookies(context)
-    const token = cookies.USER_TOKEN;
-    const api = process.env.API_SERVER;
+    const cookies = parseCookies(context, {
+        path: '/',
+        maxAge: 3600,
+        sameSite: 'strict',
+        secure: true
 
+    })
+    const token = cookies.USER_TOKEN;
+    console.log({cookies})
+
+    const api = process.env.API_SERVER;
     let res = await axios.get(api + "/eventos/user", {
         headers: {
             Authorization: `Bearer ${token}`
@@ -35,7 +42,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             Authorization: `Bearer ${token}`
         }
     });
+
     const user: User = res.data;
+    res = await axios.get(`${api}/instituicao/user`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    const instituicao: Instituicao = res.data;
+    res = await axios.get(`${api}/modelos`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    const modelos: ModeloCertificado[] = res.data;
+    console.log({modelos})
     return {
         props: {
             eventos_participados,
@@ -43,7 +64,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             certificados,
             api,
             token,
-            user
+            user,
+            instituicao,
+            modelos
 
         }
     }
@@ -51,7 +74,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 export default function UsuarioPage({
                                         eventos_participados,
-                                        eventos_criados, certificados, api, token, user
+                                        eventos_criados, certificados, api, token, user, instituicao, modelos
                                     }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
     return (
@@ -64,6 +87,8 @@ export default function UsuarioPage({
                 token={token}
                 api={api}
                 user={user}
+                instituicao={instituicao}
+                modelos={modelos}
             />
         </>
     );
