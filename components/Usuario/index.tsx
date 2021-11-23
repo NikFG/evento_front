@@ -5,18 +5,13 @@ import {
     AccordionContext,
     Button,
     Card,
-    Col,
-    Container,
-    Row, useAccordionButton
+    Container, Row,
+    useAccordionButton
 } from "react-bootstrap";
-import {faEdit} from "@fortawesome/free-solid-svg-icons/faEdit";
-import {faTrash} from "@fortawesome/free-solid-svg-icons/faTrash";
-import {faCheckCircle} from "@fortawesome/free-regular-svg-icons/faCheckCircle";
-import {faGithub, faTwitter, faFacebook, faInstagram, faGoogle} from "@fortawesome/free-brands-svg-icons";
+
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import InputMask from "react-input-mask";
-import Image from "next/image";
-import {Evento, User, Certificado} from "@types";
+
+import {Evento, User, Certificado, Instituicao, ModeloCertificado} from "@types";
 import {useRouter} from "next/router";
 import ReactTooltip from 'react-tooltip';
 import {destroyCookie} from "nookies";
@@ -24,6 +19,11 @@ import Perfil from "@components/Usuario/Perfil";
 import MeusEventos from "@components/Usuario/MeusEventos";
 import EventosParticipados from "@components/Usuario/EventosParticipados";
 import UserCertificado from "@components/Usuario/UserCertificado";
+import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
+import {toast, ToastContainer} from "react-toastify";
+import {AxiosResponse} from "axios";
+import InstituicaoUser from "@components/Usuario/InstituicaoUser";
+import ModeloCertificadoUser from "@components/Usuario/ModeloCertificadoUser";
 
 
 export interface UsuarioProps {
@@ -33,11 +33,22 @@ export interface UsuarioProps {
     token: string
     api: string
     user: User
+    instituicao: Instituicao
+    modelos: ModeloCertificado[]
 
 }
 
 
-export default function Usuario({eventos_criados, eventos_participados, certificados, token, api, user}: UsuarioProps) {
+export default function Usuario({
+                                    eventos_criados,
+                                    eventos_participados,
+                                    certificados,
+                                    token,
+                                    api,
+                                    user,
+                                    instituicao,
+                                    modelos
+                                }: UsuarioProps) {
 
     const router = useRouter();
 
@@ -79,62 +90,233 @@ export default function Usuario({eventos_criados, eventos_participados, certific
         await router.push('/');
     }
 
+    async function handleAddParticipante(email: string) {
+        const axios = require('axios');
+        await axios.post(`${api}/instituicao/addUsuario`, {
+            email
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+
+            }
+        }).then(async (r: AxiosResponse) => {
+            console.log(r);
+            toast.success(`Usuário cadastrado com sucesso!`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        })
+            .catch(((error: any) => {
+                console.error({error});
+            }))
+
+
+    }
+
+    async function atualizarDados(id: number, nome: string, telefone: string, password?: string, password_confirmation?: string) {
+        const axios = require('axios');
+        await axios.post(`${api}/user/update/${id}`, {
+            nome,
+            telefone,
+            password,
+            password_confirmation
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+
+            }
+        }).then(async (r: AxiosResponse) => {
+            console.log(r);
+            toast.success(`Dados atualizados com sucesso!`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            await router.push('/usuario');
+        })
+            .catch(((error: any) => {
+                for (const v of Object.values(error.response.data)) {
+                    console.error(v);
+                    toast.error(`${v}`, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }
+            }))
+    }
+
+    async function handleEditarInstituicao(nome: string, endereco: string, cidade: string) {
+        const axios = require('axios');
+        const formData = new FormData();
+        formData.append('nome', nome);
+        formData.append('endereco', endereco);
+        formData.append('cidade', cidade);
+        await axios.post(`${api}/instituicao/update/${instituicao.id}`, formData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+
+                }
+            }).then(async (r: AxiosResponse) => {
+            toast.success(`Dados atualizados com sucesso!`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            await router.push('/usuario');
+        }).catch(((error: any) => {
+            for (const v of Object.values(error.response.data)) {
+                console.error(v);
+                toast.error(`${v}`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
+        }));
+    }
+
+    async function handleEnviaCertificadoEmail(id: number) {
+        const axios = require('axios');
+        await axios.post(`${api}/certificados/${id}/gerarByAtividade`, null, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+
+            }
+        }).then(async (r: AxiosResponse) => {
+            toast.success(`Certificado enviado com sucesso!`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }).catch(((error: any) => {
+            for (const v of Object.values(error.response.data)) {
+                console.error(v);
+                toast.error(`${v}`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
+        }));
+    }
+
     return (
-        <Container>
-            <Tabs selectedTabClassName={styles.tabSelecionada}>
-                <TabList>
-                    <Tab>
-                        <Card className={styles.tab}>
-                            Perfil
-                        </Card>
-                    </Tab>
-                    <Tab>
-                        <Card className={styles.tab}>
+        <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme={"colored"}
+                style={{width: "500px", maxWidth: "1000px", whiteSpace: "pre-line"}}/>
+            <Container>
+                <Row>
+                    <Tabs selectedTabClassName={styles.tabSelecionada}>
+                        <TabList>
+                            <Tab>
+                                <Card className={styles.tab}>
+                                    Perfil
+                                </Card>
+                            </Tab>
+                            <Tab>
+                                <Card className={styles.tab}>
+                                    Meus eventos
+                                </Card>
+                            </Tab>
+                            <Tab>
+                                <Card className={styles.tab}>
+                                    Eventos participados
+                                </Card>
+                            </Tab>
+                            <Tab>
+                                <Card className={styles.tab}>
+                                    Certificados
+                                </Card>
+                            </Tab>
+                            <Tab>
+                                <Card className={styles.tab}>
+                                    Instituição
+                                </Card>
+                            </Tab>
+                            <Tab>
+                                <Card className={styles.tab}>
+                                    Modelos de certificado
+                                </Card>
+                            </Tab>
+                        </TabList>
 
-                            Meus eventos
-                        </Card>
-                    </Tab>
-                    <Tab>
-                        <Card className={styles.tab}>
+                        {/*Perfil*/}
+                        <TabPanel>
+                            <Perfil logout={logout} user={user!} atualizarDados={atualizarDados}/>
+                        </TabPanel>
 
-                            Eventos participados
-                        </Card>
-                    </Tab>
-                    <Tab>
-                        <Card className={styles.tab}>
-                            Certificados
-                        </Card>
-                    </Tab>
-                </TabList>
+                        {/*Meus eventos*/}
+                        <TabPanel>
+                            <MeusEventos eventos_criados={eventos_criados} handleDelete={handleDelete}
+                                         CustomToggle={CustomToggle} handleCertificado={handleCertificado}
+                                         handleEdit={handleEdit} handleModelo={handleModelo}/>
+                        </TabPanel>
 
-                {/*Perfil*/}
-                <TabPanel>
-                    <Perfil logout={logout} user={user!}/>
-                </TabPanel>
+                        {/*Eventos participados*/}
+                        <TabPanel>
+                            <EventosParticipados eventos_participados={eventos_participados}
+                                                 CustomToggle={CustomToggle}
+                                                 id_usuario={user?.id}
+                                                 handleEnviaCertificadoEmail={handleEnviaCertificadoEmail}/>
+                        </TabPanel>
 
-                {/*Meus eventos*/}
-                <TabPanel>
-                    <MeusEventos eventos_criados={eventos_criados} handleDelete={handleDelete}
-                                 CustomToggle={CustomToggle} handleCertificado={handleCertificado}
-                                 handleEdit={handleEdit} handleModelo={handleModelo}/>
-                </TabPanel>
+                        {/*Certificados*/}
+                        <TabPanel>
+                            <UserCertificado imprimir={imprimir} certificados={certificados}/>
+                        </TabPanel>
+                        <TabPanel>
+                            <InstituicaoUser instituicao={instituicao} handleAddParticipante={handleAddParticipante}
+                                             handleEditarInstituicao={handleEditarInstituicao}/>
+                        </TabPanel>
+                        <TabPanel>
+                            <ModeloCertificadoUser modelos={modelos} CustomToggle={CustomToggle}/>
+                        </TabPanel>
+                    </Tabs>
+                </Row>
+            </Container>
 
-                {/*Eventos participados*/}
-                <TabPanel>
-                    <EventosParticipados eventos_participados={eventos_participados} CustomToggle={CustomToggle}
-                                         id_usuario={user?.id}/>
-                </TabPanel>
-
-                {/*Certificados*/}
-                <TabPanel>
-
-                    <UserCertificado imprimir={imprimir} certificados={certificados}/>
-
-                </TabPanel>
-            </Tabs>
-
-        </Container>
-
+        </>
     );
 }
 
@@ -151,9 +333,11 @@ function CustomToggle({children, eventKey, callback}: any) {
     return (
         <button
             type="button"
-            className={"accordion-button  " + (isCurrentEventKey ? "" : "collapsed ") + styles.botaoExpand}
+            className={"accordion-button " + (isCurrentEventKey ? "" : "collapsed ") + styles.botaoExpand}
             onClick={decoratedOnClick}
-        />
+        >
+            <span className={"mx-2"}>{isCurrentEventKey ? "Recolher" : "Expandir"}</span>
+        </button>
 
     );
 }
