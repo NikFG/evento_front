@@ -63,6 +63,7 @@ export interface Instituicao {
     longitude: string
     logo?: string
     administrador?: number
+    cidade: string
 }
 
 export interface User {
@@ -93,4 +94,11 @@ export interface Certificado {
     data_emissao: string
     nome_evento: string
     horas: number
+}
+
+export interface ModeloCertificado {
+    id: number
+    titulo: string
+    certificados?: Certificado[]
+
 }
