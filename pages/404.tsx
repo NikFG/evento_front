@@ -1,3 +1,3 @@
 export default function Custom404() {
-    return <h1>Erro</h1>
+    return <h1>Erro 404</h1>
 }

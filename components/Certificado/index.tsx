@@ -5,13 +5,20 @@ import {Row, Col} from "react-bootstrap";
 
 
 export interface CertificadoProps {
-    titulo: string
     logo: string | undefined
-    assinaturas: string
     background: string | undefined
+    assinatura: string | undefined
+    nome_assinatura: string
+    cargo_assinatura: string
 }
 
-export default function CertificadoComponente({titulo, logo, assinaturas, background}: CertificadoProps) {
+export default function CertificadoComponente({
+                                                  logo,
+                                                  background,
+                                                  assinatura,
+                                                  nome_assinatura,
+                                                  cargo_assinatura
+                                              }: CertificadoProps) {
 
 
     return (
@@ -25,9 +32,6 @@ export default function CertificadoComponente({titulo, logo, assinaturas, backgr
                             <div style={{height: "100px", width: "100%", border: "1px solid black"}}>Cabeçalho</div>
                         }
                     </Row>
-                    <div className={"row " + styles.titulo}>
-                        {titulo}
-                    </div>
                     <div className={"row mt-2 " + styles.certificado}>
                         CERTIFICADO
                     </div>
@@ -42,29 +46,21 @@ export default function CertificadoComponente({titulo, logo, assinaturas, backgr
                         Cidade, XX de mês de XXXX.
                     </div>
                     <Row className={styles.assinaturasRow}>
-                        {Array.from({length: parseInt(assinaturas)}).map((_, i) => {
-
-                            return <>
-                                {
-                                    parseInt(assinaturas) === 1 ? <div className={"col-4"}/>
-                                        : parseInt(assinaturas) === 2 ? <div className={"col-2"}/>
-                                            : <div className={"col-1"} style={{marginLeft: "-10px"}}/>
+                        <div className={"col-5"}/>
+                        <div className={"col-3"}>
+                            <Row className={styles.assinatura}>
+                                {assinatura ?
+                                    <Image src={assinatura} width={50} height={50} objectFit={"fill"} alt={"assinatura"}/>
+                                    : <div>Assinatura</div>
                                 }
-
-                                <div className={"col-3"}>
-                                    <div className={"row " + styles.assinatura}>
-                                        a
-                                    </div>
-                                    <div className={"row"}>
-                                        NOME_PESSOA
-                                    </div>
-                                    <div className={"row " + styles.cargo}>
-                                        CARGO
-                                    </div>
-                                </div>
-
-                            </>
-                        })}
+                            </Row>
+                            <Row className={""}>
+                                {nome_assinatura}
+                            </Row>
+                            <Row className={styles.cargo}>
+                                {cargo_assinatura}
+                            </Row>
+                        </div>
                     </Row>
                 </div>
 

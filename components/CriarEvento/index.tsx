@@ -1,14 +1,13 @@
 import styles from "./CriarEvento.module.css";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPlusCircle, faEdit, faTrash, faCalendar, faClock} from "@fortawesome/free-solid-svg-icons";
-import Navbar from "@components/Navbar";
+import {faCalendar, faClock, faEdit, faPlus, faPlusCircle, faTrash} from "@fortawesome/free-solid-svg-icons";
 import Select from 'react-select';
 import React from "react";
 import {Atividade, Categoria, Evento, TipoAtividade} from "@types";
 import {AxiosResponse} from "axios";
-import {parseCookies} from "nookies";
 import {useRouter} from "next/router";
 import {toast, ToastContainer} from "react-toastify";
+import {Button, Col, Row} from "react-bootstrap";
 
 
 interface CategoriaProps {
@@ -36,11 +35,13 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     const [data, setData] = React.useState("");
     const [inicio, setInicio] = React.useState("");
     const [fim, setFim] = React.useState("");
-    const [nomeApresentador, setNomeApresentador] = React.useState("");
+    // const [nomeApresentador, setNomeApresentador] = React.useState("");
     const [tipo, setTipo] = React.useState<{ value: number, label: string }>();
     const [descricaoAtividade, setDescricaoAtividade] = React.useState("");
-    const [emailApresentador, setEmailApresentador] = React.useState("");
+    // const [emailApresentador, setEmailApresentador] = React.useState("");
     const [localAtividade, setLocalAtividade] = React.useState("");
+    const [apresentadoresNome, setApresentadoresNome] = React.useState<Array<string>>([""]);
+    const [apresentadoresEmail, setApresentadoresEmail] = React.useState<Array<string>>([""]);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -61,7 +62,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
         const formData = new FormData();
         for (const [k, v] of Object.entries(evento)) {
             if (k == "atividades") {
-                formData.append(k, JSON.stringify(v))
+                formData.append(k, JSON.stringify(v));
             } else
                 formData.append(k, v)
         }
@@ -112,11 +113,10 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
         setInicio("")
         setFim("")
         setTipo({value: 0, label: ""})
-        setNomeApresentador("")
         setDescricaoAtividade("")
-        setEmailApresentador("");
         setLocalAtividade("");
-
+        setApresentadoresNome([""]);
+        setApresentadoresEmail([""]);
     }
 
     function handleAtividadeSubmit() {
@@ -134,8 +134,12 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                 local: localAtividade,
                 tipo_atividade_id: tipo?.value ?? 0,
                 data,
-                nome_apresentador: nomeApresentador,
-                email_apresentador: emailApresentador
+                apresentadores: apresentadoresNome.map((nome, i) => {
+                    return {
+                        nome,
+                        email: apresentadoresEmail[i]
+                    }
+                })
             }
             let atividades_temp = atividades.find((atv) => atv.id == idAtividade);
             if (atividades_temp) {
@@ -161,8 +165,12 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                 local: localAtividade,
                 tipo_atividade_id: tipo?.value ?? 0,
                 data,
-                nome_apresentador: nomeApresentador,
-                email_apresentador: emailApresentador
+                apresentadores: apresentadoresNome.map((nome, i) => {
+                    return {
+                        nome,
+                        email: apresentadoresEmail[i]
+                    }
+                })
             }
             setAtividades(atividades => [...atividades, a]);
         }
@@ -290,7 +298,8 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                         <h3>Cadastro de atividades</h3>
                         <div className={"row"}>
                             <div className={"col-12"}>
-                                <button className={"btn mb-2"} data-bs-toggle="modal" data-bs-target="#modal-atividade" type={"button"}>
+                                <button className={"btn mb-2"} data-bs-toggle="modal" data-bs-target="#modal-atividade"
+                                        type={"button"}>
                                     <FontAwesomeIcon icon={faPlusCircle}/> Adicionar atividade
                                 </button>
                                 <div className="modal fade" id="modal-atividade" tabIndex={-1}
@@ -306,7 +315,8 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                             {/*Corpo do modal*/}
                                             <div className="modal-body">
                                                 <div className={"form-group"}>
-                                                    <input className={"form-control mb-3"} value={nomeAtividade} placeholder={"Nome da atividade"}
+                                                    <input className={"form-control mb-3"} value={nomeAtividade}
+                                                           placeholder={"Nome da atividade"}
                                                            onChange={(e) => {
                                                                setNomeAtividade(e.target.value)
                                                            }}/>
@@ -358,16 +368,74 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                                        value={localAtividade} onChange={(e) => {
                                                     setLocalAtividade(e.target.value)
                                                 }}/>
-                                                <input className={"form-control mb-3"} type={"text"}
-                                                       placeholder={"Apresentador"}
-                                                       value={nomeApresentador} onChange={(e) => {
-                                                    setNomeApresentador(e.target.value)
-                                                }}/>
-                                                <input className={"form-control mb-3"} type={"email"}
-                                                       placeholder={"Email apresentador"}
-                                                       value={emailApresentador} onChange={(e) => {
-                                                    setEmailApresentador(e.target.value)
-                                                }}/>
+
+                                                {apresentadoresNome.map((a, i) => {
+                                                    return (
+                                                        <>
+                                                            <Row key={i}>
+                                                                <Col lg={12} md={12} sm={12}>
+                                                                    <input
+                                                                        className={"form-control mb-3"} type={"text"}
+                                                                        placeholder={`Apresentador ${i + 1} nome`}
+                                                                        value={apresentadoresNome[i]}
+                                                                        onChange={(e) => {
+                                                                            setApresentadoresNome(apresentadoresNome.map((a, j) => {
+                                                                                if (i === j) {
+                                                                                    return e.target.value
+                                                                                } else {
+                                                                                    return a
+                                                                                }
+                                                                            }))
+                                                                        }}/>
+                                                                </Col>
+
+                                                            </Row>
+                                                            <Row key={i}>
+                                                                <Col lg={12} md={12} sm={12}>
+                                                                    <input
+                                                                        className={"form-control mb-3"} type={"text"}
+                                                                        placeholder={`Apresentador ${i + 1} email`}
+                                                                        value={apresentadoresEmail[i]}
+                                                                        onChange={(e) => {
+                                                                            setApresentadoresEmail(apresentadoresEmail.map((a, j) => {
+                                                                                if (i === j) {
+                                                                                    return e.target.value
+                                                                                } else {
+                                                                                    return a
+                                                                                }
+                                                                            }))
+                                                                        }}/>
+                                                                </Col>
+                                                            </Row>
+                                                            <div className={"d-flex justify-content-center mb-3"}>
+                                                                <Button variant={'danger'} onClick={() => {
+                                                                    setApresentadoresNome(apresentadoresNome.filter((a, j) => {
+                                                                        return i !== j
+                                                                    }));
+                                                                    setApresentadoresEmail(apresentadoresEmail.filter((a, j) => {
+                                                                        return i !== j
+                                                                    }));
+                                                                }
+                                                                }>
+                                                                    <FontAwesomeIcon icon={faTrash}/> Exluir
+                                                                    apresentador
+                                                                </Button>
+                                                            </div>
+                                                        </>
+                                                    )
+                                                })}
+
+                                                <hr/>
+                                                <div className={"d-flex justify-content-center mb-3"}>
+                                                    <Button onClick={() => {
+                                                        setApresentadoresNome([...apresentadoresNome, ''])
+                                                        setApresentadoresEmail([...apresentadoresEmail, ''])
+                                                    }}>
+                                                        <FontAwesomeIcon icon={faPlus} className={"me-1"}/> Adicionar
+                                                        apresentador
+                                                    </Button>
+                                                </div>
+
                                                 <textarea className="form-control mb-3" id="descricao_atividade"
                                                           rows={4}
                                                           value={descricaoAtividade}
@@ -397,7 +465,8 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                         {a.nome}
                                     </div>
                                     <div className={"col-1 mx-2"}>
-                                        <button className={"btn btn-outline-secondary"} data-bs-toggle="modal" type={"button"}
+                                        <button className={"btn btn-outline-secondary"} data-bs-toggle="modal"
+                                                type={"button"}
                                                 data-bs-target="#modal-atividade"
                                                 onClick={() => {
                                                     setNomeAtividade(a.nome);
@@ -416,8 +485,8 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                                     setInicio(a.horario_inicio);
                                                     setFim(a.horario_fim);
                                                     setIdAtividade(a.id ?? 0)
-                                                    setNomeApresentador(a.nome_apresentador)
-                                                    setEmailApresentador(a.email_apresentador)
+                                                    setApresentadoresNome(a.apresentadores.map((ap) => ap.nome));
+                                                    setApresentadoresEmail(a.apresentadores.map((ap) => ap.email));
                                                 }}>
                                             <FontAwesomeIcon icon={faEdit}/>
                                         </button>

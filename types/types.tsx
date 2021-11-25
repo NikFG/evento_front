@@ -10,9 +10,17 @@ export interface Atividade {
     descricao: string
     evento?: Evento
     tipo_atividade_id: number
-    nome_apresentador: string
-    email_apresentador: string
+    apresentadores: Apresentador[]
     users?: User[]
+    apresentador_id?: number
+}
+
+export interface Apresentador {
+    id?: number
+    nome: string
+    email: string
+    user_id?: number
+
 }
 
 export interface Categoria {
@@ -56,6 +64,7 @@ export interface Instituicao {
     longitude: string
     logo?: string
     administrador?: number
+    cidade: string
 }
 
 export interface User {
@@ -86,4 +95,11 @@ export interface Certificado {
     data_emissao: string
     nome_evento: string
     horas: number
+}
+
+export interface ModeloCertificado {
+    id: number
+    titulo: string
+    certificados?: Certificado[]
+
 }

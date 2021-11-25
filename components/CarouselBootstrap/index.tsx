@@ -2,10 +2,11 @@ import styles from "./CarouselBootstrap.module.css";
 import Carousel from "react-bootstrap/Carousel";
 import Image from "next/image";
 import React from "react";
+import {Imagem} from "@types";
 
 
 export interface CarouselProps {
-    imagens: string[]
+    imagens: Imagem[]
 }
 
 export default function CarouselBootstrap({imagens}: CarouselProps) {
@@ -22,7 +23,7 @@ export default function CarouselBootstrap({imagens}: CarouselProps) {
             >
                 {imagens.map((i, index) => {
                     return <Carousel.Item key={index}>
-                        <Image src={`data:image/jpeg;base64,${i}`} width={1600} height={800}
+                        <Image src={i.imagem} width={1600} height={800}
                                blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="}
                                alt={"Imagem do evento"}/>
                     </Carousel.Item>

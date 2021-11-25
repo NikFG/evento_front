@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export default function ModeloCertificadoPage({api,token}: InferGetServerSidePropsType<typeof getServerSideProps>){
     return (
         <>
-            <Navbar api={api} titulo={"Gerar certificado"}/>
+            <Navbar api={api} titulo={"Criar modelo certificado"}/>
             <ModeloCertificado api={api} token={token}/>
         </>
     );

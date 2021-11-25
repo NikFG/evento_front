@@ -10,6 +10,7 @@ import {Fab} from 'react-tiny-fab';
 import {useRouter} from "next/router";
 import CarouselBootstrap from "@components/CarouselBootstrap";
 import {isMobile} from 'react-device-detect';
+
 export interface EventoProps {
     evento: Evento,
     api: string
@@ -17,7 +18,7 @@ export interface EventoProps {
 
 
 export default function EventoComp({evento, api}: EventoProps) {
-    console.log(isMobile)
+
     const router = useRouter();
     let atividades = evento.atividades;
     const [tabs, setTabs] = React.useState(Array());
@@ -50,7 +51,7 @@ export default function EventoComp({evento, api}: EventoProps) {
                             </button>
                         </div>
                         <div className={styles.divImagem}>
-                            <Image src={`data:image/jpeg;base64,${evento.banner}`} width={2000} height={1000}
+                            <Image src={evento.banner!} width={2000} height={1000}
                                    className={styles.imagem}
                                    objectFit={'cover'}
                                    objectPosition={'center'}
@@ -75,7 +76,7 @@ export default function EventoComp({evento, api}: EventoProps) {
                 </section>
                 {
                     //@ts-ignore
-                    evento.imagens_str?.length > 0 ?
+                    evento.imagens?.length > 0 ?
                         <section id={"imagens do evento"} className={"mt-3 mb-3"}>
                             <div className={"container"}>
                                 <div className={"row"}>
@@ -83,8 +84,7 @@ export default function EventoComp({evento, api}: EventoProps) {
                                 </div>
                                 <div className={"row"}>
                                     {/*<CarouselCustom imagens={evento.imagens ?? []}/>*/}
-
-                                    <CarouselBootstrap imagens={evento.imagens_str ?? []}/>
+                                    <CarouselBootstrap imagens={evento.imagens!}/>
                                 </div>
                             </div>
                         </section> : <span/>}
@@ -166,7 +166,7 @@ export default function EventoComp({evento, api}: EventoProps) {
 
 
                 <div className={styles.imagem}>
-                    <Image src={`data:image/jpeg;base64,${evento.banner}`} width={1000} height={1000}
+                    <Image src={evento.banner!} width={1000} height={1000}
                            blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="}
                            alt={"banner do evento"}
                     />
@@ -198,14 +198,21 @@ export default function EventoComp({evento, api}: EventoProps) {
                                     return <div className={"row " + styles.eventContent} key={a2.id}>
                                         <div className="col-sm-12 col-md-5 col-lg-3 mx-2"
                                              style={{marginTop: "30px"}}>
-                                            <div className={"container-fluid"}>
-                                                <Image src={"https://via.placeholder.com/168?text=168x168"}
-                                                       alt={"imagem de " + a2.nome_apresentador} width={168}
-                                                       height={168}/>
-                                            </div>
-                                            <div className={"row"}>
-                                                Por: {a2.nome_apresentador}
-                                            </div>
+                                            {a2.apresentadores.map(apr => {
+                                                return (
+                                                    <div key={apr.id}>
+                                                        <div className={"container-fluid"}>
+                                                            <Image src={"https://via.placeholder.com/168?text=168x168"}
+                                                                   alt={"imagem de " + apr.nome} width={168}
+                                                                   height={168}/>
+                                                        </div>
+                                                        <div className={"row mb-3"}>
+                                                            Por: {apr.nome}
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })}
+
                                         </div>
                                         <div className="col-sm-12 col-md-7 col-lg-8 media-body"
                                              style={{marginTop: "30px"}}>
