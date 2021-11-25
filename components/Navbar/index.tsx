@@ -128,13 +128,13 @@ export default function Navbar({api, titulo}: Props) {
                         </li>
                         <li className={styles.navItem}>
                             {nome ? <Link href={"/usuario"}>
-                                    <div className={styles.navLinks}>
+                                    <a className={styles.navLinks}>
                                         <Image
                                             src={`https://avatars.dicebear.com/api/initials/${nome}.svg?radius=50`}
                                             alt={"usuario"}
                                             width={35} height={35}/>
                                         <span style={{marginLeft: "5px"}}>{nome}</span>
-                                    </div>
+                                    </a>
                                 </Link>
                                 : <Link href={"/login"}>
 
