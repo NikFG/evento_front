@@ -12,6 +12,7 @@ export interface Atividade {
     tipo_atividade_id: number
     apresentadores: Apresentador[]
     users?: User[]
+    apresentador_id?: number
 }
 
 export interface Apresentador {
