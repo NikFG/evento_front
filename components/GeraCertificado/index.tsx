@@ -4,27 +4,38 @@ import React, {ChangeEvent, FormEvent} from "react";
 import FormCheckInput from "react-bootstrap/FormCheckInput";
 import FormCheckLabel from "react-bootstrap/FormCheckLabel";
 import {useRouter} from "next/router";
-import {Atividade, User} from "@types";
+import {Apresentador, Atividade, ModeloCertificado, User} from "@types";
 import {AxiosResponse} from "axios";
 import {toast, ToastContainer} from "react-toastify";
+import Select from "react-select";
+import {parseCookies} from "nookies";
+import Link from "next/link";
 
 export interface GeraCertificadoProps {
     api: string
-    atividade: Atividade
+    apresentadores: Apresentador[]
+    participantes: User[]
+    modelos: ModeloCertificado[]
 }
 
-export default function GeraCertificado({atividade, api}: GeraCertificadoProps) {
-    const [participantes, setParticipantes] = React.useState<Array<string>>([]);
+export default function GeraCertificado({apresentadores, participantes, api, modelos}: GeraCertificadoProps) {
+    const [participantesSelecionados, setParticipantesSelecionados] = React.useState<Array<string>>([]);
+    const [modelo, setModelo] = React.useState<{ label: string, value: string } | null>();
     const router = useRouter();
 
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        console.log(participantes);
         const id = router.query.id;
         const axios = require('axios');
         const formData = new FormData();
-        formData.append('participantes', JSON.stringify(participantes));
-        await axios.post(`${api}/certificados/atividade/${id}`, formData).then(async (res: AxiosResponse<any>) => {
+        formData.append('participantes', JSON.stringify(participantesSelecionados));
+        formData.append('modelo', modelo!.value);
+        const {USER_TOKEN} = parseCookies();
+        await axios.post(`${api}/certificados/atividade/${id}`, formData, {
+            headers: {
+                'Authorization': `Bearer ${USER_TOKEN}`
+            }
+        }).then(async (res: AxiosResponse<any>) => {
             await toast.success(`Participantes confirmados com sucesso!`, {
                 position: "top-right",
                 autoClose: 5000,
@@ -50,14 +61,18 @@ export default function GeraCertificado({atividade, api}: GeraCertificadoProps) 
     }
 
     function handleChange(e: ChangeEvent<HTMLInputElement>) {
-        if (participantes.includes(e.target.value)) {
-            let index = participantes.indexOf(e.target.value);
-            setParticipantes(participantes.filter((_, i) => i !== index))
+        if (participantesSelecionados.includes(e.target.value)) {
+            let index = participantesSelecionados.indexOf(e.target.value);
+            setParticipantesSelecionados(participantesSelecionados.filter((_, i) => i !== index))
         } else {
-            let p = [...participantes, e.target.value];
-            setParticipantes(p);
+            let p = [...participantesSelecionados, e.target.value];
+            setParticipantesSelecionados(p);
         }
     }
+
+    const modelosSelect = modelos.map(i => {
+        return {label: i.titulo, value: i.id.toString()}
+    });
 
     return (
         <>
@@ -74,14 +89,56 @@ export default function GeraCertificado({atividade, api}: GeraCertificadoProps) 
                 theme={"colored"}
                 style={{width: "500px", maxWidth: "1000px", whiteSpace: "pre-line"}}/>
             <Container>
+                <Row className={'mt-2'}>
+                    <Col>
+                        <h1>Selecione o modelo:</h1>
+                    </Col>
+                </Row>
+                <Row className={'mt-2'}>
+                    <Col lg={2}>
+                        <Select
+                            name={"modelo"}
+                            id={"modelo"}
+                            placeholder={"Modelo"}
+                            aria-placeholder={"Modelo"}
+                            value={modelo}
+                            isClearable={true}
+                            onChange={(e) => {
+                                setModelo(e);
+                            }}
+
+                            options={modelosSelect}
+                        />
+                    </Col>
+                    <Col>
+                        <Link href={`/certificados/modelo`}>
+                            <a className={'btn btn-primary'}>Novo modelo</a>
+                        </Link>
+                    </Col>
+                </Row>
+
+                <Row className={'mt-4'}>
+                    <Col>
+                        <h1>Selecione os participantes:</h1>
+                    </Col>
+                </Row>
                 <Row className={"mt-2"}>
                     <Col>
                         <Form method={"POST"} onSubmit={handleSubmit}>
-                            {atividade.users?.map(u => {
+                            {participantes.map((u) => {
                                 return <div className="form-check" key={u.id}>
                                     <FormCheckInput value={u.id} onChange={handleChange}/>
                                     <FormCheckLabel>
-                                        {u.nome}
+                                        Participante - {u.nome}
+                                    </FormCheckLabel>
+                                    <hr/>
+                                </div>
+                            })}
+                            {apresentadores.map((u) => {
+                                return <div className="form-check" key={u.id}>
+                                    <FormCheckInput value={u.id} onChange={handleChange}/>
+                                    <FormCheckLabel>
+                                        Apresentador - {u.nome}
                                     </FormCheckLabel>
                                     <hr/>
                                 </div>
