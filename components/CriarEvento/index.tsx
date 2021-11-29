@@ -8,6 +8,8 @@ import {AxiosResponse} from "axios";
 import {useRouter} from "next/router";
 import {toast, ToastContainer} from "react-toastify";
 import {Button, Col, Row} from "react-bootstrap";
+import Image from "next/image";
+import teste from '@images/banner_aux.jpg'
 
 
 interface CategoriaProps {
@@ -24,8 +26,10 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     const [breveEvento, setBreveEvento] = React.useState("");
     const [local, setLocal] = React.useState("");
     const [descricaoEvento, setDescricaoEvento] = React.useState("");
-    const [imagens, setImagens] = React.useState<FileList | null>();
+    const [imagens, setImagens] = React.useState<FileList>();
     const [banner, setBanner] = React.useState<File | null>();
+    const [bannerPreview, setBannerPreview] = React.useState<string>();
+    const [imagensPreview, setImagensPreview] = React.useState<Array<File> | null>();
 
 
     //certificados
@@ -195,7 +199,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     }
 
     React.useEffect(() => {
-        if (evento_edit) {
+        if (evento_edit && bannerPreview == null) {
             setBreveEvento(evento_edit.breve_descricao);
             setDescricaoEvento(evento_edit.descricao);
             setLocal(evento_edit.local);
@@ -205,10 +209,26 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                 return c.id == evento_edit.categoria_id;
 
             });
-
             setCatSelecionada({value: (cat?.id) ?? 0, label: cat?.nome ?? ""});
+
         }
-    }, []);
+        if (banner) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setBannerPreview(reader.result as string);
+            };
+            reader.readAsDataURL(banner)
+        } else {
+            // @ts-ignore
+            setBannerPreview(null);
+        }
+
+        if (imagens) {
+            const array = Array.from(imagens);
+            setImagensPreview(array);
+        }
+    }, [categorias, evento_edit, banner, bannerPreview, imagens]);
+
     return (
         <>
 
@@ -230,7 +250,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                 <form method={"POST"} onSubmit={handleSubmit}>
                     <div className={"mt-3 " + styles.inner}>
 
-                        <h3>Criar um novo evento</h3>
+                        {/*<h3>Criar um novo evento</h3>*/}
 
                         <div className="form-group mb-3">
                             <label htmlFor={"nome"} className={"form-label"}>Nome do evento</label>
@@ -241,7 +261,9 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                        setNomeEvento(e.target.value)
                                    }}
                             />
+
                         </div>
+
                         <div className={"form-group mb-3"}>
                             <label htmlFor={"categoria"} className={"form-label"}>Selecione a categoria do
                                 evento</label>
@@ -417,7 +439,8 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                                                     }));
                                                                 }
                                                                 }>
-                                                                    <FontAwesomeIcon icon={faTrash}/> Exluir
+                                                                    <FontAwesomeIcon icon={faTrash}
+                                                                                     className={"me-1"}/> Exluir
                                                                     apresentador
                                                                 </Button>
                                                             </div>
@@ -487,6 +510,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                                     setIdAtividade(a.id ?? 0)
                                                     setApresentadoresNome(a.apresentadores.map((ap) => ap.nome));
                                                     setApresentadoresEmail(a.apresentadores.map((ap) => ap.email));
+                                                    setLocalAtividade(a.local)
                                                 }}>
                                             <FontAwesomeIcon icon={faEdit}/>
                                         </button>
@@ -510,6 +534,25 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                             <input className="form-control" type="file" id="formFile" onChange={e => {
                                 setBanner(e.target.files?.[0]);
                             }}/>
+                            <Row>
+                                {banner ?
+
+                                    <Image src={bannerPreview ? bannerPreview : teste}
+                                           objectFit={'cover'}
+                                           objectPosition={'center'}
+                                           className={"mt-2 ms-4"}
+                                           height={400}
+                                           width={400}
+                                           alt={'banner'}/>
+                                    : evento_edit &&
+                                    <Image src={evento_edit.banner!}
+                                           objectFit={'cover'}
+                                           objectPosition={'center'}
+                                           className={"mt-2 ms-4"}
+                                           height={400}
+                                           width={400}
+                                           alt={'banner'}/>}
+                            </Row>
                         </div>
 
                         <div className="mb-3">
@@ -517,10 +560,23 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                 exibição</label>
                             <input className="form-control" type="file" id="formFileMultiple" multiple
                                    onChange={(e) => {
-
-                                       setImagens(e.target.files)
+                                       if (e.target.files) {
+                                           // @ts-ignore
+                                           setImagens([...e.target.files]);
+                                       }
                                    }}/>
                         </div>
+                        {imagensPreview ? imagensPreview.map((i, index) => {
+                            return (
+                                <Row key={index + 800}>
+                                    <Image src={URL.createObjectURL(i)} objectFit={'cover'}
+                                           objectPosition={'center'}
+                                           className={"mt-2 ms-4"}
+                                           height={400}
+                                           width={400}
+                                           alt={'imagem ' + index}/>
+                                </Row>)
+                        }) : null}
                     </div>
 
                     <div className={"mt-3 " + styles.inner}>

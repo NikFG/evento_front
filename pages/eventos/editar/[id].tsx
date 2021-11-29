@@ -4,6 +4,7 @@ import {Categoria, Evento, TipoAtividade} from "@types";
 
 import {ParsedUrlQuery} from "querystring";
 import {parseCookies} from "nookies";
+import Navbar from "@components/Navbar";
 
 interface IParams extends ParsedUrlQuery {
     id: string
@@ -51,6 +52,11 @@ export default function EditarEventoPage({
                                              api, evento, token
                                          }: InferGetStaticPropsType<typeof getStaticProps>) {
     return (
-        <CriarEvento categorias={categorias} api={api} tipo_atividades={tipo_atividades} evento_edit={evento}/>
+
+        <>
+            <Navbar titulo={"Editar evento"} api={api}/>
+            <CriarEvento categorias={categorias} api={api}
+                         tipo_atividades={tipo_atividades}
+                         evento_edit={evento}/></>
     );
 }
