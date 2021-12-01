@@ -19,16 +19,18 @@ export interface GeraCertificadoProps {
 }
 
 export default function GeraCertificado({apresentadores, participantes, api, modelos}: GeraCertificadoProps) {
-    const [participantesSelecionados, setParticipantesSelecionados] = React.useState<Array<string>>([]);
+    const [participantesSelecionados, setParticipantesSelecionados] = React.useState<Array<string>>([...participantes.map(p => p.id.toString())]);
+    const [apresentadoresSelecionados, setApresentadoresSelecionados] = React.useState<Array<string>>([...apresentadores.map(a => a.id!.toString())]);
     const [modelo, setModelo] = React.useState<{ label: string, value: string } | null>();
     const router = useRouter();
 
-    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
+    async function handleSubmit() {
+
         const id = router.query.id;
         const axios = require('axios');
         const formData = new FormData();
         formData.append('participantes', JSON.stringify(participantesSelecionados));
+        formData.append('apresentadores', JSON.stringify(apresentadoresSelecionados));
         formData.append('modelo', modelo!.value);
         const {USER_TOKEN} = parseCookies();
         await axios.post(`${api}/certificados/atividade/${id}`, formData, {
@@ -60,7 +62,17 @@ export default function GeraCertificado({apresentadores, participantes, api, mod
         });
     }
 
-    function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    function handleChangeParticipantes(e: ChangeEvent<HTMLInputElement>) {
+        if (apresentadoresSelecionados.includes(e.target.value)) {
+            let index = apresentadoresSelecionados.indexOf(e.target.value);
+            setApresentadoresSelecionados(apresentadoresSelecionados.filter((_, i) => i !== index))
+        } else {
+            let a = [...apresentadoresSelecionados, e.target.value];
+            setApresentadoresSelecionados(a);
+        }
+    }
+
+    function handleChangeApresentadores(e: ChangeEvent<HTMLInputElement>) {
         if (participantesSelecionados.includes(e.target.value)) {
             let index = participantesSelecionados.indexOf(e.target.value);
             setParticipantesSelecionados(participantesSelecionados.filter((_, i) => i !== index))
@@ -73,6 +85,7 @@ export default function GeraCertificado({apresentadores, participantes, api, mod
     const modelosSelect = modelos.map(i => {
         return {label: i.titulo, value: i.id.toString()}
     });
+
 
     return (
         <>
@@ -124,31 +137,31 @@ export default function GeraCertificado({apresentadores, participantes, api, mod
                 </Row>
                 <Row className={"mt-2"}>
                     <Col>
-                        <Form method={"POST"} onSubmit={handleSubmit}>
-                            {participantes.map((u) => {
-                                return <div className="form-check" key={u.id}>
-                                    <FormCheckInput value={u.id} onChange={handleChange}/>
-                                    <FormCheckLabel>
-                                        Participante - {u.nome}
-                                    </FormCheckLabel>
-                                    <hr/>
-                                </div>
-                            })}
-                            {apresentadores.map((u) => {
-                                return <div className="form-check" key={u.id}>
-                                    <FormCheckInput value={u.id} onChange={handleChange}/>
-                                    <FormCheckLabel>
-                                        Apresentador - {u.nome}
-                                    </FormCheckLabel>
-                                    <hr/>
-                                </div>
-                            })}
-                            <Col sm={"auto"} md={"auto"} lg={"auto"} className={"mt-2"}>
-                                <Button type={'submit'}>
-                                    Confirmar
-                                </Button>
-                            </Col>
-                        </Form>
+
+                        {participantes.map((u) => {
+                            return <div className="form-check" key={u.id}>
+                                <FormCheckInput value={u.id} onChange={handleChangeParticipantes} checked={true}/>
+                                <FormCheckLabel>
+                                    Participante - {u.nome}
+                                </FormCheckLabel>
+                                <hr/>
+                            </div>
+                        })}
+                        {apresentadores.map((u) => {
+                            return <div className="form-check" key={u.id}>
+                                <FormCheckInput value={u.id} onChange={handleChangeApresentadores} checked={true}/>
+                                <FormCheckLabel>
+                                    Apresentador - {u.nome}
+                                </FormCheckLabel>
+                                <hr/>
+                            </div>
+                        })}
+                        <Col sm={"auto"} md={"auto"} lg={"auto"} className={"mt-2"}>
+                            <Button onClick={() => handleSubmit()}>
+                                Confirmar
+                            </Button>
+                        </Col>
+
                     </Col>
 
                 </Row>
