@@ -11,7 +11,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const axios = require('axios');
     const eventosResp = await axios.get(process.env.API_SERVER + "/eventos");
     const api = process.env.API_SERVER;
-    const eventos: Evento[] = eventosResp.data;
+    const eventos: Evento[] = eventosResp.data.data;
 
     return {
         props: {
