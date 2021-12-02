@@ -24,20 +24,11 @@ const stagger = {
 export default function GridEventos({eventos, categorias, instituicoes, pesquisa = false}: EventoProps) {
     const router = useRouter();
 
-    async function handleSearch(params: Array<any>) {
-        let query = '';
-        params.forEach(e => {
-                query += e + '&';
-            }
-        )
-        query = query.slice(0, -1);
-        await router.push(`/eventos?${query}`);
-    }
 
     return (
         <Container fluid={true}>
             {pesquisa === true ?
-                <Pesquisa handleSearch={handleSearch} count={eventos.length} categorias={categorias ?? []}
+                <Pesquisa count={eventos.length} categorias={categorias ?? []}
                           instituicoes={instituicoes ?? []}/> : <span/>}
             <Container className="mt-2">
                 <Row className="row justify-content-center">
