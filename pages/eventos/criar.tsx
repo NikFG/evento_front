@@ -12,7 +12,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const categorias: Categoria[] = res.data;
     res = await axios.get(`${api}/tipoAtividades/`)
     const tipo_atividades: TipoAtividade[] = res.data;
-    console.log(tipo_atividades)
+
     return {
         props: {
             categorias,

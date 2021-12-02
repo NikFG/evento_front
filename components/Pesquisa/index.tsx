@@ -4,30 +4,31 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSearch} from "@fortawesome/free-solid-svg-icons/faSearch";
 import Select from "react-select";
 import {Categoria, Instituicao} from "@types";
+import Router from "next/router";
 
 export interface PesquisaProps {
-    handleSearch: (params: Array<any>) => void
     count: number
     categorias: Categoria[]
     instituicoes: Instituicao[]
 }
 
-export default function Pesquisa({handleSearch, count, categorias, instituicoes}: PesquisaProps) {
+export default function Pesquisa({count, categorias, instituicoes}: PesquisaProps) {
 
-    const [query, setQuery] = React.useState("");
-    const [catSelecionada, setCatSelecionada] = React.useState();
+    const [titulo, setTitulo] = React.useState("");
+    const [catSelecionada, setCatSelecionada] = React.useState<{ label: string, value: number } | null>();
     const [dataInicio, setDataInicio] = React.useState('');
     const [dataFim, setDataFim] = React.useState('');
     const [horarioInicio, setHorarioInicio] = React.useState('');
     const [horarioFim, setHorarioFim] = React.useState('');
-    const [instituicao, setInstituicao] = React.useState();
+    const [instituicao, setInstituicao] = React.useState<{ label: string, value: number } | null>();
+
 
     const categoriasSelect = categorias.map(c => {
         return {label: c.nome, value: c.id}
     });
 
     const instituicoesSelect = instituicoes.map(i => {
-        return {label: i.nome, value: i.id}
+        return {label: i.nome, value: i.id!}
     });
 
     return (
@@ -38,38 +39,27 @@ export default function Pesquisa({handleSearch, count, categorias, instituicoes}
 
             <div className={"row justify-content-center mb-2"}>
                 <div className={"col-sm-9 col-md-5 col-lg-5"}>
-                    <input className={"form-control"} value={query} placeholder={"Pesquise nome evento"}
+                    <input className={"form-control"} value={titulo} placeholder={"Pesquise nome evento"}
                            onChange={(event => {
-                               setQuery(event.target.value)
+                               setTitulo(event.target.value)
                            })}/>
                 </div>
                 <div className={"col-sm-12 col-md-2 col-lg-2"}>
-                    <button className={"btn btn-primary"} onClick={() => {
-                        let params = [];
-                        if (query) {
-                            params.push(`q=${query}`)
-                        }
-                        if (catSelecionada) {
-                            // @ts-ignore
-                            params.push(`cat=${catSelecionada.value}`)
-                        }
-                        if (dataInicio) {
-                            params.push(`dataInicio=${dataInicio}`)
-                        }
-                        if (dataFim) {
-                            params.push(`dataFim=${dataFim}`)
-                        }
-                        if (horarioInicio) {
-                            params.push(`horarioInicio=${horarioInicio}`)
-                        }
-                        if (horarioFim) {
-                            params.push(`horarioFim=${horarioFim}`)
-                        }
-                        if (instituicao) {
-                            // @ts-ignore
-                            params.push(`instituicao=${instituicao.value}`)
-                        }
-                        handleSearch(params);
+                    <button className={"btn btn-primary"} onClick={async () => {
+                        // let params = [];
+                        await Router.push({
+                            pathname: '/eventos',
+                            query: {
+                                page: "1",
+                                titulo,
+                                cat: catSelecionada?.value.toString(),
+                                dataInicio,
+                                dataFim,
+                                horarioInicio,
+                                horarioFim,
+                                instituicao: instituicao?.value.toString()
+                            },
+                        });
                     }}>
                         <FontAwesomeIcon icon={faSearch}/>
                     </button>
@@ -88,7 +78,6 @@ export default function Pesquisa({handleSearch, count, categorias, instituicoes}
                             value={catSelecionada}
                             isClearable={true}
                             onChange={(e) => {
-                                // @ts-ignore
                                 setCatSelecionada(e)
 
                             }}
@@ -96,22 +85,22 @@ export default function Pesquisa({handleSearch, count, categorias, instituicoes}
                             options={categoriasSelect}
                         />
                     </div>
-
                     <div className={"col-sm-12 col-md-4 col-lg-3 mb-3"}>
                         <Select
                             name={"instituicao"}
                             id={"instituicao"}
                             placeholder={"Instituição"}
+                            aria-placeholder={"Instituição"}
                             value={instituicao}
                             isClearable={true}
                             onChange={(e) => {
-                                // @ts-ignore
                                 setInstituicao(e)
 
                             }}
                             options={instituicoesSelect}
                         />
                     </div>
+
 
                     <div className={"col-sm-12 col-md-4 col-lg-3 mb-3"}>
                         <input name={"dataInicial"} className={"form-control"} type="date" value={dataInicio}

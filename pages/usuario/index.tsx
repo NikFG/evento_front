@@ -16,7 +16,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     })
     const token = cookies.USER_TOKEN;
-    console.log({cookies})
 
     const api = process.env.API_SERVER;
     let res = await axios.get(api + "/eventos/user", {
@@ -56,7 +55,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     });
     const modelos: ModeloCertificado[] = res.data;
-    console.log({modelos})
     return {
         props: {
             eventos_participados,

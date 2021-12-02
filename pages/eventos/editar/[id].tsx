@@ -35,7 +35,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
 
     const axios = require('axios');
     const res = await axios.get(process.env.API_SERVER + "/eventos/");
-    const data = res.data;
+    const data = res.data.data;
     const paths = data.map((e: any) => {
         return {
             params: {id: e.id.toString()}

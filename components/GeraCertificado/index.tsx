@@ -101,71 +101,76 @@ export default function GeraCertificado({apresentadores, participantes, api, mod
                 pauseOnHover
                 theme={"colored"}
                 style={{width: "500px", maxWidth: "1000px", whiteSpace: "pre-line"}}/>
-            <Container>
-                <Row className={'mt-2'}>
-                    <Col>
-                        <h1>Selecione o modelo:</h1>
-                    </Col>
-                </Row>
-                <Row className={'mt-2'}>
-                    <Col lg={2}>
-                        <Select
-                            name={"modelo"}
-                            id={"modelo"}
-                            placeholder={"Modelo"}
-                            aria-placeholder={"Modelo"}
-                            value={modelo}
-                            isClearable={true}
-                            onChange={(e) => {
-                                setModelo(e);
-                            }}
+            <div className={styles.outer}>
+                <div className={styles.inner}>
+                    <Container>
+                        <Row className={'mt-2'}>
+                            <Col>
+                                <h1>Selecione o modelo:</h1>
+                            </Col>
+                        </Row>
+                        <Row className={'mt-2'}>
+                            <Col>
+                                <Select
+                                    name={"modelo"}
+                                    id={"modelo"}
+                                    placeholder={"Modelo"}
+                                    aria-placeholder={"Modelo"}
+                                    value={modelo}
+                                    isClearable={true}
+                                    onChange={(e) => {
+                                        setModelo(e);
+                                    }}
 
-                            options={modelosSelect}
-                        />
-                    </Col>
-                    <Col>
-                        <Link href={`/certificados/modelo`}>
-                            <a className={'btn btn-primary'}>Novo modelo</a>
-                        </Link>
-                    </Col>
-                </Row>
+                                    options={modelosSelect}
+                                />
+                            </Col>
+                            <Col>
+                                <Link href={`/certificados/modelo`}>
+                                    <a className={'btn btn-outline-primary'}>Novo modelo</a>
+                                </Link>
+                            </Col>
+                        </Row>
 
-                <Row className={'mt-4'}>
-                    <Col>
-                        <h1>Selecione os participantes:</h1>
-                    </Col>
-                </Row>
-                <Row className={"mt-2"}>
-                    <Col>
+                        <Row className={'mt-4'}>
+                            <Col>
+                                <h1>Selecione os participantes:</h1>
+                            </Col>
+                        </Row>
+                        <Row className={"mt-2"}>
+                            <Col>
 
-                        {participantes.map((u) => {
-                            return <div className="form-check" key={u.id}>
-                                <FormCheckInput value={u.id} onChange={handleChangeParticipantes} checked={true}/>
-                                <FormCheckLabel>
-                                    Participante - {u.nome}
-                                </FormCheckLabel>
-                                <hr/>
-                            </div>
-                        })}
-                        {apresentadores.map((u) => {
-                            return <div className="form-check" key={u.id}>
-                                <FormCheckInput value={u.id} onChange={handleChangeApresentadores} checked={true}/>
-                                <FormCheckLabel>
-                                    Apresentador - {u.nome}
-                                </FormCheckLabel>
-                                <hr/>
-                            </div>
-                        })}
-                        <Col sm={"auto"} md={"auto"} lg={"auto"} className={"mt-2"}>
-                            <Button onClick={() => handleSubmit()}>
-                                Confirmar
-                            </Button>
-                        </Col>
+                                {participantes.map((u) => {
+                                    return <div className="form-check" key={u.id}>
+                                        <FormCheckInput value={u.id} onChange={handleChangeParticipantes} checked={true}/>
+                                        <FormCheckLabel>
+                                            Participante - {u.nome}
+                                        </FormCheckLabel>
+                                        <hr/>
+                                    </div>
+                                })}
+                                {apresentadores.map((u) => {
+                                    return <div className="form-check" key={u.id}>
+                                        <FormCheckInput value={u.id} onChange={handleChangeApresentadores} checked={true}/>
+                                        <FormCheckLabel>
+                                            Apresentador - {u.nome}
+                                        </FormCheckLabel>
+                                        <hr/>
+                                    </div>
+                                })}
+                                <Col sm={"auto"} md={"auto"} lg={"auto"} className={"mt-2"}>
+                                    <Button onClick={() => handleSubmit()}>
+                                        Confirmar
+                                    </Button>
+                                </Col>
 
-                    </Col>
+                            </Col>
 
-                </Row>
-            </Container>
+                        </Row>
+                    </Container>
+                </div>
+            </div>
+
         </>
     );
 }
