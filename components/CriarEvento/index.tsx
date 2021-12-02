@@ -568,7 +568,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                         </div>
                         {imagensPreview ? imagensPreview.map((i, index) => {
                             return (
-                                <Row key={index + 800}>
+                                <Row key={index}>
                                     <Image src={URL.createObjectURL(i)} objectFit={'cover'}
                                            objectPosition={'center'}
                                            className={"mt-2 ms-4"}
@@ -576,7 +576,17 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                            width={400}
                                            alt={'imagem ' + index}/>
                                 </Row>)
-                        }) : null}
+                        }) : evento_edit?.imagens && evento_edit.imagens.map((i, index) => {
+                            return (
+                                <Row key={i.id}>
+                                    <Image src={i.imagem} objectFit={'cover'}
+                                           objectPosition={'center'}
+                                           className={"mt-2 ms-4"}
+                                           height={400}
+                                           width={400}
+                                           alt={'imagem ' + index}/>
+                                </Row>)
+                        })}
                     </div>
 
                     <div className={"mt-3 " + styles.inner}>
