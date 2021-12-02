@@ -95,7 +95,7 @@ export default function ModeloCertificado({api, token}: ModeloCertificadoProps) 
                 draggable: true,
                 progress: undefined,
             });
-            await router.push('/');
+            await router.back();
         }).catch((err: AxiosError) => {
             for (const v of Object.values(err.response!.data)) {
                 console.log(v);
