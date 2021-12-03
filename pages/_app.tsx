@@ -6,7 +6,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import 'react-tiny-fab/dist/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
-
+import 'react-confirm-alert/src/react-confirm-alert.css';
 config.autoAddCss = false
 import Head from "next/head";
 import {AppProps} from "next/app";
