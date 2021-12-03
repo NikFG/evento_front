@@ -7,6 +7,7 @@ import React from "react";
 import {Evento} from "@types";
 import {useRouter} from "next/router";
 import {motion} from "framer-motion";
+import {confirmAlert} from "react-confirm-alert";
 
 export interface MeusEventosProps {
     handleDelete: (id: number) => void;
@@ -61,23 +62,23 @@ export default function MeusEventos({
 
                                 <Accordion.Collapse eventKey={e.id!.toString()}>
                                     <>
-                                    <hr/>
-                                    <Card.Body>
-                                        {e.atividades.map(a =>
-                                            <Row key={a.id} className={"mb-2"}>
-                                                <Col sm={"auto"} md={"auto"} lg={"auto"}>
-                                                    <span className={"p-2"}>{a.nome}</span>
-                                                    <Button className={"mb-2"} variant={"outline-primary"}
-                                                            onClick={async () => {
-                                                                await handleCertificado(a.id!);
-                                                            }}>
-                                                        Verificar participantes
-                                                    </Button>
-                                                </Col>
+                                        <hr/>
+                                        <Card.Body>
+                                            {e.atividades.map(a =>
+                                                <Row key={a.id} className={"mb-2"}>
+                                                    <Col sm={"auto"} md={"auto"} lg={"auto"}>
+                                                        <span className={"p-2"}>{a.nome}</span>
+                                                        <Button className={"mb-2"} variant={"outline-primary"}
+                                                                onClick={async () => {
+                                                                    await handleCertificado(a.id!);
+                                                                }}>
+                                                            Verificar participantes
+                                                        </Button>
+                                                    </Col>
 
-                                            </Row>
-                                        )}
-                                    </Card.Body>
+                                                </Row>
+                                            )}
+                                        </Card.Body>
                                     </>
                                 </Accordion.Collapse>
 
@@ -93,6 +94,27 @@ export default function MeusEventos({
                                 <FontAwesomeIcon icon={faEdit}/> Editar
                             </Button>
                             <Button variant={"danger ms-4"} onClick={async () => {
+                                confirmAlert({
+                                    closeOnEscape: true,
+                                    closeOnClickOutside: true,
+                                    title: "Deseja mesmo apagar este evento?",
+                                    buttons: [
+                                        {
+                                            label: "Sim",
+                                            onClick: async () => {
+                                                await handleDelete(e.id!);
+                                                router.reload();
+                                            }
+                                        },
+                                        {
+                                            label: "Não",
+                                            onClick: () => {
+                                                return;
+                                            }
+                                        }
+                                    ]
+                                })
+
                                 await handleDelete(e.id!);
                             }}>
                                 <FontAwesomeIcon icon={faTrash}/> Excluir
