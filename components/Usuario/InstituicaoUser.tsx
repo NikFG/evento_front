@@ -5,23 +5,27 @@ import React from "react";
 import {Instituicao} from "@types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
+import {confirmAlert} from 'react-confirm-alert';
 
 export interface InstituicaoUserProps {
     instituicao: Instituicao;
     handleAddParticipante: (email: string) => void;
+    handleTransferencia: (email: string, permanece: boolean) => void;
     handleEditarInstituicao: (nome: string, endereco: string, cidade: string) => void;
 }
 
 export default function InstituicaoUser({
                                             instituicao,
                                             handleAddParticipante,
-                                            handleEditarInstituicao
+                                            handleEditarInstituicao,
+                                            handleTransferencia,
                                         }: InstituicaoUserProps) {
     const [email, setEmail] = React.useState("");
     const [nome, setNome] = React.useState("");
     const [endereco, setEndereco] = React.useState("");
     const [cidade, setCidade] = React.useState("");
-    //criar para transferir admin
+    const [emailTransferencia, setEmailTransferencia] = React.useState("");
+    const [permanece, setPermanece] = React.useState<boolean | undefined>(undefined);
 
     React.useEffect(() => {
         setNome(instituicao.nome);
@@ -52,24 +56,7 @@ export default function InstituicaoUser({
                 </Col>
                 <Col sm={12} md={7} lg={7}>
                     <Card className={"mb-3"}>
-                        <Card.Body>
-                            <Form>
-                                <FormGroup className={"mb-3"} controlId={"email"}>
-                                    <FormLabel>Adicionar participante</FormLabel>
-                                    <FormControl type={"email"} value={email}
-                                                 onChange={(e) => {
-                                                     setEmail(e.target.value)
-                                                 }}/>
-                                </FormGroup>
-                                <Button variant={'primary'} onClick={async () => {
-                                    await handleAddParticipante(email);
-                                }}> <FontAwesomeIcon icon={faPlus} className={'me-2'}/> Adicionar
-                                </Button>
-                            </Form>
-                        </Card.Body>
-                    </Card>
-                    <span>Editar dados da instituição</span>
-                    <Card className={"mb-3"}>
+                        <Card.Header><span>Editar dados da instituição</span></Card.Header>
                         <Card.Body>
                             <FormGroup className={"mb-3"} controlId={"email"}>
                                 <FormLabel>Nome</FormLabel>
@@ -99,9 +86,102 @@ export default function InstituicaoUser({
 
                         </Card.Body>
                     </Card>
+                    <Card className={"mb-3"}>
+                        <Card.Body>
+                            <Form>
+                                <FormGroup className={"mb-3"} controlId={"email"}>
+                                    <FormLabel>Adicionar participante</FormLabel>
+                                    <FormControl type={"email"} value={email}
+                                                 onChange={(e) => {
+                                                     setEmail(e.target.value)
+                                                 }}/>
+                                </FormGroup>
+                                <Button variant={'primary'} onClick={async () => {
+                                    await handleAddParticipante(email);
+                                }}> <FontAwesomeIcon icon={faPlus} className={'me-2'}/> Adicionar
+                                </Button>
+                            </Form>
+                        </Card.Body>
+                    </Card>
 
+                    <Card className={"mb-3"}>
+                        <Card.Body>
+                            <Form>
+                                <FormGroup className={"mb-3"} controlId={"emailTransf"}>
+                                    <FormLabel>Transferir administração</FormLabel>
+                                    <FormControl type={"email"} value={emailTransferencia}
+                                                 onChange={(e) => {
+                                                     setEmailTransferencia(e.target.value)
+                                                 }}/>
+                                </FormGroup>
+                                <Button variant={'primary'} onClick={async () => {
+                                    confirmAlert({
+                                        closeOnEscape: true,
+                                        closeOnClickOutside: true,
+                                        title: 'Confirmar transferência',
+                                        message: `Deseja realmente transferir a administração para ${emailTransferencia}?`,
+
+                                        onClickOutside: () => {
+                                            setPermanece(undefined)
+                                        },
+                                        onKeypressEscape: () => {
+                                            setPermanece(undefined)
+                                        },
+                                        buttons: [
+                                            {
+                                                label: 'Sim',
+                                                onClick: async () => {
+                                                    setPermanece(true)
+                                                }
+                                            },
+                                            {
+                                                label: 'Não',
+                                                onClick: () => {
+                                                    setPermanece(undefined)
+                                                    return;
+                                                }
+                                            }
+                                        ],
+                                        //@ts-ignore
+                                        afterClose: () => {
+                                            if (permanece) {
+                                                confirmAlert({
+                                                    closeOnEscape: false,
+                                                    closeOnClickOutside: false,
+                                                    title: 'Confirmar saída',
+                                                    message: 'Você continuará na instituição?',
+                                                    buttons: [
+                                                        {
+                                                            label: 'Sim',
+                                                            onClick: async () => {
+                                                                await handleTransferencia(emailTransferencia, true);
+                                                            }
+                                                        },
+                                                        {
+                                                            label: 'Não',
+                                                            onClick: async () => {
+                                                                await handleTransferencia(emailTransferencia, false);
+                                                            }
+                                                        }
+                                                    ],
+                                                    //@ts-ignore
+                                                    afterClose: () => {
+                                                        setEmailTransferencia("");
+                                                        setPermanece(undefined);
+                                                    }
+                                                })
+                                            }
+                                        },
+                                    });
+
+                                }}> <FontAwesomeIcon icon={faPlus} className={'me-2'}/> Transferir
+                                </Button>
+                            </Form>
+                        </Card.Body>
+                    </Card>
                 </Col>
             </Row>
+
         </>
     );
 }
