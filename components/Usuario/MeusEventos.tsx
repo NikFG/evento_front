@@ -42,14 +42,23 @@ export default function MeusEventos({
             }
         },
     }
+
+    function jaOcorreu(data: string) {
+        const hoje = new Date();
+        const data_evento = new Date(data);
+
+        return hoje >= data_evento;
+    }
+
+
     return (
-        <div>
+        <Row>
             {eventos_criados.map(e => {
-                // @ts-ignore
                 return <motion.div variants={fadeInUp}
                                    whileHover={{scale: 1.05}}
                                    whileTap={{scale: 0.95}}
-                                   className={"col-xxl-3 col-lg-4 col-md-3 col-sm-1 " + styles.eventos} key={e.id}>
+                                   className={"col-xxl-3 col-lg-4 col-md-6 col-sm-12 mb-3 " + styles.eventos}
+                                   key={e.id}>
                     <Card>
                         <Card.Header>
                             {e.nome}
@@ -86,45 +95,51 @@ export default function MeusEventos({
                             </Accordion>
 
                         </Card.Body>
-                        <Card.Footer>
-                            <Button variant={"secondary mx-4"} onClick={async () => {
-                                await handleEdit(e.id!);
-                            }
-                            }>
-                                <FontAwesomeIcon icon={faEdit}/> Editar
-                            </Button>
-                            <Button variant={"danger ms-4"} onClick={async () => {
-                                confirmAlert({
-                                    closeOnEscape: true,
-                                    closeOnClickOutside: true,
-                                    title: "Deseja mesmo apagar este evento?",
-                                    buttons: [
-                                        {
-                                            label: "Sim",
-                                            onClick: async () => {
-                                                await handleDelete(e.id!);
-                                                router.reload();
-                                            }
-                                        },
-                                        {
-                                            label: "Não",
-                                            onClick: () => {
-                                                return;
-                                            }
-                                        }
-                                    ]
-                                })
 
-                                await handleDelete(e.id!);
-                            }}>
-                                <FontAwesomeIcon icon={faTrash}/> Excluir
-                            </Button>
+                        <Card.Footer>
+                            {jaOcorreu(e.atividades[0].data) ?
+                                <div className={"d-flex justify-content-center "}>
+                                    <Button variant={"secondary me-2"} onClick={async () => {
+                                        await handleEdit(e.id!);
+                                    }
+                                    }>
+                                        <FontAwesomeIcon icon={faEdit}/> Editar
+                                    </Button>
+                                    <Button variant={"danger ms-2"} onClick={async () => {
+                                        confirmAlert({
+                                            closeOnEscape: true,
+                                            closeOnClickOutside: true,
+                                            title: "Deseja mesmo apagar este evento?",
+                                            message: e.participantes_count ? `Ressaltamos que o evento possui ${e.participantes_count} participante(s)` : "",
+                                            buttons: [
+                                                {
+                                                    label: "Sim",
+                                                    onClick: async () => {
+                                                        await handleDelete(e.id!);
+
+                                                    }
+                                                },
+                                                {
+                                                    label: "Não",
+                                                    onClick: () => {
+                                                        return;
+                                                    }
+                                                }
+                                            ]
+                                        })
+
+
+                                    }}>
+                                        <FontAwesomeIcon icon={faTrash}/> Excluir
+                                    </Button>
+                                </div>
+                                : <span>Evento em andamento ou realizado</span>}
                         </Card.Footer>
                     </Card>
                 </motion.div>
             })
             }
-        </div>
+        </Row>
 
     );
 }
