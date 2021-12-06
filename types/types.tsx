@@ -46,6 +46,7 @@ export interface Evento {
     banner?: string
     imagens?: Imagem[]
     imagens_str?: string[]
+    participantes_count?: number
 }
 
 export interface Imagem {

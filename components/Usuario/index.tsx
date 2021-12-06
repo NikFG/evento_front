@@ -21,7 +21,7 @@ import EventosParticipados from "@components/Usuario/EventosParticipados";
 import UserCertificado from "@components/Usuario/UserCertificado";
 import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
 import {toast, ToastContainer} from "react-toastify";
-import {AxiosResponse} from "axios";
+import {AxiosError, AxiosResponse} from "axios";
 import InstituicaoUser from "@components/Usuario/InstituicaoUser";
 import ModeloCertificadoUser from "@components/Usuario/ModeloCertificadoUser";
 
@@ -57,7 +57,37 @@ export default function Usuario({
         await router.push(`/eventos/editar/${id}`)
     }
 
-    function handleDelete(id: number | undefined) {
+    async function handleDelete(id: number) {
+        const axios = require('axios');
+        await axios.delete(`${api}/eventos/${id.toString()}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        }).then((r: AxiosResponse) => {
+            toast.success(`Evento deletado com sucesso!`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            router.reload();
+        })
+            .catch((e: AxiosError) => {
+                console.error({error: e.response?.data});
+                toast.error(`Houve um erro ao deletar o evento, tente novamente`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            });
+
 
     }
 
@@ -113,9 +143,45 @@ export default function Usuario({
         })
             .catch(((error: any) => {
                 console.error({error});
-            }))
+            }));
+    }
+
+    async function handleTransferencia(email: string, permanece: boolean) {
+        const axios = require('axios');
+        await axios.post(`${api}/instituicao/transferir`, {
+            email,
+            permanece
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+
+            }
+        }).then(async (r: AxiosResponse) => {
+            console.log(r);
+            toast.success(`Usuário transferido com sucesso!`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        })
+            .catch(((error: AxiosError) => {
+                console.log({data: error.response?.data.msg});
+                toast.error(error.response?.data.msg, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
 
 
+            }));
     }
 
     async function atualizarDados(id: number, nome: string, telefone: string, password?: string, password_confirmation?: string) {
@@ -307,7 +373,8 @@ export default function Usuario({
                         </TabPanel>
                         <TabPanel>
                             <InstituicaoUser instituicao={instituicao} handleAddParticipante={handleAddParticipante}
-                                             handleEditarInstituicao={handleEditarInstituicao}/>
+                                             handleEditarInstituicao={handleEditarInstituicao}
+                                             handleTransferencia={handleTransferencia}/>
                         </TabPanel>
                         <TabPanel>
                             <ModeloCertificadoUser modelos={modelos} CustomToggle={CustomToggle}/>
