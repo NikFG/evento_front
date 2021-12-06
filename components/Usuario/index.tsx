@@ -57,7 +57,37 @@ export default function Usuario({
         await router.push(`/eventos/editar/${id}`)
     }
 
-    function handleDelete(id: number) {
+    async function handleDelete(id: number) {
+        const axios = require('axios');
+        await axios.delete(`${api}/eventos/${id.toString()}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        }).then((r: AxiosResponse) => {
+            toast.success(`Evento deletado com sucesso!`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            router.reload();
+        })
+            .catch((e: AxiosError) => {
+                console.error({error: e.response?.data});
+                toast.error(`Houve um erro ao deletar o evento, tente novamente`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            });
+
 
     }
 
@@ -140,15 +170,15 @@ export default function Usuario({
         })
             .catch(((error: AxiosError) => {
                 console.log({data: error.response?.data.msg});
-                    toast.error(error.response?.data.msg, {
-                        position: "top-right",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
+                toast.error(error.response?.data.msg, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
 
 
             }));
