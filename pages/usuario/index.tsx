@@ -4,7 +4,6 @@ import {GetServerSideProps, InferGetServerSidePropsType} from "next";
 import {Certificado, Evento, Instituicao, ModeloCertificado, User} from "@types";
 import {parseCookies} from 'nookies';
 import React from "react";
-import axios from "axios";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const axios = require('axios');
@@ -16,7 +15,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     })
     const token = cookies.USER_TOKEN;
-
+    const roles = JSON.parse(cookies.USER_ROLES);
+    console.log({roles});
     const api = process.env.API_SERVER;
     let res = await axios.get(api + "/eventos/user", {
         headers: {
@@ -64,7 +64,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             token,
             user,
             instituicao,
-            modelos
+            modelos,
+            roles
 
         }
     }
@@ -72,7 +73,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 export default function UsuarioPage({
                                         eventos_participados,
-                                        eventos_criados, certificados, api, token, user, instituicao, modelos
+                                        eventos_criados, certificados, api, token, user, instituicao, modelos, roles
                                     }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
     return (
@@ -87,6 +88,7 @@ export default function UsuarioPage({
                 user={user}
                 instituicao={instituicao}
                 modelos={modelos}
+                roles={roles}
             />
         </>
     );
