@@ -19,58 +19,55 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
     const router = useRouter();
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
-    const hcaptchaRef = React.useRef(null);
+    const hcaptchaRef = React.useRef<HCaptcha>(null);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        //@ts-ignore
-        hcaptchaRef.current.execute();
-
+        hcaptchaRef.current!.execute();
     }
 
-    const onHCaptchaChange = async (captchaCode: string) => {
-        if (!captchaCode) {
-            return;
+    async function handleLogin() {
+        const axios = require("axios");
+        const user = {
+            email,
+            password
         }
+        await axios.post(`${api}/user/login`, user).then(async (value: AxiosResponse) => {
+            sessionStorage.setItem("USER_TOKEN", value.data.access_token)
+            let usuario_criptografado = encrypt(user)
+            const user_logado: User = value.data.user;
+            const roles = value.data.roles;
 
-        const response = await fetch(`https://hcaptcha.com/siteverify`,
-            {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-                },
-                body: `response=${captchaCode}&secret=${hcaptcha_secret}`,
-                method: "POST",
+            sessionStorage.setItem("USER_DATA", JSON.stringify(user_logado))
+            localStorage.setItem("USER_LOGIN", usuario_criptografado)
+
+            setCookie(null, "USER_ROLES", JSON.stringify(roles), {
+                path: '/',
+                maxAge: 3600,
+                sameSite: 'strict',
+                secure: true
             });
-        const captchaValidation = await response.json();
-        if (captchaValidation.success) {
-            const axios = require("axios");
-            const user = {
-                email,
-                password
-            }
-            await axios.post(`${api}/user/login`, user).then(async (value: AxiosResponse) => {
-                sessionStorage.setItem("USER_TOKEN", value.data.access_token)
-                let usuario_criptografado = encrypt(user)
-                const user_logado: User = value.data.user;
-                const roles = value.data.roles;
+            setCookie(null, 'USER_TOKEN', value.data.access_token, {
+                path: '/',
+                maxAge: 3600,
+                sameSite: 'strict',
+                secure: true
 
-                sessionStorage.setItem("USER_DATA", JSON.stringify(user_logado))
-                localStorage.setItem("USER_LOGIN", usuario_criptografado)
-
-                setCookie(null, "USER_ROLES", JSON.stringify(roles), {
-                    path: '/',
-                    maxAge: 3600,
-                    sameSite: 'strict',
-                    secure: true
-                });
-                setCookie(null, 'USER_TOKEN', value.data.access_token, {
-                    path: '/',
-                    maxAge: 3600,
-                    sameSite: 'strict',
-                    secure: true
-
-                });
-                await toast.success(`Login realizado com sucesso!`, {
+            });
+            await toast.success(`Login realizado com sucesso!`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            await router.push("/");
+        })
+            .catch((error: any) => {
+                console.error(error.response.data.error);
+                toast.error(`${error.response.data.error}`, {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -79,23 +76,45 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
                     draggable: true,
                     progress: undefined,
                 });
-                await router.push("/");
-            })
-                .catch((error: any) => {
-                    console.error(error.response.data.error);
-                    toast.error(`${error.response.data.error}`, {
-                        position: "top-right",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                });
-        }
-        console.error(({captchaValidation}));
+            });
     }
+
+    const onHCaptchaChange = async (captcha: string) => {
+        if (!captcha) {
+            return;
+        }
+
+        try {
+            console.log({captcha});
+            const response = await fetch("/api/register", {
+                method: "POST",
+                body: JSON.stringify({email, captcha}),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (response.ok) {
+             await handleLogin();
+            } else {
+                const error = await response.json();
+                throw new Error(error.message)
+            }
+        } catch (error: any) {
+            toast.error(`${error?.message}`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } finally {
+            // Reset the hCaptcha when the request has failed or succeeeded
+            // so that it can be executed again if user submits another email.
+            // setEmail("");
+        }
+    };
 
     return (
         <>
@@ -147,13 +166,15 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
                                        className={"custom-control-label " + styles.unselectable}>Lembrar</label>
                             </div>
                         </div>
+                        <div className={'d-flex justify-content-center'}>
                         <HCaptcha
                             id="test"
-                            size="compact"
+                            size="invisible"
                             ref={hcaptchaRef}
                             sitekey={sitekey}
                             onVerify={onHCaptchaChange}
                         />
+                        </div>
                         <div className={"row form-group " + styles.botao}>
                             <button type="submit" className="btn btn-outline-primary btn-lg btn-block">Entrar</button>
 
