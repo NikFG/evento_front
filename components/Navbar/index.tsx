@@ -52,10 +52,18 @@ export default function Navbar({api, titulo}: Props) {
                 }
                 axios.post(`${api}/user/login`, user).then((value: AxiosResponse) => {
                     sessionStorage.setItem("USER_TOKEN", value.data.access_token)
-                    let usuario_criptografado = encrypt(user)
                     const user_logado: User = value.data.user;
+                    // const user_criptografado: string = encrypt(user_logado)
+                    const roles = value.data.roles;
                     sessionStorage.setItem("USER_DATA", JSON.stringify(user_logado))
-                    localStorage.setItem("USER_LOGIN", usuario_criptografado)
+                    localStorage.setItem("USER_LOGIN", login)
+
+                    setCookie(null,"USER_ROLES", JSON.stringify(roles),{
+                        path: '/',
+                        maxAge: 3600,
+                        sameSite: 'strict',
+                        secure: true
+                    });
                     setCookie(null, 'USER_TOKEN', value.data.access_token, {
                         path: '/',
                         maxAge: 3600,
@@ -67,7 +75,6 @@ export default function Navbar({api, titulo}: Props) {
                     .catch((error: any) => {
                         console.error(error)
                     });
-                console.log(email)
             }
         }
     }, []);

@@ -3,23 +3,18 @@ import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
 import React, {useContext} from "react";
 import {
     AccordionContext,
-    Button,
     Card,
     Container, Row,
     useAccordionButton
 } from "react-bootstrap";
 
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-
 import {Evento, User, Certificado, Instituicao, ModeloCertificado} from "@types";
 import {useRouter} from "next/router";
-import ReactTooltip from 'react-tooltip';
 import {destroyCookie} from "nookies";
 import Perfil from "@components/Usuario/Perfil";
 import MeusEventos from "@components/Usuario/MeusEventos";
 import EventosParticipados from "@components/Usuario/EventosParticipados";
 import UserCertificado from "@components/Usuario/UserCertificado";
-import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
 import {toast, ToastContainer} from "react-toastify";
 import {AxiosError, AxiosResponse} from "axios";
 import InstituicaoUser from "@components/Usuario/InstituicaoUser";
@@ -35,6 +30,7 @@ export interface UsuarioProps {
     user: User
     instituicao: Instituicao
     modelos: ModeloCertificado[]
+    roles: string[]
 
 }
 
@@ -47,7 +43,8 @@ export default function Usuario({
                                     api,
                                     user,
                                     instituicao,
-                                    modelos
+                                    modelos,
+                                    roles
                                 }: UsuarioProps) {
 
     const router = useRouter();
@@ -320,11 +317,7 @@ export default function Usuario({
                                     Perfil
                                 </Card>
                             </Tab>
-                            <Tab>
-                                <Card className={styles.tab}>
-                                    Meus eventos
-                                </Card>
-                            </Tab>
+
                             <Tab>
                                 <Card className={styles.tab}>
                                     Eventos participados
@@ -335,16 +328,27 @@ export default function Usuario({
                                     Certificados
                                 </Card>
                             </Tab>
-                            <Tab>
-                                <Card className={styles.tab}>
-                                    Instituição
-                                </Card>
-                            </Tab>
-                            <Tab>
-                                <Card className={styles.tab}>
-                                    Modelos de certificado
-                                </Card>
-                            </Tab>
+                            {roles.includes("associado") || roles.includes('super-admin') &&
+                                <>
+                                    <Tab>
+                                        <Card className={styles.tab}>
+                                            Meus eventos
+                                        </Card>
+                                    </Tab>
+
+                                    <Tab>
+                                        <Card className={styles.tab}>
+                                            Modelos de certificado
+                                        </Card>
+                                    </Tab>
+                                </>}
+                            {roles.includes("admin") || roles.includes('super-admin') &&
+                                <Tab>
+                                    <Card className={styles.tab}>
+                                        Instituição
+                                    </Card>
+                                </Tab>}
+
                         </TabList>
 
                         {/*Perfil*/}
@@ -352,12 +356,6 @@ export default function Usuario({
                             <Perfil logout={logout} user={user!} atualizarDados={atualizarDados}/>
                         </TabPanel>
 
-                        {/*Meus eventos*/}
-                        <TabPanel>
-                            <MeusEventos eventos_criados={eventos_criados} handleDelete={handleDelete}
-                                         CustomToggle={CustomToggle} handleCertificado={handleCertificado}
-                                         handleEdit={handleEdit} handleModelo={handleModelo}/>
-                        </TabPanel>
 
                         {/*Eventos participados*/}
                         <TabPanel>
@@ -371,14 +369,28 @@ export default function Usuario({
                         <TabPanel>
                             <UserCertificado imprimir={imprimir} certificados={certificados}/>
                         </TabPanel>
-                        <TabPanel>
-                            <InstituicaoUser instituicao={instituicao} handleAddParticipante={handleAddParticipante}
-                                             handleEditarInstituicao={handleEditarInstituicao}
-                                             handleTransferencia={handleTransferencia}/>
-                        </TabPanel>
-                        <TabPanel>
-                            <ModeloCertificadoUser modelos={modelos} CustomToggle={CustomToggle}/>
-                        </TabPanel>
+                        {roles.includes("associado") || roles.includes('super-admin') &&
+                            <>
+                                {/*Meus eventos*/}
+                                <TabPanel>
+                                    <MeusEventos eventos_criados={eventos_criados} handleDelete={handleDelete}
+                                                 CustomToggle={CustomToggle} handleCertificado={handleCertificado}
+                                                 handleEdit={handleEdit} handleModelo={handleModelo}/>
+                                </TabPanel>
+
+
+                                <TabPanel>
+                                    <ModeloCertificadoUser modelos={modelos} CustomToggle={CustomToggle}/>
+                                </TabPanel>
+
+                            </>}
+
+                        {roles.includes("admin") || roles.includes('super-admin') &&
+                            <TabPanel>
+                                <InstituicaoUser instituicao={instituicao} handleAddParticipante={handleAddParticipante}
+                                                 handleEditarInstituicao={handleEditarInstituicao}
+                                                 handleTransferencia={handleTransferencia}/>
+                            </TabPanel>}
                     </Tabs>
                 </Row>
             </Container>
