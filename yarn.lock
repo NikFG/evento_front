@@ -1109,6 +1109,11 @@
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.2.1.tgz#9551142a1980503752536b5050fd99f4a7f13b17"
   integrity sha512-gfta+H8aziZsm8pZa0vj04KO6biEiisppNgA1kbJvFrrWu9Vm7eaUEy76DIxsuTaWvti5fkJVhllWc6ZTE+Mdw==
 
+"@hcaptcha/react-hcaptcha@^0.3.9":
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/@hcaptcha/react-hcaptcha/-/react-hcaptcha-0.3.9.tgz#37f16f80827699d37fb77473a436ff10fe100e12"
+  integrity sha512-yc3rRVQCz3w+rq9+Y1yi+hUlZscMDoXli0st8liefZ79gkFRa3vqd2zl+qGeRq+3HG7i+ydNNIXmnWhg8wJCSg==
+
 "@napi-rs/triples@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@napi-rs/triples/-/triples-1.0.3.tgz#76d6d0c3f4d16013c61e45dfca5ff1e6c31ae53c"
