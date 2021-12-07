@@ -1,57 +1,76 @@
 import styles from "./LoginForm.module.css"
 import Link from "next/link";
 import {useRouter} from "next/router";
-import {AxiosResponse} from "axios";
+import axios, {AxiosResponse} from "axios";
 import {User} from "@types";
 import {encrypt} from "@utils";
 import nookies, {setCookie} from 'nookies';
 import React from "react";
 import {toast, ToastContainer} from "react-toastify";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 export interface LoginProps {
-    secret: string
     api: string
+    sitekey: string
+    hcaptcha_secret: string
 }
 
-export default function LoginForm(props: LoginProps) {
+export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
     const router = useRouter();
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const hcaptchaRef = React.useRef(null);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        const axios = require("axios");
-        const user = {
-            email,
-            password
-        }
-        await axios.post(`${props.api}/user/login`, user).then(async (value: AxiosResponse) => {
-            sessionStorage.setItem("USER_TOKEN", value.data.access_token)
-            let usuario_criptografado = encrypt(user)
-            const user_logado: User = value.data.user;
-            sessionStorage.setItem("USER_DATA", JSON.stringify(user_logado))
-            localStorage.setItem("USER_LOGIN", usuario_criptografado)
-            setCookie(null, 'USER_TOKEN', value.data.access_token, {
-                path: '/',
-                maxAge: 3600,
-                sameSite: 'strict',
-                secure: true
+        //@ts-ignore
+        hcaptchaRef.current.execute();
 
+    }
+
+    const onHCaptchaChange = async (captchaCode: string) => {
+        if (!captchaCode) {
+            return;
+        }
+
+        const response = await fetch(`https://hcaptcha.com/siteverify`,
+            {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+                },
+                body: `response=${captchaCode}&secret=${hcaptcha_secret}`,
+                method: "POST",
             });
-            await toast.success(`Login realizado com sucesso!`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-            await router.push("/");
-        })
-            .catch((error: any) => {
-                console.error(error.response.data.error);
-                toast.error(`${error.response.data.error}`, {
+        const captchaValidation = await response.json();
+        if (captchaValidation.success) {
+            const axios = require("axios");
+            const user = {
+                email,
+                password
+            }
+            await axios.post(`${api}/user/login`, user).then(async (value: AxiosResponse) => {
+                sessionStorage.setItem("USER_TOKEN", value.data.access_token)
+                let usuario_criptografado = encrypt(user)
+                const user_logado: User = value.data.user;
+                const roles = value.data.roles;
+
+                sessionStorage.setItem("USER_DATA", JSON.stringify(user_logado))
+                localStorage.setItem("USER_LOGIN", usuario_criptografado)
+
+                setCookie(null, "USER_ROLES", JSON.stringify(roles), {
+                    path: '/',
+                    maxAge: 3600,
+                    sameSite: 'strict',
+                    secure: true
+                });
+                setCookie(null, 'USER_TOKEN', value.data.access_token, {
+                    path: '/',
+                    maxAge: 3600,
+                    sameSite: 'strict',
+                    secure: true
+
+                });
+                await toast.success(`Login realizado com sucesso!`, {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -60,7 +79,22 @@ export default function LoginForm(props: LoginProps) {
                     draggable: true,
                     progress: undefined,
                 });
-            });
+                await router.push("/");
+            })
+                .catch((error: any) => {
+                    console.error(error.response.data.error);
+                    toast.error(`${error.response.data.error}`, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                });
+        }
+        console.error(({captchaValidation}));
     }
 
     return (
@@ -113,6 +147,13 @@ export default function LoginForm(props: LoginProps) {
                                        className={"custom-control-label " + styles.unselectable}>Lembrar</label>
                             </div>
                         </div>
+                        <HCaptcha
+                            id="test"
+                            size="compact"
+                            ref={hcaptchaRef}
+                            sitekey={sitekey}
+                            onVerify={onHCaptchaChange}
+                        />
                         <div className={"row form-group " + styles.botao}>
                             <button type="submit" className="btn btn-outline-primary btn-lg btn-block">Entrar</button>
 
