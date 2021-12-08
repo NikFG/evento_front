@@ -6,10 +6,11 @@ import Footer from "@components/Footer";
 import Image from 'next/image';
 import {Evento} from "@types";
 import React from "react";
-import {Fab} from 'react-tiny-fab';
 import {useRouter} from "next/router";
 import CarouselBootstrap from "@components/CarouselBootstrap";
-import {isMobile} from 'react-device-detect';
+import {isDesktop} from 'react-device-detect';
+import {Button} from "react-bootstrap";
+
 
 export interface EventoProps {
     evento: Evento,
@@ -23,12 +24,13 @@ export default function EventoComp({evento, api}: EventoProps) {
     let atividades = evento.atividades;
     const [tabs, setTabs] = React.useState(Array());
     const [tabContent, setTabContent] = React.useState(Array());
-
+    const [exitedFab, setExitedFab] = React.useState(false);
     React.useEffect(() => {
         criaTabs();
     }, []);
 
     function handleCompra() {
+        setExitedFab(true)
         router.push(`/eventos/${evento.id}/checkout`);
     }
 
@@ -153,15 +155,15 @@ export default function EventoComp({evento, api}: EventoProps) {
 
                 </section>
                 <section id={"fab"}>
-                    <Fab
-                        icon={<FontAwesomeIcon icon={faTicketAlt} size={"lg"}/>}
-                        mainButtonStyles={{backgroundColor: "#00A6A6"}}
-                        onClick={() => handleCompra()}
-                        style={{bottom: 24, right: 24, margin: 0}}
-                        alwaysShowTitle={isMobile}
-                        text={"Comprar ingresso"}
+                    {/*<Fab*/}
+                    {/*    icon={<FontAwesomeIcon icon={faTicketAlt} size={"lg"}/>}*/}
+                    {/*    mainButtonStyles={{backgroundColor: "#00A6A6"}}*/}
+                    {/*    onClick={() => handleCompra()}*/}
+                    {/*    style={{bottom: 24, right: 24, margin: 0}}*/}
+                    {/*    alwaysShowTitle={isMobile}*/}
+                    {/*    text={"Comprar ingresso"}*/}
 
-                    />
+                    {/*/>*/}
                 </section>
 
 
@@ -172,6 +174,15 @@ export default function EventoComp({evento, api}: EventoProps) {
                     />
                 </div>
             </main>
+            <Button className={styles.fab} variant={"fab"} onClick={() => handleCompra()}>
+                <FontAwesomeIcon icon={faTicketAlt} className={'me-1'} size={"lg"}/>
+                {
+                    isDesktop && "Comprar ingresso"
+                }
+
+            </Button>
+
+
             <Footer/>
         </>
     );
