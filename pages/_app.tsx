@@ -4,16 +4,24 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'animate.css/animate.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import 'react-tiny-fab/dist/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-config.autoAddCss = false
 import Head from "next/head";
 import {AppProps} from "next/app";
 import 'react-vertical-timeline-component/style.min.css';
 import 'react-tabs/style/react-tabs.css';
 import "react-multi-carousel/lib/styles.css";
 import {AnimatePresence} from "framer-motion";
+import Router from 'next/router';
+import NProgress from 'nprogress';
+import '@material/fab/dist/mdc.fab.css';
+
+config.autoAddCss = false
+
+NProgress.configure({showSpinner: true,  spinnerSelector: "#nprogress-spinner"});
+Router.events.on('routeChangeStart', () => NProgress.start());
+Router.events.on('routeChangeComplete', () => NProgress.done());
+Router.events.on('routeChangeError', () => NProgress.done());
 
 function MyApp({Component, pageProps}: AppProps) {
 
