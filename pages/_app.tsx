@@ -14,7 +14,6 @@ import "react-multi-carousel/lib/styles.css";
 import {AnimatePresence} from "framer-motion";
 import Router from 'next/router';
 import NProgress from 'nprogress';
-import '@material/fab/dist/mdc.fab.css';
 
 config.autoAddCss = false
 
