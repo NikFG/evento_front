@@ -37,12 +37,16 @@
     "react-input-mask": "^3.0.0-alpha.2",
     "react-multi-carousel": "^2.6.3",
     "react-nextjs-toast": "^1.2.5",
+    "react-redux": "^7.2.6",
     "react-select": "^4.3.1",
     "react-slick": "^0.28.1",
     "react-tabs": "^3.2.2",
     "react-toastify": "^8.0.2",
     "react-tooltip": "^4.2.21",
     "react-vertical-timeline-component": "^3.3.3",
+    "redux": "^4.1.2",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-persist": "^6.0.0",
     "slick-carousel": "^1.8.1"
   },
   "devDependencies": {
