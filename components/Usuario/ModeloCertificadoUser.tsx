@@ -31,8 +31,8 @@ export default function ModeloCertificadoUser({modelos, CustomToggle}: ModeloCer
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col sm={12} md={5} lg={3}>
-                    {modelos.map(m => {
+                <Col sm={12} md={modelos ? 5 : 12} lg={modelos ? 3 : 12}>
+                    {modelos ? modelos.map(m => {
                         return (
                             <Card key={m.id}>
                                 <Card.Header>
@@ -49,7 +49,7 @@ export default function ModeloCertificadoUser({modelos, CustomToggle}: ModeloCer
                                                 <hr/>
 
                                                 <Card.Body>
-                                                    { m.certificados? m.certificados!.map(c =>
+                                                    {m.certificados ? m.certificados!.map(c =>
                                                         <Row key={c.id} className={"mb-2"}>
                                                             <Card.Title>Eventos utilizados</Card.Title>
                                                             <Col sm={"auto"} md={"auto"} lg={"auto"}>
@@ -57,7 +57,7 @@ export default function ModeloCertificadoUser({modelos, CustomToggle}: ModeloCer
                                                             </Col>
 
                                                         </Row>
-                                                    ) :  <Card.Title>Sem eventos com este modelo</Card.Title>}
+                                                    ) : <Card.Title>Sem eventos com este modelo</Card.Title>}
                                                 </Card.Body>
                                             </>
                                         </Accordion.Collapse>
@@ -66,7 +66,7 @@ export default function ModeloCertificadoUser({modelos, CustomToggle}: ModeloCer
                                 </Card.Body>
                             </Card>
                         )
-                    })}
+                    }) : <h1>Sem modelos até então</h1>}
                 </Col>
             </Row>
         </>

@@ -34,7 +34,7 @@ export default function EventosParticipados({
     }
     return (
         <Accordion>
-            {eventos_participados.map(e => (
+            {eventos_participados ? eventos_participados.map(e => (
                 <motion.div variants={fadeInUp}
                             whileHover={{scale: 1.05}}
                             whileTap={{scale: 0.95}}
@@ -75,7 +75,7 @@ export default function EventosParticipados({
                     </Card>
                 </motion.div>
 
-            ))}
+            )) : <h1>Ainda não há participação em eventos</h1>}
 
         </Accordion>
     );

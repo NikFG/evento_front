@@ -11,8 +11,7 @@ export interface UserCertificadoProps {
 export default function UserCertificado({imprimir, certificados}: UserCertificadoProps) {
     return (
         <>
-            <hr/>
-            {certificados.map(c => {
+            {certificados ? certificados.map(c => {
                 return <Row key={c.id} className={"mb-3"}>
                     <Col sm={"auto"} md={"auto"} lg={"auto"}>
                         {c.descricao}
@@ -27,7 +26,7 @@ export default function UserCertificado({imprimir, certificados}: UserCertificad
                     </Col>
 
                 </Row>
-            })}
+            }) : <h1>Sem certificados até então</h1>}
         </>
     );
 }

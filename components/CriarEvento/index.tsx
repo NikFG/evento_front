@@ -10,6 +10,8 @@ import {toast, ToastContainer} from "react-toastify";
 import {Button, Col, Row} from "react-bootstrap";
 import Image from "next/image";
 import teste from '@images/banner_aux.jpg'
+import {useSelector} from "react-redux";
+import { verificaToken } from "utils";
 
 
 interface CategoriaProps {
@@ -46,6 +48,8 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     const [localAtividade, setLocalAtividade] = React.useState("");
     const [apresentadoresNome, setApresentadoresNome] = React.useState<Array<string>>([""]);
     const [apresentadoresEmail, setApresentadoresEmail] = React.useState<Array<string>>([""]);
+    const token = useSelector((state: any) => state.token);
+    const user_criptografado = useSelector((state: any) => state.user_criptografado);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -82,7 +86,9 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
         if (evento_edit) {
             url = `${api}/eventos/update/${evento.id}`
         }
-        const token = sessionStorage.getItem("USER_TOKEN");
+
+
+        verificaToken(api, token, user_criptografado);
         await axios.post(url, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,

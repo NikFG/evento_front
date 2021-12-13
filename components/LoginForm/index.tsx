@@ -8,6 +8,8 @@ import nookies, {setCookie} from 'nookies';
 import React from "react";
 import {toast, ToastContainer} from "react-toastify";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
+import {useDispatch, useSelector} from "react-redux";
+import {lembrar, login} from "../../store";
 
 export interface LoginProps {
     api: string
@@ -21,6 +23,9 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
     const [password, setPassword] = React.useState("");
     const hcaptchaRef = React.useRef<HCaptcha>(null);
 
+    const dispatch = useDispatch();
+
+
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         hcaptchaRef.current!.execute();
@@ -33,27 +38,14 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
             password
         }
         await axios.post(`${api}/user/login`, user).then(async (value: AxiosResponse) => {
-            sessionStorage.setItem("USER_TOKEN", value.data.access_token)
+
             let usuario_criptografado = encrypt(user)
             const user_logado: User = value.data.user;
             const roles = value.data.roles;
+            const token = value.data.access_token;
+            dispatch(login(user_logado, roles, token));
+            dispatch(lembrar(usuario_criptografado));
 
-            sessionStorage.setItem("USER_DATA", JSON.stringify(user_logado))
-            localStorage.setItem("USER_LOGIN", usuario_criptografado)
-
-            setCookie(null, "USER_ROLES", JSON.stringify(roles), {
-                path: '/',
-                maxAge: 3600,
-                sameSite: 'strict',
-                secure: true
-            });
-            setCookie(null, 'USER_TOKEN', value.data.access_token, {
-                path: '/',
-                maxAge: 3600,
-                sameSite: 'strict',
-                secure: true
-
-            });
             await toast.success(`Login realizado com sucesso!`, {
                 position: "top-right",
                 autoClose: 5000,
@@ -94,7 +86,7 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
                 },
             });
             if (response.ok) {
-             await handleLogin();
+                await handleLogin();
             } else {
                 const error = await response.json();
                 throw new Error(error.message)
@@ -110,9 +102,7 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
                 progress: undefined,
             });
         } finally {
-            // Reset the hCaptcha when the request has failed or succeeeded
-            // so that it can be executed again if user submits another email.
-            // setEmail("");
+
         }
     };
 
@@ -167,13 +157,13 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
                             </div>
                         </div>
                         <div className={'d-flex justify-content-center'}>
-                        <HCaptcha
-                            id="test"
-                            size="invisible"
-                            ref={hcaptchaRef}
-                            sitekey={sitekey}
-                            onVerify={onHCaptchaChange}
-                        />
+                            <HCaptcha
+                                id="test"
+                                size="invisible"
+                                ref={hcaptchaRef}
+                                sitekey={sitekey}
+                                onVerify={onHCaptchaChange}
+                            />
                         </div>
                         <div className={"row form-group " + styles.botao}>
                             <button type="submit" className="btn btn-outline-primary btn-lg btn-block">Entrar</button>

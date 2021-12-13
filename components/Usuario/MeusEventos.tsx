@@ -53,7 +53,7 @@ export default function MeusEventos({
 
     return (
         <Row>
-            {eventos_criados.map(e => {
+            {eventos_criados? eventos_criados.map(e => {
                 return <motion.div variants={fadeInUp}
                                    whileHover={{scale: 1.05}}
                                    whileTap={{scale: 0.95}}
@@ -138,7 +138,7 @@ export default function MeusEventos({
                     </Card>
                 </motion.div>
             })
-            }
+            : <h1>Nenhum evento criado até então</h1>}
         </Row>
 
     );

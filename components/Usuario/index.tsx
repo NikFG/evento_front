@@ -19,6 +19,7 @@ import {toast, ToastContainer} from "react-toastify";
 import {AxiosError, AxiosResponse} from "axios";
 import InstituicaoUser from "@components/Usuario/InstituicaoUser";
 import ModeloCertificadoUser from "@components/Usuario/ModeloCertificadoUser";
+import {useSelector} from "react-redux";
 
 
 export interface UsuarioProps {
@@ -30,7 +31,7 @@ export interface UsuarioProps {
     user: User
     instituicao: Instituicao
     modelos: ModeloCertificado[]
-    roles: string[]
+
 
 }
 
@@ -44,11 +45,11 @@ export default function Usuario({
                                     user,
                                     instituicao,
                                     modelos,
-                                    roles
+
                                 }: UsuarioProps) {
 
     const router = useRouter();
-
+    const roles: string[] = useSelector((state: any) => state.roles);
 
     async function handleEdit(id: number) {
         await router.push(`/eventos/editar/${id}`)
@@ -328,7 +329,7 @@ export default function Usuario({
                                     Certificados
                                 </Card>
                             </Tab>
-                            {roles.includes("associado") || roles.includes('super-admin') &&
+                            {(roles.includes("associado") || roles.includes('super-admin')) &&
                                 <>
                                     <Tab>
                                         <Card className={styles.tab}>
@@ -342,7 +343,7 @@ export default function Usuario({
                                         </Card>
                                     </Tab>
                                 </>}
-                            {roles.includes("admin") || roles.includes('super-admin') &&
+                            {(roles.includes("admin") || roles.includes('super-admin')) &&
                                 <Tab>
                                     <Card className={styles.tab}>
                                         Instituição
@@ -369,7 +370,7 @@ export default function Usuario({
                         <TabPanel>
                             <UserCertificado imprimir={imprimir} certificados={certificados}/>
                         </TabPanel>
-                        {roles.includes("associado") || roles.includes('super-admin') &&
+                        {(roles.includes("associado") || roles.includes('super-admin')) &&
                             <>
                                 {/*Meus eventos*/}
                                 <TabPanel>
@@ -385,7 +386,7 @@ export default function Usuario({
 
                             </>}
 
-                        {roles.includes("admin") || roles.includes('super-admin') &&
+                        {(roles.includes("admin") || roles.includes('super-admin')) &&
                             <TabPanel>
                                 <InstituicaoUser instituicao={instituicao} handleAddParticipante={handleAddParticipante}
                                                  handleEditarInstituicao={handleEditarInstituicao}
