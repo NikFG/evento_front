@@ -12,12 +12,15 @@ export function decrypt(ciphertext) {
     return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
 }
 
-
+/*
+* @returns {boolean}
+* */
 export async function verificaToken(api, token = undefined, user_criptografado) {
     if (token === undefined) {
         console.log('token undefined');
         if (user_criptografado) {
             await loginAux(api, user_criptografado);
+            return false;
         }
 
     } else {
@@ -30,7 +33,6 @@ export async function verificaToken(api, token = undefined, user_criptografado) 
         }).then(res => {
             return res.data.valid;
         });
-        console.log({isValid, token})
         if (isValid) {
             console.log('token valid');
             const {user, roles} = await axios.get(`${api}/user/fromToken`, {
@@ -49,17 +51,30 @@ export async function verificaToken(api, token = undefined, user_criptografado) 
                 sameSite: 'strict',
 
             });
+            return true;
         } else {
-            await loginAux(api, user_criptografado)
+            await loginAux(api, user_criptografado);
+            return false;
         }
     }
 }
 
 async function loginAux(api, user_criptografado, token) {
     console.log('user_criptografado');
+    const axios = require('axios');
     const {email, password} = decrypt(user_criptografado);
-    const response = await api.post(`${api}/user/login`, {email, password});
-    const newtoken = response.data.token;
+    const user_temp = {
+        email,
+        password
+    }
+    console.log({email, password});
+    const response = await axios.post(`${api}/user/login`, user_temp).then(r => {
+        console.log({data: r.data});
+        return r;
+    }).catch(err => {
+        console.error({erro: err.response});
+    });
+    const newtoken = response.data.access_token;
     const user = response.data.user;
     const roles = response.data.roles;
 
@@ -72,11 +87,12 @@ async function loginAux(api, user_criptografado, token) {
     const store = initializeStore();
     store.dispatch(login(user, roles, newtoken));
     store.dispatch(lembrar(user_criptografado));
-    setCookie(null, 'USER_TOKEN', token, {
+    setCookie(null, 'USER_TOKEN', newtoken, {
         maxAge: 3600,
         path: '/',
         sameSite: 'strict',
 
     });
+
 }
 

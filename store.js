@@ -57,7 +57,7 @@ export const login = (user, roles, token) => {
         token,
     }
 }
-export const logout = () => {
+export const logoutStore = () => {
     return {
         type: actionTypes.LOGOUT
     }
