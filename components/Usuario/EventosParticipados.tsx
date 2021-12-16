@@ -1,5 +1,5 @@
 import styles from "./Usuario.module.css";
-import {Accordion, Button, Card, Col, Row} from "react-bootstrap";
+import {Accordion, Button, Card, Col, Row, Spinner} from "react-bootstrap";
 import React from "react";
 import {Evento} from "@types";
 import {motion} from "framer-motion";
@@ -9,13 +9,15 @@ export interface EventosParticipadosProps {
     CustomToggle: any;
     id_usuario: number;
     handleEnviaCertificadoEmail: (id_usuario: number) => void;
+    isLoading: boolean;
 }
 
 export default function EventosParticipados({
                                                 eventos_participados,
                                                 CustomToggle,
                                                 id_usuario,
-                                                handleEnviaCertificadoEmail
+                                                handleEnviaCertificadoEmail,
+                                                isLoading
                                             }: EventosParticipadosProps) {
     const easing = [0.6, -0.05, 0.01, 0.99];
     const fadeInUp = {
@@ -61,7 +63,12 @@ export default function EventosParticipados({
                                                                 onClick={async () => {
                                                                     await handleEnviaCertificadoEmail(a.id!);
                                                                 }}>
-                                                            Envia certificado
+                                                            {isLoading ?
+                                                                <Spinner animation={"border"} role={"status"}>
+                                                                    <span
+                                                                        className="visually-hidden">Carregando...</span>
+                                                                </Spinner> :
+                                                                "Envia certificado"}
                                                         </Button>
                                                     </Col>
 

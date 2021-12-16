@@ -1,6 +1,4 @@
-import styles from "./Usuario.module.css";
 import {Accordion, Button, Card, Col, Row} from "react-bootstrap";
-import Image from "next/image";
 import React from "react";
 import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -21,8 +19,8 @@ export default function ModeloCertificadoUser({modelos, CustomToggle}: ModeloCer
                     <Card>
                         <Card.Body>
                             <div className="d-flex flex-column align-items-center text-center">
-                                <Button onClick={() => {
-                                    router.push('/certificados/modelo')
+                                <Button onClick={async () => {
+                                    await router.push('/certificados/modelo')
                                 }}>
                                     <FontAwesomeIcon icon={faPlus} className={'me-2'}/>
                                     Criar modelo de certificado

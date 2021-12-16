@@ -19,7 +19,8 @@ import {toast, ToastContainer} from "react-toastify";
 import {AxiosError, AxiosResponse} from "axios";
 import InstituicaoUser from "@components/Usuario/InstituicaoUser";
 import ModeloCertificadoUser from "@components/Usuario/ModeloCertificadoUser";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {logoutStore} from "../../store";
 
 
 export interface UsuarioProps {
@@ -31,7 +32,6 @@ export interface UsuarioProps {
     user: User
     instituicao: Instituicao
     modelos: ModeloCertificado[]
-
 
 }
 
@@ -50,12 +50,16 @@ export default function Usuario({
 
     const router = useRouter();
     const roles: string[] = useSelector((state: any) => state.roles);
+    const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = React.useState(false);
+
 
     async function handleEdit(id: number) {
         await router.push(`/eventos/editar/${id}`)
     }
 
     async function handleDelete(id: number) {
+        setIsLoading(true)
         const axios = require('axios');
         await axios.delete(`${api}/eventos/${id.toString()}`, {
             headers: {
@@ -84,6 +88,8 @@ export default function Usuario({
                     draggable: true,
                     progress: undefined,
                 });
+            }).finally(() => {
+                setIsLoading(false);
             });
 
 
@@ -105,6 +111,7 @@ export default function Usuario({
     }
 
     async function logout() {
+        setIsLoading(true);
         const axios = require('axios');
         await axios.post(`${api}/user/logout`, null, {
             headers: {
@@ -115,10 +122,12 @@ export default function Usuario({
         sessionStorage.clear();
         localStorage.removeItem("USER_LOGIN");
         destroyCookie(null, 'USER_TOKEN');
+        dispatch(logoutStore());
         await router.push('/');
     }
 
     async function handleAddParticipante(email: string) {
+        setIsLoading(true);
         const axios = require('axios');
         await axios.post(`${api}/instituicao/addUsuario`, {
             email
@@ -141,10 +150,13 @@ export default function Usuario({
         })
             .catch(((error: any) => {
                 console.error({error});
-            }));
+            })).finally(() => {
+                setIsLoading(false);
+            });
     }
 
     async function handleTransferencia(email: string, permanece: boolean) {
+        setIsLoading(true);
         const axios = require('axios');
         await axios.post(`${api}/instituicao/transferir`, {
             email,
@@ -179,10 +191,13 @@ export default function Usuario({
                 });
 
 
-            }));
+            })).finally(() => {
+                setIsLoading(false);
+            });
     }
 
     async function atualizarDados(id: number, nome: string, telefone: string, password?: string, password_confirmation?: string) {
+        setIsLoading(true);
         const axios = require('axios');
         await axios.post(`${api}/user/update/${id}`, {
             nome,
@@ -220,10 +235,13 @@ export default function Usuario({
                         progress: undefined,
                     });
                 }
-            }))
+            })).finally(() => {
+                setIsLoading(false);
+            });
     }
 
     async function handleEditarInstituicao(nome: string, endereco: string, cidade: string) {
+        setIsLoading(true);
         const axios = require('axios');
         const formData = new FormData();
         formData.append('nome', nome);
@@ -259,10 +277,13 @@ export default function Usuario({
                     progress: undefined,
                 });
             }
-        }));
+        })).finally(() => {
+            setIsLoading(false);
+        });
     }
 
     async function handleEnviaCertificadoEmail(id: number) {
+        setIsLoading(true);
         const axios = require('axios');
         await axios.post(`${api}/certificados/${id}/gerarByAtividade`, null, {
             headers: {
@@ -292,7 +313,9 @@ export default function Usuario({
                     progress: undefined,
                 });
             }
-        }));
+        })).finally(() => {
+            setIsLoading(false);
+        });
     }
 
     return (
@@ -354,7 +377,7 @@ export default function Usuario({
 
                         {/*Perfil*/}
                         <TabPanel>
-                            <Perfil logout={logout} user={user!} atualizarDados={atualizarDados}/>
+                            <Perfil logout={logout} user={user!} atualizarDados={atualizarDados} isLoading={isLoading}/>
                         </TabPanel>
 
 
@@ -363,12 +386,13 @@ export default function Usuario({
                             <EventosParticipados eventos_participados={eventos_participados}
                                                  CustomToggle={CustomToggle}
                                                  id_usuario={user?.id}
-                                                 handleEnviaCertificadoEmail={handleEnviaCertificadoEmail}/>
+                                                 handleEnviaCertificadoEmail={handleEnviaCertificadoEmail}
+                                                 isLoading={isLoading}/>
                         </TabPanel>
 
                         {/*Certificados*/}
                         <TabPanel>
-                            <UserCertificado imprimir={imprimir} certificados={certificados}/>
+                            <UserCertificado imprimir={imprimir} certificados={certificados} isLoading={isLoading}/>
                         </TabPanel>
                         {(roles.includes("associado") || roles.includes('super-admin')) &&
                             <>
@@ -376,7 +400,8 @@ export default function Usuario({
                                 <TabPanel>
                                     <MeusEventos eventos_criados={eventos_criados} handleDelete={handleDelete}
                                                  CustomToggle={CustomToggle} handleCertificado={handleCertificado}
-                                                 handleEdit={handleEdit} handleModelo={handleModelo}/>
+                                                 handleEdit={handleEdit} handleModelo={handleModelo}
+                                                 isLoading={isLoading}/>
                                 </TabPanel>
 
 
@@ -390,7 +415,7 @@ export default function Usuario({
                             <TabPanel>
                                 <InstituicaoUser instituicao={instituicao} handleAddParticipante={handleAddParticipante}
                                                  handleEditarInstituicao={handleEditarInstituicao}
-                                                 handleTransferencia={handleTransferencia}/>
+                                                 handleTransferencia={handleTransferencia} isLoading={isLoading}/>
                             </TabPanel>}
                     </Tabs>
                 </Row>

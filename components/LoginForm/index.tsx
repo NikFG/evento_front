@@ -1,7 +1,7 @@
 import styles from "./LoginForm.module.css"
 import Link from "next/link";
 import {useRouter} from "next/router";
-import axios, {AxiosResponse} from "axios";
+import axios, {AxiosError, AxiosResponse} from "axios";
 import {User} from "@types";
 import {encrypt} from "@utils";
 import nookies, {setCookie} from 'nookies';
@@ -10,6 +10,8 @@ import {toast, ToastContainer} from "react-toastify";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import {useDispatch, useSelector} from "react-redux";
 import {lembrar, login} from "../../store";
+import 'regenerator-runtime/runtime';
+import {Spinner} from "react-bootstrap";
 
 export interface LoginProps {
     api: string
@@ -19,10 +21,12 @@ export interface LoginProps {
 
 export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
     const router = useRouter();
+
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
-    const hcaptchaRef = React.useRef<HCaptcha>(null);
+    const [isLoading, setIsLoading] = React.useState(false);
 
+    const hcaptchaRef = React.useRef<HCaptcha>(null);
     const dispatch = useDispatch();
 
 
@@ -46,7 +50,7 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
             dispatch(login(user_logado, roles, token));
             dispatch(lembrar(usuario_criptografado));
 
-            await toast.success(`Login realizado com sucesso!`, {
+            toast.success(`Login realizado com sucesso!`, {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -57,25 +61,28 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
             });
             await router.push("/");
         })
-            .catch((error: any) => {
-                console.error(error.response.data.error);
-                toast.error(`${error.response.data.error}`, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+            .catch((error: AxiosError) => {
+                console.error(error.response?.data);
+                for(const [_,v] of Object.entries(error.response?.data)){
+                    toast.error(`${v}`, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }
             });
     }
 
     const onHCaptchaChange = async (captcha: string) => {
+        setIsLoading(true);
         if (!captcha) {
+            setIsLoading(false);
             return;
         }
-
         try {
             console.log({captcha});
             const response = await fetch("/api/register", {
@@ -102,7 +109,7 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
                 progress: undefined,
             });
         } finally {
-
+            setIsLoading(false);
         }
     };
 
@@ -166,7 +173,13 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
                             />
                         </div>
                         <div className={"row form-group " + styles.botao}>
-                            <button type="submit" className="btn btn-outline-primary btn-lg btn-block">Entrar</button>
+                            <button type="submit" className="btn btn-outline-primary btn-lg btn-block"
+                                    disabled={isLoading}>{isLoading ?
+                                <Spinner animation={"border"} role={"status"}><span
+                                    className="visually-hidden">Carregando...</span></Spinner>
+                                : "Entrar"}
+
+                            </button>
 
 
                         </div>
@@ -181,7 +194,6 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
                             <div className={"col-10"}>
                                 <p className={"text-end"}>
                                     <Link href={"/cadastro"}>
-
                                         <a>Criar conta</a>
 
                                     </Link>
