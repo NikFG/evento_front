@@ -1,5 +1,5 @@
 import styles from "./Usuario.module.css";
-import {Button, Card, Col, Form, FormControl, FormGroup, FormLabel, Row} from "react-bootstrap";
+import {Button, Card, Col, Form, FormControl, FormGroup, FormLabel, Row, Spinner} from "react-bootstrap";
 import Image from "next/image";
 import React from "react";
 import {Instituicao} from "@types";
@@ -12,6 +12,7 @@ export interface InstituicaoUserProps {
     handleAddParticipante: (email: string) => void;
     handleTransferencia: (email: string, permanece: boolean) => void;
     handleEditarInstituicao: (nome: string, endereco: string, cidade: string) => void;
+    isLoading: boolean;
 }
 
 export default function InstituicaoUser({
@@ -19,6 +20,7 @@ export default function InstituicaoUser({
                                             handleAddParticipante,
                                             handleEditarInstituicao,
                                             handleTransferencia,
+                                            isLoading
                                         }: InstituicaoUserProps) {
     const [email, setEmail] = React.useState("");
     const [nome, setNome] = React.useState("");
@@ -81,7 +83,10 @@ export default function InstituicaoUser({
                             </FormGroup>
                             <Button variant={'primary'} onClick={async () => {
                                 await handleEditarInstituicao(nome, endereco, cidade);
-                            }}> Editar
+                            }}> {isLoading ?
+                                <Spinner animation={"border"} role={"status"}>
+                                    <span className="visually-hidden">Carregando...</span>
+                                </Spinner> : "Editar"}
                             </Button>
 
                         </Card.Body>
@@ -98,7 +103,12 @@ export default function InstituicaoUser({
                                 </FormGroup>
                                 <Button variant={'primary'} onClick={async () => {
                                     await handleAddParticipante(email);
-                                }}> <FontAwesomeIcon icon={faPlus} className={'me-2'}/> Adicionar
+                                }}>
+                                    {isLoading ?
+                                        <Spinner animation={"border"} role={"status"}>
+                                            <span className="visually-hidden">Carregando...</span>
+                                        </Spinner> :
+                                        <span><FontAwesomeIcon icon={faPlus} className={'me-2'}/> Adicionar</span>}
                                 </Button>
                             </Form>
                         </Card.Body>
@@ -174,7 +184,12 @@ export default function InstituicaoUser({
                                         },
                                     });
 
-                                }}> <FontAwesomeIcon icon={faPlus} className={'me-2'}/> Transferir
+                                }}>
+                                    {isLoading ?
+                                        <Spinner animation={"border"} role={"status"}>
+                                            <span className="visually-hidden">Carregando...</span>
+                                        </Spinner> :
+                                        <span><FontAwesomeIcon icon={faPlus} className={'me-2'}/> Transferir</span>}
                                 </Button>
                             </Form>
                         </Card.Body>

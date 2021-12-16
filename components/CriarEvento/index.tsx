@@ -4,14 +4,15 @@ import {faCalendar, faClock, faEdit, faPlus, faPlusCircle, faTrash} from "@forta
 import Select from 'react-select';
 import React from "react";
 import {Atividade, Categoria, Evento, TipoAtividade} from "@types";
-import {AxiosResponse} from "axios";
+import {AxiosError, AxiosResponse} from "axios";
 import {useRouter} from "next/router";
 import {toast, ToastContainer} from "react-toastify";
-import {Button, Col, Row} from "react-bootstrap";
+import {Button, Col, Row, Spinner} from "react-bootstrap";
 import Image from "next/image";
 import teste from '@images/banner_aux.jpg'
 import {useSelector} from "react-redux";
-import { verificaToken } from "utils";
+import {verificaToken} from "utils";
+import {parseCookies} from "nookies";
 
 
 interface CategoriaProps {
@@ -23,6 +24,9 @@ interface CategoriaProps {
 
 export default function CriarEvento({categorias, tipo_atividades, api, evento_edit}: CategoriaProps) {
     const router = useRouter();
+    const [isLoading, setIsLoading] = React.useState(false);
+
+
     const [nomeEvento, setNomeEvento] = React.useState("");
     const [catSelecionada, setCatSelecionada] = React.useState<{ label: string, value: number }>();
     const [breveEvento, setBreveEvento] = React.useState("");
@@ -48,71 +52,111 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     const [localAtividade, setLocalAtividade] = React.useState("");
     const [apresentadoresNome, setApresentadoresNome] = React.useState<Array<string>>([""]);
     const [apresentadoresEmail, setApresentadoresEmail] = React.useState<Array<string>>([""]);
-    const token = useSelector((state: any) => state.token);
+    let token = useSelector((state: any) => state.token);
     const user_criptografado = useSelector((state: any) => state.user_criptografado);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        let evento: Evento = {
-            breve_descricao: breveEvento,
-            descricao: descricaoEvento,
-            expectativa_participantes: 0,
-            link_evento: "",
-            local,
-            nome: nomeEvento,
-            tipo: "",
-            atividades,
-            categoria_id: catSelecionada?.value,
-            id: evento_edit ? evento_edit.id : undefined
+        setIsLoading(true);
+        try {
+            let evento: Evento = {
+                breve_descricao: breveEvento,
+                descricao: descricaoEvento,
+                expectativa_participantes: 0,
+                link_evento: "",
+                local,
+                nome: nomeEvento,
+                tipo: "",
+                atividades,
+                categoria_id: catSelecionada?.value,
+                id: evento_edit ? evento_edit.id : undefined
 
-        }
-        const axios = require('axios')
-        const formData = new FormData();
-        for (const [k, v] of Object.entries(evento)) {
-            if (k == "atividades") {
-                formData.append(k, JSON.stringify(v));
-            } else
-                formData.append(k, v)
-        }
-        if (imagens) {
-            Array.from(imagens).forEach(i => {
-                formData.append("imagem[]", i);
-            });
-        }
-        if (banner)
-            formData.append("banner", banner)
-
-        let url = `${api}/eventos/store`;
-        if (evento_edit) {
-            url = `${api}/eventos/update/${evento.id}`
-        }
-
-
-        verificaToken(api, token, user_criptografado);
-        await axios.post(url, formData, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": `multipart/form-data`,
             }
-        }).then((r: AxiosResponse) => {
-            if (r.status === 201) {
-                router.push('/')
+            const axios = require('axios')
+            const formData = new FormData();
+            for (const [k, v] of Object.entries(evento)) {
+                if (k == "atividades") {
+                    formData.append(k, JSON.stringify(v));
+                } else
+                    formData.append(k, v)
             }
-        }).catch((err: any) => {
-            for (const v of Object.values(err.response.data)) {
-                console.error(v);
-                toast.error(`${v}`, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+            if (imagens) {
+                Array.from(imagens).forEach(i => {
+                    formData.append("imagem[]", i);
                 });
             }
-        });
+            if (banner)
+                formData.append("banner", banner)
 
+            let url = `${api}/eventos/store`;
+            if (evento_edit) {
+                url = `${api}/eventos/update/${evento.id}`
+            }
+            //@ts-ignore
+            const isValid: boolean = await verificaToken(api, token, user_criptografado);
+
+            if (!isValid) {
+                const cookies = parseCookies(null, {
+                    path: '/',
+                    maxAge: 3600,
+                    sameSite: 'strict',
+                    secure: true
+
+                })
+                console.log({token})
+                token = cookies.USER_TOKEN;
+                console.log({token})
+            }
+
+            await axios.post(url, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": `multipart/form-data`,
+                }
+            }).then((r: AxiosResponse) => {
+                if (r.status === 201) {
+                    router.push('/')
+                }
+            }).catch((err: AxiosError) => {
+                console.error({erro: err.response?.data})
+                if (err.response?.status !== 403) {
+                    for (const [_, v] of Object.entries(err.response?.data.message)) {
+                        toast.error(`${v}`, {
+                            position: "top-right",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                    }
+                } else {
+                    toast.error(`${err.response?.data.message}`, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }
+
+            });
+        } catch (err) {
+            toast.error(`${err}`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } finally {
+            setIsLoading(false);
+        }
 
     }
 
@@ -597,7 +641,12 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
 
                     <div className={"mt-3 " + styles.inner}>
                         <div className={"row form-group " + styles.botao}>
-                            <button type="submit" className="btn btn-outline-primary btn-lg btn-block">Confirmar
+                            <button type="submit" className="btn btn-outline-primary btn-lg btn-block">
+                                {isLoading ?
+                                    <Spinner animation={"border"} role={"status"}>
+                                        <span className="visually-hidden">Carregando...</span>
+                                    </Spinner> :
+                                    "Confirmar"}
                             </button>
                         </div>
                     </div>
