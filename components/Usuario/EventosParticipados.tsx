@@ -36,7 +36,7 @@ export default function EventosParticipados({
     }
     return (
         <Accordion>
-            {eventos_participados ? eventos_participados.map(e => (
+            {eventos_participados && eventos_participados.length > 0 ? eventos_participados.map(e => (
                 <motion.div variants={fadeInUp}
                             whileHover={{scale: 1.05}}
                             whileTap={{scale: 0.95}}

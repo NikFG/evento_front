@@ -12,7 +12,7 @@ export interface UserCertificadoProps {
 export default function UserCertificado({imprimir, certificados, isLoading}: UserCertificadoProps) {
     return (
         <>
-            {certificados ? certificados.map(c => {
+            {certificados && certificados.length > 0 ? certificados.map(c => {
                 return <Row key={c.id} className={"mb-3"}>
                     <Col sm={"auto"} md={"auto"} lg={"auto"}>
                         {c.descricao}

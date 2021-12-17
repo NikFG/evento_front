@@ -12,6 +12,7 @@ export interface ModeloCertificadoProps {
 
 export default function ModeloCertificadoUser({modelos, CustomToggle}: ModeloCertificadoProps) {
     const router = useRouter();
+
     return (
         <>
             <Row>
@@ -29,8 +30,8 @@ export default function ModeloCertificadoUser({modelos, CustomToggle}: ModeloCer
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col sm={12} md={modelos ? 5 : 12} lg={modelos ? 3 : 12}>
-                    {modelos ? modelos.map(m => {
+                <Col sm={12} md={modelos && modelos.length > 0 ? 5 : 12} lg={modelos && modelos.length > 0 ? 3 : 12}>
+                    {modelos && modelos.length > 0 ? modelos.map(m => {
                         return (
                             <Card key={m.id}>
                                 <Card.Header>
