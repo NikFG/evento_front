@@ -15,7 +15,7 @@ export function decrypt(ciphertext) {
 /*
 * @returns {boolean}
 * */
-export async function verificaToken(api, token = undefined, user_criptografado) {
+export async function verificaToken(api, token, user_criptografado) {
     if (token === undefined) {
         console.log('token undefined');
         if (user_criptografado) {
