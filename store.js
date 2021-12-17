@@ -48,6 +48,8 @@ export const reducer = (state = initialStateUser, action) => {
 export const login = (user, roles, token) => {
     setCookie(null, 'USER_TOKEN', token, {
         maxAge: 3600,
+        sameSite: 'strict',
+        secure: true,
         path: '/',
     });
     return {
@@ -72,7 +74,7 @@ export const lembrar = (user_criptografado) => {
 const persistConfig = {
     key: 'primary',
     storage,
-    whitelist: ['user', 'roles', 'token','user_criptografado']
+    whitelist: ['user', 'roles', 'token', 'user_criptografado']
 }
 const persistedReducer = persistReducer(persistConfig, reducer);
 
