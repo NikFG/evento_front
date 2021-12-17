@@ -2,63 +2,40 @@ import Navbar from "@components/Navbar";
 import Usuario from "@components/Usuario";
 import {GetServerSideProps, InferGetServerSidePropsType} from "next";
 import {Certificado, Evento, Instituicao, ModeloCertificado, User} from "@types";
-import {parseCookies} from 'nookies';
 import React from "react";
 import axios, {AxiosError, AxiosResponse} from "axios";
-import {useSelector} from "react-redux";
 import {verificaToken} from "utils";
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async ({req, res}) => {
+
     const axios = require('axios');
-    const cookies = parseCookies(context, {
-        path: '/',
-        maxAge: 3600,
-        sameSite: 'strict',
-        secure: true
-
-    })
-
-
-    const token = cookies.USER_TOKEN;
     const api = process.env.API_SERVER;
+    const token = req.cookies.USER_TOKEN;
+    await verificaToken(api, token, undefined);
 
-    let res = await axios.get(api + "/eventos/user", {
+    let response = await axios.get(api + "/eventos/user", {
         headers: {
             Authorization: `Bearer ${token}`
         }
     });
-    const eventos_participados: Evento[] = res.data;
+    const eventos_participados: Evento[] = response.data;
 
 
-    res = await axios.get(api + "/certificados", {
+    response = await axios.get(api + "/certificados", {
         headers: {
             Authorization: `Bearer ${token}`
         }
     });
-    const certificados: Certificado[] = res.data;
+    const certificados: Certificado[] = response.data;
 
-    res = await axios.get(api + "/user/fromToken", {
+    response = await axios.get(api + "/user/fromToken", {
         headers: {
             Authorization: `Bearer ${token}`
         }
     });
-    const user: User = res.data.user;
+    const user: User = response.data.user;
 
-    res = await axios.get(api + "/eventos/criados", {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    }).then((res: AxiosResponse) => {
-        return res;
-    }).catch((e: AxiosError) => {
-        if (e.response!.status === 403) {
-            return [];
-        }
-        throw e;
-    });
-    const eventos_criados: Evento[] = res.data ?? null;
-
-    res = await axios.get(`${api}/instituicao/user`, {
+    response = await axios.get(api + "/eventos/criados", {
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -70,10 +47,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
         throw e;
     });
-    const instituicao: Instituicao = res.data ?? null;
-    console.log({instituicao: res.data});
+    const eventos_criados: Evento[] = response.data ?? null;
 
-    res = await axios.get(`${api}/modelos`, {
+    response = await axios.get(`${api}/instituicao/user`, {
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -85,7 +61,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
         throw e;
     });
-    const modelos: ModeloCertificado[] = res.data ?? null;
+    const instituicao: Instituicao = response.data ?? null;
+
+
+    response = await axios.get(`${api}/modelos`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }).then((res: AxiosResponse) => {
+        return res;
+    }).catch((e: AxiosError) => {
+        if (e.response!.status === 403) {
+            return [];
+        }
+        throw e;
+    });
+    const modelos: ModeloCertificado[] = response.data ?? null;
 
     return {
         props: {
@@ -107,9 +98,7 @@ export default function UsuarioPage({
                                         eventos_criados, certificados, api, token, user, instituicao, modelos
                                     }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
-    const user_criptografado = useSelector((state: any) => state.user_criptografado);
 
-    verificaToken(api, token, user_criptografado);
     return (
         <>
             <Navbar api={api} titulo={"Página de usuário"}/>
