@@ -5,6 +5,8 @@ import {AxiosResponse} from "axios";
 import {useRouter} from 'next/router'
 import {toast, ToastContainer} from "react-toastify";
 import {Spinner} from "react-bootstrap";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 
 export interface Props {
     api: string
@@ -13,7 +15,7 @@ export interface Props {
 export default function CadastroForm(props: Props) {
     const router = useRouter();
     const [isLoading, setIsLoading] = React.useState(false);
-
+    const [isVisible, setIsVisible] = React.useState(false);
     const [nome, setNome] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [cpf, setCpf] = React.useState("");
@@ -133,22 +135,46 @@ export default function CadastroForm(props: Props) {
 
                         <div className="form-group mb-3">
                             <label htmlFor="senha" className={"form-label"}>Senha</label>
-                            <input id="senha" type="password" className="form-control" placeholder="Digite sua senha"
-                                   value={password}
-                                   onChange={(e) => {
-                                       setPassword(e.target.value);
-                                   }}
-                                   required/>
+                            <div className={'input-group'}>
+                                <input id="senha" type={isVisible ? "text" : "password"} className="form-control"
+                                       placeholder="Digite sua senha"
+                                       value={password}
+                                       onChange={(e) => {
+                                           setPassword(e.target.value)
+                                       }}
+                                       required
+                                       aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                />
+                                <div className="input-group-append">
+                                    <button className="btn btn-outline-secondary" type="button" onClick={() => {
+                                        setIsVisible(!isVisible);
+                                    }}>
+                                        <FontAwesomeIcon icon={isVisible ? faEyeSlash : faEye}/>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
                         <div className="form-group mb-3">
                             <label htmlFor="senhaConfirm" className={"form-label"}>Confirme sua senha</label>
-                            <input id="senhaConfirm" type="password" className="form-control"
-                                   value={password_confirmation}
-                                   onChange={(e) => {
-                                       setPassword_confirmation(e.target.value);
-                                   }}
-                                   placeholder="Digite sua senha novamente" required/>
+                            <div className={'input-group'}>
+                                <input id="senhaConfirm" type={isVisible ? "text" : "password"} className="form-control"
+                                       value={password_confirmation}
+                                       onChange={(e) => {
+                                           setPassword_confirmation(e.target.value);
+                                       }}
+                                       placeholder="Digite sua senha novamente" required
+                                       aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                />
+                                <div className="input-group-append">
+                                    <button className="btn btn-outline-secondary" type="button" onClick={() => {
+                                        setIsVisible(!isVisible);
+                                    }}>
+                                        <FontAwesomeIcon icon={isVisible ? faEyeSlash : faEye}/>
+                                    </button>
+                                </div>
+                            </div>
+
                         </div>
 
                         <div className={"row form-group " + styles.botao}>
