@@ -2,59 +2,82 @@ import Navbar from "@components/Navbar";
 import Usuario from "@components/Usuario";
 import {GetServerSideProps, InferGetServerSidePropsType} from "next";
 import {Certificado, Evento, Instituicao, ModeloCertificado, User} from "@types";
-import {parseCookies} from 'nookies';
 import React from "react";
-import axios from "axios";
+import axios, {AxiosError, AxiosResponse} from "axios";
+import {verificaToken} from "utils";
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async ({req, res}) => {
+
     const axios = require('axios');
-    const cookies = parseCookies(context, {
-        path: '/',
-        maxAge: 3600,
-        sameSite: 'strict',
-        secure: true
-
-    })
-    const token = cookies.USER_TOKEN;
-
     const api = process.env.API_SERVER;
-    let res = await axios.get(api + "/eventos/user", {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
-    const eventos_participados: Evento[] = res.data;
-    res = await axios.get(api + "/eventos/criados", {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
-    const eventos_criados: Evento[] = res.data;
-    res = await axios.get(api + "/certificados", {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
-    const certificados: Certificado[] = res.data;
-    res = await axios.get(api + "/user/fromToken", {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
+    const token = req.cookies.USER_TOKEN;
+    await verificaToken(api, token, undefined);
 
-    const user: User = res.data;
-    res = await axios.get(`${api}/instituicao/user`, {
+    let response = await axios.get(api + "/eventos/user", {
         headers: {
             Authorization: `Bearer ${token}`
         }
     });
-    const instituicao: Instituicao = res.data;
-    res = await axios.get(`${api}/modelos`, {
+    const eventos_participados: Evento[] = response.data;
+
+
+    response = await axios.get(api + "/certificados", {
         headers: {
             Authorization: `Bearer ${token}`
         }
     });
-    const modelos: ModeloCertificado[] = res.data;
+    const certificados: Certificado[] = response.data;
+
+    response = await axios.get(api + "/user/fromToken", {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    const user: User = response.data.user;
+
+    response = await axios.get(api + "/eventos/criados", {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }).then((res: AxiosResponse) => {
+        return res;
+    }).catch((e: AxiosError) => {
+        if (e.response!.status === 403) {
+            return [];
+        }
+        throw e;
+    });
+    const eventos_criados: Evento[] = response.data ?? null;
+
+    response = await axios.get(`${api}/instituicao/user`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }).then((res: AxiosResponse) => {
+        return res;
+    }).catch((e: AxiosError) => {
+        if (e.response!.status === 403) {
+            return [];
+        }
+        throw e;
+    });
+    const instituicao: Instituicao = response.data ?? null;
+
+
+    response = await axios.get(`${api}/modelos`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }).then((res: AxiosResponse) => {
+        return res;
+    }).catch((e: AxiosError) => {
+        if (e.response!.status === 403) {
+            return [];
+        }
+        throw e;
+    });
+    const modelos: ModeloCertificado[] = response.data ?? null;
+
     return {
         props: {
             eventos_participados,
@@ -64,7 +87,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             token,
             user,
             instituicao,
-            modelos
+            modelos,
 
         }
     }
@@ -74,6 +97,7 @@ export default function UsuarioPage({
                                         eventos_participados,
                                         eventos_criados, certificados, api, token, user, instituicao, modelos
                                     }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+
 
     return (
         <>
@@ -87,6 +111,7 @@ export default function UsuarioPage({
                 user={user}
                 instituicao={instituicao}
                 modelos={modelos}
+
             />
         </>
     );

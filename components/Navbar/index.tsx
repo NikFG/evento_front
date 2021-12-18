@@ -3,12 +3,13 @@ import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTimes, faBars} from "@fortawesome/free-solid-svg-icons";
 import {User} from "@types";
-import {AxiosResponse} from "axios";
+import axios, {AxiosError, AxiosResponse} from "axios";
 import {setCookie} from "nookies";
 import {decrypt, encrypt} from "utils";
 import Link from "next/link";
 import Image from "next/image";
 import {faCheckCircle} from "@fortawesome/free-solid-svg-icons/faCheckCircle";
+import {useSelector} from "react-redux";
 
 export interface Props {
     api?: string
@@ -20,6 +21,8 @@ export default function Navbar({api, titulo}: Props) {
     const [button, setButton] = React.useState(true);
     const [navbar, setNavbar] = React.useState(false);
     const [nome, setNome] = React.useState("");
+
+    const user: User = useSelector(((state: any) => state.user));
 
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
@@ -36,40 +39,9 @@ export default function Navbar({api, titulo}: Props) {
         window.addEventListener('resize', showButton);
         window.addEventListener('scroll', changeBackground);
         showButton();
-        let user_data = sessionStorage.getItem("USER_DATA")
+        if (user)
+            setNome(user.nome);
 
-        if (user_data) {
-            const user: User = JSON.parse(user_data)
-            setNome(user.nome)
-        } else {
-            const login = localStorage.getItem("USER_LOGIN");
-            if (login) {
-                const {email, password} = decrypt(login);
-                const axios = require("axios");
-                const user = {
-                    email,
-                    password
-                }
-                axios.post(`${api}/user/login`, user).then((value: AxiosResponse) => {
-                    sessionStorage.setItem("USER_TOKEN", value.data.access_token)
-                    let usuario_criptografado = encrypt(user)
-                    const user_logado: User = value.data.user;
-                    sessionStorage.setItem("USER_DATA", JSON.stringify(user_logado))
-                    localStorage.setItem("USER_LOGIN", usuario_criptografado)
-                    setCookie(null, 'USER_TOKEN', value.data.access_token, {
-                        path: '/',
-                        maxAge: 3600,
-                        sameSite: 'strict',
-                        secure: true
-                    });
-                    setNome(user_logado.nome);
-                })
-                    .catch((error: any) => {
-                        console.error(error)
-                    });
-                console.log(email)
-            }
-        }
     }, []);
 
     const changeBackground = () => {
@@ -117,6 +89,7 @@ export default function Navbar({api, titulo}: Props) {
                             </Link>
 
                         </li>
+                        {}
                         <li className={styles.navItem}>
                             <Link href={"/eventos/criar"}>
                                 <a
@@ -127,6 +100,7 @@ export default function Navbar({api, titulo}: Props) {
                             </Link>
                         </li>
                         <li className={styles.navItem}>
+
                             {nome ? <Link href={"/usuario"}>
                                     <a className={styles.navLinks}>
                                         <Image

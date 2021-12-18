@@ -2,12 +2,12 @@ import Head from 'next/head'
 import MainBanner from "@components/MainBanner";
 import GridEventos from "@components/GridEventos";
 import Footer from "@components/Footer";
-import {GetStaticProps, InferGetStaticPropsType} from "next";
+import {GetServerSideProps, InferGetServerSidePropsType} from "next";
 import {Evento} from "@types";
 import Navbar from "@components/Navbar";
 import {motion} from "framer-motion";
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
     const axios = require('axios');
     const eventosResp = await axios.get(process.env.API_SERVER + "/eventos");
     const api = process.env.API_SERVER;
@@ -21,7 +21,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
 }
 
-export default function Home({eventos, api}: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Home({eventos, api}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
     return (
 

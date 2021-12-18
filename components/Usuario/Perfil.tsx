@@ -1,4 +1,3 @@
-import styles from "./Usuario.module.css"
 import {
     Button,
     Card,
@@ -9,7 +8,7 @@ import {
     FormLabel,
     ListGroup,
     ListGroupItem,
-    Row
+    Row, Spinner
 } from "react-bootstrap";
 import Image from "next/image";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -22,9 +21,10 @@ export interface PerfilProps {
     logout: () => void
     user: User
     atualizarDados: (id: number, nome: string, telefone: string, password?: string, password_confirmation?: string) => void
+    isLoading: boolean
 }
 
-export default function Perfil({logout, user, atualizarDados}: PerfilProps) {
+export default function Perfil({logout, user, atualizarDados, isLoading}: PerfilProps) {
     const [nome, setNome] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [telefone, setTelefone] = React.useState("");
@@ -52,7 +52,13 @@ export default function Perfil({logout, user, atualizarDados}: PerfilProps) {
                                 <h4>{user?.nome}</h4>
                                 <p className="text-secondary mb-1">{user?.email}</p>
                                 <p className="text-muted font-size-sm">{user?.telefone}</p>
-                                <Button onClick={() => logout()}>Sair</Button>
+                                <Button onClick={() => logout()} disabled={isLoading}>
+                                    {isLoading ?
+                                        <Spinner animation={"border"} role={"status"}>
+                                            <span className="visually-hidden">Carregando...</span>
+                                        </Spinner> :
+                                        "Sair"}
+                                </Button>
                             </div>
                         </div>
                     </Card.Body>
@@ -153,7 +159,14 @@ export default function Perfil({logout, user, atualizarDados}: PerfilProps) {
                             </FormGroup>
                             <div className="d-flex flex-column align-items-center text-center">
                                 <Button variant={"primary"}
-                                        onClick={() => atualizarDados(user.id!, nome, telefone, senha === "" ? undefined : senha, confirmarSenha)}>Modificar</Button>
+                                        onClick={() => atualizarDados(user.id!, nome, telefone, senha === "" ? undefined : senha, confirmarSenha)}
+                                        disabled={isLoading}>
+                                    {isLoading ?
+                                        <Spinner animation={"border"} role={"status"}>
+                                            <span className="visually-hidden">Carregando...</span>
+                                        </Spinner> :
+                                        "Modificar"}
+                                </Button>
                             </div>
                         </Form>
                     </Card.Body>

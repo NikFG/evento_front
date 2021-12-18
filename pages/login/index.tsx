@@ -3,21 +3,23 @@ import LoginForm from "@components/LoginForm";
 import {GetStaticProps, InferGetStaticPropsType} from "next";
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    const secret = process.env.SECRET_KEY
+    const hcaptcha_secret = process.env.HCAPTCHA_SECRET
     const api = process.env.API_SERVER
+    const hcaptcha_key = process.env.HCAPTCHA_KEY
     return {
         props: {
-            secret,
-            api
+            hcaptcha_secret,
+            api,
+            hcaptcha_key
         }
     }
 }
 
-export default function Login({secret,api}: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Login({hcaptcha_secret, api, hcaptcha_key}: InferGetStaticPropsType<typeof getStaticProps>) {
 
     return (
         <>
-            <LoginForm secret={secret} api={api}/>
+            <LoginForm hcaptcha_secret={hcaptcha_secret} api={api} sitekey={hcaptcha_key}/>
         </>
 
     );

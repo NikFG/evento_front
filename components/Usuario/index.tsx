@@ -3,27 +3,24 @@ import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
 import React, {useContext} from "react";
 import {
     AccordionContext,
-    Button,
     Card,
     Container, Row,
     useAccordionButton
 } from "react-bootstrap";
 
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-
 import {Evento, User, Certificado, Instituicao, ModeloCertificado} from "@types";
 import {useRouter} from "next/router";
-import ReactTooltip from 'react-tooltip';
 import {destroyCookie} from "nookies";
 import Perfil from "@components/Usuario/Perfil";
 import MeusEventos from "@components/Usuario/MeusEventos";
 import EventosParticipados from "@components/Usuario/EventosParticipados";
 import UserCertificado from "@components/Usuario/UserCertificado";
-import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
 import {toast, ToastContainer} from "react-toastify";
 import {AxiosError, AxiosResponse} from "axios";
 import InstituicaoUser from "@components/Usuario/InstituicaoUser";
 import ModeloCertificadoUser from "@components/Usuario/ModeloCertificadoUser";
+import {useDispatch, useSelector} from "react-redux";
+import {logoutStore} from "../../store";
 
 
 export interface UsuarioProps {
@@ -47,10 +44,14 @@ export default function Usuario({
                                     api,
                                     user,
                                     instituicao,
-                                    modelos
+                                    modelos,
+
                                 }: UsuarioProps) {
 
     const router = useRouter();
+    const roles: string[] = useSelector((state: any) => state.roles);
+    const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = React.useState(false);
 
 
     async function handleEdit(id: number) {
@@ -58,6 +59,7 @@ export default function Usuario({
     }
 
     async function handleDelete(id: number) {
+        setIsLoading(true)
         const axios = require('axios');
         await axios.delete(`${api}/eventos/${id.toString()}`, {
             headers: {
@@ -86,6 +88,8 @@ export default function Usuario({
                     draggable: true,
                     progress: undefined,
                 });
+            }).finally(() => {
+                setIsLoading(false);
             });
 
 
@@ -107,6 +111,7 @@ export default function Usuario({
     }
 
     async function logout() {
+        setIsLoading(true);
         const axios = require('axios');
         await axios.post(`${api}/user/logout`, null, {
             headers: {
@@ -117,10 +122,12 @@ export default function Usuario({
         sessionStorage.clear();
         localStorage.removeItem("USER_LOGIN");
         destroyCookie(null, 'USER_TOKEN');
+        dispatch(logoutStore());
         await router.push('/');
     }
 
     async function handleAddParticipante(email: string) {
+        setIsLoading(true);
         const axios = require('axios');
         await axios.post(`${api}/instituicao/addUsuario`, {
             email
@@ -143,10 +150,13 @@ export default function Usuario({
         })
             .catch(((error: any) => {
                 console.error({error});
-            }));
+            })).finally(() => {
+                setIsLoading(false);
+            });
     }
 
     async function handleTransferencia(email: string, permanece: boolean) {
+        setIsLoading(true);
         const axios = require('axios');
         await axios.post(`${api}/instituicao/transferir`, {
             email,
@@ -181,10 +191,13 @@ export default function Usuario({
                 });
 
 
-            }));
+            })).finally(() => {
+                setIsLoading(false);
+            });
     }
 
     async function atualizarDados(id: number, nome: string, telefone: string, password?: string, password_confirmation?: string) {
+        setIsLoading(true);
         const axios = require('axios');
         await axios.post(`${api}/user/update/${id}`, {
             nome,
@@ -222,10 +235,13 @@ export default function Usuario({
                         progress: undefined,
                     });
                 }
-            }))
+            })).finally(() => {
+                setIsLoading(false);
+            });
     }
 
     async function handleEditarInstituicao(nome: string, endereco: string, cidade: string) {
+        setIsLoading(true);
         const axios = require('axios');
         const formData = new FormData();
         formData.append('nome', nome);
@@ -261,10 +277,13 @@ export default function Usuario({
                     progress: undefined,
                 });
             }
-        }));
+        })).finally(() => {
+            setIsLoading(false);
+        });
     }
 
     async function handleEnviaCertificadoEmail(id: number) {
+        setIsLoading(true);
         const axios = require('axios');
         await axios.post(`${api}/certificados/${id}/gerarByAtividade`, null, {
             headers: {
@@ -294,7 +313,9 @@ export default function Usuario({
                     progress: undefined,
                 });
             }
-        }));
+        })).finally(() => {
+            setIsLoading(false);
+        });
     }
 
     return (
@@ -320,11 +341,7 @@ export default function Usuario({
                                     Perfil
                                 </Card>
                             </Tab>
-                            <Tab>
-                                <Card className={styles.tab}>
-                                    Meus eventos
-                                </Card>
-                            </Tab>
+
                             <Tab>
                                 <Card className={styles.tab}>
                                     Eventos participados
@@ -335,50 +352,71 @@ export default function Usuario({
                                     Certificados
                                 </Card>
                             </Tab>
-                            <Tab>
-                                <Card className={styles.tab}>
-                                    Instituição
-                                </Card>
-                            </Tab>
-                            <Tab>
-                                <Card className={styles.tab}>
-                                    Modelos de certificado
-                                </Card>
-                            </Tab>
+                            {(roles.includes("associado") || roles.includes('super-admin')) &&
+                                <>
+                                    <Tab>
+                                        <Card className={styles.tab}>
+                                            Meus eventos
+                                        </Card>
+                                    </Tab>
+
+                                    <Tab>
+                                        <Card className={styles.tab}>
+                                            Modelos de certificado
+                                        </Card>
+                                    </Tab>
+                                </>}
+                            {(roles.includes("admin") || roles.includes('super-admin')) &&
+                                <Tab>
+                                    <Card className={styles.tab}>
+                                        Instituição
+                                    </Card>
+                                </Tab>}
+
                         </TabList>
 
                         {/*Perfil*/}
                         <TabPanel>
-                            <Perfil logout={logout} user={user!} atualizarDados={atualizarDados}/>
+                            <Perfil logout={logout} user={user!} atualizarDados={atualizarDados} isLoading={isLoading}/>
                         </TabPanel>
 
-                        {/*Meus eventos*/}
-                        <TabPanel>
-                            <MeusEventos eventos_criados={eventos_criados} handleDelete={handleDelete}
-                                         CustomToggle={CustomToggle} handleCertificado={handleCertificado}
-                                         handleEdit={handleEdit} handleModelo={handleModelo}/>
-                        </TabPanel>
 
                         {/*Eventos participados*/}
                         <TabPanel>
                             <EventosParticipados eventos_participados={eventos_participados}
                                                  CustomToggle={CustomToggle}
                                                  id_usuario={user?.id}
-                                                 handleEnviaCertificadoEmail={handleEnviaCertificadoEmail}/>
+                                                 handleEnviaCertificadoEmail={handleEnviaCertificadoEmail}
+                                                 isLoading={isLoading}/>
                         </TabPanel>
 
                         {/*Certificados*/}
                         <TabPanel>
-                            <UserCertificado imprimir={imprimir} certificados={certificados}/>
+                            <UserCertificado imprimir={imprimir} certificados={certificados} isLoading={isLoading}/>
                         </TabPanel>
-                        <TabPanel>
-                            <InstituicaoUser instituicao={instituicao} handleAddParticipante={handleAddParticipante}
-                                             handleEditarInstituicao={handleEditarInstituicao}
-                                             handleTransferencia={handleTransferencia}/>
-                        </TabPanel>
-                        <TabPanel>
-                            <ModeloCertificadoUser modelos={modelos} CustomToggle={CustomToggle}/>
-                        </TabPanel>
+                        {(roles.includes("associado") || roles.includes('super-admin')) &&
+                            <>
+                                {/*Meus eventos*/}
+                                <TabPanel>
+                                    <MeusEventos eventos_criados={eventos_criados} handleDelete={handleDelete}
+                                                 CustomToggle={CustomToggle} handleCertificado={handleCertificado}
+                                                 handleEdit={handleEdit} handleModelo={handleModelo}
+                                                 isLoading={isLoading}/>
+                                </TabPanel>
+
+
+                                <TabPanel>
+                                    <ModeloCertificadoUser modelos={modelos} CustomToggle={CustomToggle}/>
+                                </TabPanel>
+
+                            </>}
+
+                        {(roles.includes("admin") || roles.includes('super-admin')) &&
+                            <TabPanel>
+                                <InstituicaoUser instituicao={instituicao} handleAddParticipante={handleAddParticipante}
+                                                 handleEditarInstituicao={handleEditarInstituicao}
+                                                 handleTransferencia={handleTransferencia} isLoading={isLoading}/>
+                            </TabPanel>}
                     </Tabs>
                 </Row>
             </Container>

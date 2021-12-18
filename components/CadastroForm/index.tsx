@@ -4,6 +4,7 @@ import React from "react";
 import {AxiosResponse} from "axios";
 import {useRouter} from 'next/router'
 import {toast, ToastContainer} from "react-toastify";
+import {Spinner} from "react-bootstrap";
 
 export interface Props {
     api: string
@@ -11,6 +12,8 @@ export interface Props {
 
 export default function CadastroForm(props: Props) {
     const router = useRouter();
+    const [isLoading, setIsLoading] = React.useState(false);
+
     const [nome, setNome] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [cpf, setCpf] = React.useState("");
@@ -19,8 +22,10 @@ export default function CadastroForm(props: Props) {
     const [telefone, setTelefone] = React.useState("");
 
     async function submitForm(e: React.FormEvent) {
-
         e.preventDefault();
+
+        setIsLoading(true);
+
         const axios = require("axios");
         const user = {
             nome,
@@ -47,7 +52,6 @@ export default function CadastroForm(props: Props) {
                 await router.push("/login");
             })
             .catch(((error: any) => {
-                // let data = error.response.data;
                 for (const v of Object.values(error.response.data)) {
                     console.error(v);
                     toast.error(`${v}`, {
@@ -61,7 +65,9 @@ export default function CadastroForm(props: Props) {
                     });
                 }
 
-            }))
+            })).finally(() => {
+                setIsLoading(false);
+            });
 
 
     }
@@ -69,17 +75,17 @@ export default function CadastroForm(props: Props) {
     return (
         <>
             <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme={"colored"}
-            style={{width: "500px", maxWidth: "1000px", whiteSpace: "pre-line"}}/>
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme={"colored"}
+                style={{width: "500px", maxWidth: "1000px", whiteSpace: "pre-line"}}/>
             <div className={styles.outer}>
                 <div className={styles.inner}>
                     <form method={"POST"} onSubmit={submitForm}>
@@ -146,7 +152,13 @@ export default function CadastroForm(props: Props) {
                         </div>
 
                         <div className={"row form-group " + styles.botao}>
-                            <button type="submit" className="btn btn-outline-primary btn-lg btn-block">Criar conta
+                            <button type="submit" className="btn btn-outline-primary btn-lg btn-block"
+                                    disabled={isLoading}>
+                                {isLoading ?
+                                    <Spinner animation={"border"} role={"status"}>
+                                        <span className="visually-hidden">Carregando...</span>
+                                    </Spinner> :
+                                    "Criar conta"}
                             </button>
                         </div>
                     </form>

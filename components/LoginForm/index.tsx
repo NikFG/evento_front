@@ -1,44 +1,55 @@
 import styles from "./LoginForm.module.css"
 import Link from "next/link";
 import {useRouter} from "next/router";
-import {AxiosResponse} from "axios";
+import axios, {AxiosError, AxiosResponse} from "axios";
 import {User} from "@types";
 import {encrypt} from "@utils";
-import nookies, {setCookie} from 'nookies';
 import React from "react";
 import {toast, ToastContainer} from "react-toastify";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
+import {useDispatch} from "react-redux";
+import {lembrar, login} from "../../store";
+import 'regenerator-runtime/runtime';
+import {Spinner} from "react-bootstrap";
 
 export interface LoginProps {
-    secret: string
     api: string
+    sitekey: string
+    hcaptcha_secret: string
 }
 
-export default function LoginForm(props: LoginProps) {
+export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
     const router = useRouter();
+
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const [isLoading, setIsLoading] = React.useState(false);
+
+    const hcaptchaRef = React.useRef<HCaptcha>(null);
+    const dispatch = useDispatch();
+
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+        hcaptchaRef.current!.execute();
+    }
+
+    async function handleLogin() {
         const axios = require("axios");
         const user = {
             email,
             password
         }
-        await axios.post(`${props.api}/user/login`, user).then(async (value: AxiosResponse) => {
-            sessionStorage.setItem("USER_TOKEN", value.data.access_token)
+        await axios.post(`${api}/user/login`, user).then(async (value: AxiosResponse) => {
+
             let usuario_criptografado = encrypt(user)
             const user_logado: User = value.data.user;
-            sessionStorage.setItem("USER_DATA", JSON.stringify(user_logado))
-            localStorage.setItem("USER_LOGIN", usuario_criptografado)
-            setCookie(null, 'USER_TOKEN', value.data.access_token, {
-                path: '/',
-                maxAge: 3600,
-                sameSite: 'strict',
-                secure: true
+            const roles = value.data.roles;
+            const token = value.data.access_token;
+            dispatch(login(user_logado, roles, token));
+            dispatch(lembrar(usuario_criptografado));
 
-            });
-            await toast.success(`Login realizado com sucesso!`, {
+            toast.success(`Login realizado com sucesso!`, {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -49,19 +60,57 @@ export default function LoginForm(props: LoginProps) {
             });
             await router.push("/");
         })
-            .catch((error: any) => {
-                console.error(error.response.data.error);
-                toast.error(`${error.response.data.error}`, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+            .catch((error: AxiosError) => {
+                console.error(error.response?.data);
+                for(const [_,v] of Object.entries(error.response?.data)){
+                    toast.error(`${v}`, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }
             });
     }
+
+    const onHCaptchaChange = async (captcha: string) => {
+        setIsLoading(true);
+        if (!captcha) {
+            setIsLoading(false);
+            return;
+        }
+        try {
+            console.log({captcha});
+            const response = await fetch("/api/register", {
+                method: "POST",
+                body: JSON.stringify({email, captcha}),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (response.ok) {
+                await handleLogin();
+            } else {
+                const error = await response.json();
+                throw new Error(error.message)
+            }
+        } catch (error: any) {
+            toast.error(`${error?.message}`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <>
@@ -113,8 +162,23 @@ export default function LoginForm(props: LoginProps) {
                                        className={"custom-control-label " + styles.unselectable}>Lembrar</label>
                             </div>
                         </div>
+                        <div className={'d-flex justify-content-center'}>
+                            <HCaptcha
+                                id="test"
+                                size="invisible"
+                                ref={hcaptchaRef}
+                                sitekey={sitekey}
+                                onVerify={onHCaptchaChange}
+                            />
+                        </div>
                         <div className={"row form-group " + styles.botao}>
-                            <button type="submit" className="btn btn-outline-primary btn-lg btn-block">Entrar</button>
+                            <button type="submit" className="btn btn-outline-primary btn-lg btn-block"
+                                    disabled={isLoading}>{isLoading ?
+                                <Spinner animation={"border"} role={"status"}><span
+                                    className="visually-hidden">Carregando...</span></Spinner>
+                                : "Entrar"}
+
+                            </button>
 
 
                         </div>
@@ -129,7 +193,6 @@ export default function LoginForm(props: LoginProps) {
                             <div className={"col-10"}>
                                 <p className={"text-end"}>
                                     <Link href={"/cadastro"}>
-
                                         <a>Criar conta</a>
 
                                     </Link>
