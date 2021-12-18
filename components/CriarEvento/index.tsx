@@ -119,7 +119,8 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                 }
             }).catch((err: AxiosError) => {
                 console.error({erro: err.response?.data})
-                if (err.response?.status !== 403) {
+                if (err.response?.status !== 403 && err.response?.status !== 500) {
+
                     for (const [_, v] of Object.entries(err.response?.data.message)) {
                         toast.error(`${v}`, {
                             position: "top-right",
@@ -371,6 +372,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                         <div className={"row"}>
                             <div className={"col-12"}>
                                 <button className={"btn mb-2"} data-bs-toggle="modal" data-bs-target="#modal-atividade"
+                                        disabled={isLoading}
                                         type={"button"}>
                                     <FontAwesomeIcon icon={faPlusCircle}/> Adicionar atividade
                                 </button>
@@ -641,7 +643,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
 
                     <div className={"mt-3 " + styles.inner}>
                         <div className={"row form-group " + styles.botao}>
-                            <button type="submit" className="btn btn-outline-primary btn-lg btn-block">
+                            <button type="submit" className="btn btn-outline-primary btn-lg btn-block" disabled={isLoading}>
                                 {isLoading ?
                                     <Spinner animation={"border"} role={"status"}>
                                         <span className="visually-hidden">Carregando...</span>
