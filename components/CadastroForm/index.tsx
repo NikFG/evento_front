@@ -152,7 +152,8 @@ export default function CadastroForm(props: Props) {
                         </div>
 
                         <div className={"row form-group " + styles.botao}>
-                            <button type="submit" className="btn btn-outline-primary btn-lg btn-block">
+                            <button type="submit" className="btn btn-outline-primary btn-lg btn-block"
+                                    disabled={isLoading}>
                                 {isLoading ?
                                     <Spinner animation={"border"} role={"status"}>
                                         <span className="visually-hidden">Carregando...</span>

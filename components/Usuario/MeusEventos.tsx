@@ -46,10 +46,14 @@ export default function MeusEventos({
     }
 
     function jaOcorreu(data: string) {
-        const hoje = new Date();
-        const data_evento = new Date(data);
+        const partes = data.split("/");
 
-        return hoje >= data_evento;
+        const hoje = new Date();
+        const data_evento = new Date(Number(partes[2]), Number(partes[1]) - 1, Number(partes[0]));
+        console.log({teste: hoje > data_evento, teste2: hoje >= data_evento});
+
+        return hoje <= data_evento;
+        // return hoje >= data_evento;
     }
 
 

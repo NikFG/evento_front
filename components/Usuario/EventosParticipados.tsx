@@ -62,7 +62,7 @@ export default function EventosParticipados({
                                                         <Button className={"mb-2"} variant={"outline-primary"}
                                                                 onClick={async () => {
                                                                     await handleEnviaCertificadoEmail(a.id!);
-                                                                }}>
+                                                                }} disabled={isLoading}>
                                                             {isLoading ?
                                                                 <Spinner animation={"border"} role={"status"}>
                                                                     <span

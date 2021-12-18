@@ -83,7 +83,7 @@ export default function InstituicaoUser({
                             </FormGroup>
                             <Button variant={'primary'} onClick={async () => {
                                 await handleEditarInstituicao(nome, endereco, cidade);
-                            }}> {isLoading ?
+                            }} disabled={isLoading}> {isLoading ?
                                 <Spinner animation={"border"} role={"status"}>
                                     <span className="visually-hidden">Carregando...</span>
                                 </Spinner> : "Editar"}
@@ -184,7 +184,7 @@ export default function InstituicaoUser({
                                         },
                                     });
 
-                                }}>
+                                }} disabled={isLoading}>
                                     {isLoading ?
                                         <Spinner animation={"border"} role={"status"}>
                                             <span className="visually-hidden">Carregando...</span>

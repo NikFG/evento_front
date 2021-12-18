@@ -20,7 +20,7 @@ export default function UserCertificado({imprimir, certificados, isLoading}: Use
                     <Col sm={"auto"} md={"auto"} lg={"auto"}>
                         <Button onClick={async () => {
                             await imprimir(c.id);
-                        }}>
+                        }} disabled={isLoading}>
                             {isLoading ?
                                 <Spinner animation={"border"} role={"status"}>
                                     <span className="visually-hidden">Carregando...</span>

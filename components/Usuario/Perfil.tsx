@@ -52,7 +52,7 @@ export default function Perfil({logout, user, atualizarDados, isLoading}: Perfil
                                 <h4>{user?.nome}</h4>
                                 <p className="text-secondary mb-1">{user?.email}</p>
                                 <p className="text-muted font-size-sm">{user?.telefone}</p>
-                                <Button onClick={() => logout()}>
+                                <Button onClick={() => logout()} disabled={isLoading}>
                                     {isLoading ?
                                         <Spinner animation={"border"} role={"status"}>
                                             <span className="visually-hidden">Carregando...</span>
@@ -159,7 +159,8 @@ export default function Perfil({logout, user, atualizarDados, isLoading}: Perfil
                             </FormGroup>
                             <div className="d-flex flex-column align-items-center text-center">
                                 <Button variant={"primary"}
-                                        onClick={() => atualizarDados(user.id!, nome, telefone, senha === "" ? undefined : senha, confirmarSenha)}>
+                                        onClick={() => atualizarDados(user.id!, nome, telefone, senha === "" ? undefined : senha, confirmarSenha)}
+                                        disabled={isLoading}>
                                     {isLoading ?
                                         <Spinner animation={"border"} role={"status"}>
                                             <span className="visually-hidden">Carregando...</span>
