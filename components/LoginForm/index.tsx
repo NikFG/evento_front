@@ -11,6 +11,8 @@ import {useDispatch} from "react-redux";
 import {lembrar, login} from "../../store";
 import 'regenerator-runtime/runtime';
 import {Spinner} from "react-bootstrap";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 
 export interface LoginProps {
     api: string
@@ -24,6 +26,7 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [isLoading, setIsLoading] = React.useState(false);
+    const [isVisible, setIsVisible] = React.useState(false);
 
     const hcaptchaRef = React.useRef<HCaptcha>(null);
     const dispatch = useDispatch();
@@ -62,7 +65,7 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
         })
             .catch((error: AxiosError) => {
                 console.error(error.response?.data);
-                for(const [_,v] of Object.entries(error.response?.data)){
+                for (const [_, v] of Object.entries(error.response?.data)) {
                     toast.error(`${v}`, {
                         position: "top-right",
                         autoClose: 5000,
@@ -143,17 +146,30 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
 
                         <div className="form-group mb-3">
                             <label htmlFor="senha" className={"form-label"}>Senha</label>
-                            <input id="senha" type="password" className="form-control" placeholder="Digite sua senha"
-                                   value={password}
-                                   onChange={(e) => {
-                                       setPassword(e.target.value)
-                                   }}
-                                   required
-                            />
+                            <div className={'input-group'}>
+                                <input id="senha" type={isVisible ? "text" : "password"} className="form-control"
+                                       placeholder="Digite sua senha"
+                                       value={password}
+                                       onChange={(e) => {
+                                           setPassword(e.target.value)
+                                       }}
+                                       required
+                                       aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                />
+                                <div className="input-group-append">
+                                    <button className="btn btn-outline-secondary" type="button" onClick={() => {
+                                        setIsVisible(!isVisible);
+                                    }}>
+                                        <FontAwesomeIcon icon={isVisible ? faEyeSlash : faEye}/>
+                                    </button>
+                                </div>
+                            </div>
+
                             <p className="text-end">
                                 Esqueceu sua <a href="#">senha?</a>
                             </p>
                         </div>
+
 
                         <div className="form-group">
                             <div className="mb-3 form-check">
