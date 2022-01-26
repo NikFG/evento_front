@@ -5,6 +5,7 @@ import RowCheckout from "@components/Checkout/RowCheckout";
 
 import {ToastContainer, toast} from 'react-toastify';
 import {useRouter} from "next/router";
+import {useSelector} from "react-redux";
 
 export interface CheckoutProps {
     taxa_evento: number
@@ -18,6 +19,7 @@ export default function Checkout({taxa_evento, atividades, api, atividades_parti
     const router = useRouter()
     const [horasTotais, setHorasTotais] = React.useState<number>(0.0);
     const [atividadesParticipadas, setAtividadesParticipadas] = React.useState(Array());
+    let token = useSelector((state: any) => state.token);
 
     function handleClickAtividade(id: number, horas: number) {
         if (!atividadesParticipadas.includes(id)) {
@@ -33,7 +35,6 @@ export default function Checkout({taxa_evento, atividades, api, atividades_parti
     }
 
     async function handleCompra() {
-        const token = sessionStorage.getItem("USER_TOKEN");
         if (atividadesParticipadas.length > 0) {
             const axios = require('axios');
             const formData = new FormData();
