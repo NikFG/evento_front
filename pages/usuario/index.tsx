@@ -11,7 +11,33 @@ export const getServerSideProps: GetServerSideProps = async ({req, res}) => {
     const axios = require('axios');
     const api = process.env.API_SERVER;
     const token = req.cookies.USER_TOKEN;
-    await verificaToken(api, token, undefined);
+
+    const token_valido = await verificaToken(api, token, undefined);
+    if (!token_valido) {
+        const resp = await axios.post(`${api}/user/refresh`, null, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).then((aResp: AxiosResponse) => {
+            return true;
+        }).catch((err: AxiosError) => {
+            if (err.response?.status == 500) {
+                return false;
+            }
+        });
+        if (!resp) {
+            return {
+                redirect: {
+                    destination: '/login',
+                    permanent: false
+                },
+                props: {
+                    user: undefined
+                }
+            }
+
+        }
+    }
 
     let response = await axios.get(api + "/eventos/user", {
         headers: {

@@ -52,14 +52,16 @@ export async function verificaToken(api, token, user_criptografado) {
 
             });
             return true;
-        } else {
+        } else if(user_criptografado) {
             await loginAux(api, user_criptografado);
             return false;
         }
     }
+    return false;
 }
 
-async function loginAux(api, user_criptografado, token) {
+async function loginAux(api, user_criptografado) {
+
     console.log('user_criptografado');
     const axios = require('axios');
     const {email, password} = decrypt(user_criptografado);
