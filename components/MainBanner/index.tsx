@@ -4,9 +4,12 @@ import banner from '@images/imagem_hom.png'
 import React from "react";
 import {useRouter} from "next/router";
 import {motion} from "framer-motion";
+import {User} from "@types";
+import {useSelector} from "react-redux";
 
 export default function MainBanner() {
-    // const [pesquisa, setPesquisa] = React.useState("");
+    const user: User = useSelector(((state: any) => state.user));
+    const roles: string[] = useSelector(((state: any) => state.roles));
     const router = useRouter();
     //
     // function handleSearch() {
@@ -25,7 +28,11 @@ export default function MainBanner() {
                                 whileHover={{scale: 1.1}}
                                 whileTap={{scale: 0.9}}
                                 className={styles.mainBtn} onClick={async () => {
-                                await router.push(`/eventos/criar/`);
+                                if (user && roles && (roles.includes('admin') || roles.includes('associado') || roles.includes('super-admin'))) {
+                                    await router.push(`/eventos/criar/`);
+                                } else {
+                                    await router.push(`/login`);
+                                }
                             }}>
                                 Comece por aqui
                             </motion.button>
