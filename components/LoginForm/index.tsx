@@ -20,7 +20,7 @@ export interface LoginProps {
     hcaptcha_secret: string
 }
 
-export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
+export default function LoginForm({api, sitekey}: LoginProps) {
     const router = useRouter();
 
     const [email, setEmail] = React.useState("");
@@ -132,7 +132,7 @@ export default function LoginForm({api, sitekey, hcaptcha_secret}: LoginProps) {
             <div className={styles.outer}>
                 <div className={styles.inner}>
                     <form method={"POST"} onSubmit={handleSubmit}>
-                        <h3>Log in</h3>
+                        <h3>Login</h3>
                         <div className="form-group mb-3">
                             <label htmlFor={"email"} className={"form-label"}>Email</label>
                             <input id="email" type="email" className="form-control" placeholder="Digite seu email"
