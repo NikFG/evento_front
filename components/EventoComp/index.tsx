@@ -24,16 +24,25 @@ export default function EventoComp({evento, api}: EventoProps) {
     let atividades = evento.atividades;
     const [tabs, setTabs] = React.useState(Array());
     const [tabContent, setTabContent] = React.useState(Array());
-    const [exitedFab, setExitedFab] = React.useState(false);
+
     React.useEffect(() => {
         criaTabs();
     }, []);
 
-    function handleCompra() {
-        setExitedFab(true)
-        router.push(`/eventos/${evento.id}/checkout`);
+    async function handleCompra() {
+
+        await router.push(`/eventos/${evento.id}/checkout`);
     }
 
+    function jaOcorreu(data: string) {
+        const partes = data.split("/");
+
+        const hoje = new Date();
+        const data_evento = new Date(Number(partes[2]), Number(partes[1]) - 1, Number(partes[0]));
+        console.log({teste: hoje > data_evento, teste2: hoje >= data_evento});
+
+        return hoje <= data_evento;
+    }
 
     return (
         <>
@@ -154,19 +163,6 @@ export default function EventoComp({evento, api}: EventoProps) {
                     </div>
 
                 </section>
-                <section id={"fab"}>
-                    {/*<Fab*/}
-                    {/*    icon={<FontAwesomeIcon icon={faTicketAlt} size={"lg"}/>}*/}
-                    {/*    mainButtonStyles={{backgroundColor: "#00A6A6"}}*/}
-                    {/*    onClick={() => handleCompra()}*/}
-                    {/*    style={{bottom: 24, right: 24, margin: 0}}*/}
-                    {/*    alwaysShowTitle={isMobile}*/}
-                    {/*    text={"Comprar ingresso"}*/}
-
-                    {/*/>*/}
-                </section>
-
-
                 <div className={styles.imagem}>
                     <Image src={evento.banner!} width={1000} height={1000}
                            blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="}
@@ -174,14 +170,17 @@ export default function EventoComp({evento, api}: EventoProps) {
                     />
                 </div>
             </main>
-            <Button className={styles.fab} variant={"fab"} onClick={() => handleCompra()}>
-                <FontAwesomeIcon icon={faTicketAlt} className={'me-1'} size={"lg"}/>
-                {
-                    isDesktop && "Comprar ingresso"
-                }
+            {jaOcorreu(atividades[atividades.length - 1].data) &&
+                <Button className={styles.fab}
+                        variant={"fab"}
+                        onClick={() => handleCompra()}>
+                    <FontAwesomeIcon icon={faTicketAlt} className={'me-1'} size={"lg"}/>
+                    {
+                        isDesktop && "Comprar ingresso"
+                    }
 
-            </Button>
-
+                </Button>
+            }
 
             <Footer/>
         </>
