@@ -1,7 +1,7 @@
 import styles from "./ModeloCertificado.module.css";
 import CertificadoComponente from "@components/Certificado";
 import React, {FormEvent} from "react";
-import {FormControl, FormGroup, FormLabel, Row, Col, Form, Button} from "react-bootstrap";
+import {FormControl, FormGroup, FormLabel, Row, Col, Form, Button, Spinner} from "react-bootstrap";
 import {ToastContainer, toast} from "react-toastify";
 import {useRouter} from "next/router";
 import {AxiosError} from "axios";
@@ -25,7 +25,7 @@ export default function ModeloCertificado({api, token}: ModeloCertificadoProps) 
     const [nomeAssinatura, setNomeAssinatura] = React.useState("");
     const [cargoAssinatura, setCargoAssinatura] = React.useState("");
     const [titulo, setTitulo] = React.useState("");
-
+    const [isLoading, setIsLoading] = React.useState(false);
     React.useEffect(() => {
         if (logo) {
             const reader = new FileReader();
@@ -66,6 +66,7 @@ export default function ModeloCertificado({api, token}: ModeloCertificadoProps) 
 
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        setIsLoading(true);
         const axios = require('axios');
         const formData = new FormData();
         formData.append('nome_assinatura', nomeAssinatura);
@@ -109,6 +110,8 @@ export default function ModeloCertificado({api, token}: ModeloCertificadoProps) 
                     progress: undefined,
                 });
             }
+        }).finally(() => {
+            setIsLoading(false);
         });
 
     }
@@ -183,8 +186,12 @@ export default function ModeloCertificado({api, token}: ModeloCertificadoProps) 
 
                         </Row>
 
+
                         <Button type={"submit"}>
-                            Confirmar
+                            {isLoading ?
+                                <Spinner animation={"border"} role={"status"}>
+                                    <span className="visually-hidden">Carregando...</span>
+                                </Spinner> : "Confirmar"}
                         </Button>
                     </div>
                 </Form>
