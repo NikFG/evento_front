@@ -103,6 +103,7 @@ export default function InstituicaoUser({
                                 </FormGroup>
                                 <Button variant={'primary'} onClick={async () => {
                                     await handleAddParticipante(email);
+                                    setEmail('');
                                 }}>
                                     {isLoading ?
                                         <Spinner animation={"border"} role={"status"}>
