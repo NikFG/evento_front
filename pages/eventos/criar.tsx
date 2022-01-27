@@ -3,6 +3,8 @@ import {GetStaticProps, InferGetStaticPropsType} from "next";
 import {Categoria, TipoAtividade} from "@types";
 import Navbar from "@components/Navbar";
 import React from "react";
+import {useSelector} from "react-redux";
+import {useRouter} from "next/router";
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -27,10 +29,19 @@ export default function CriarEventoPage({
                                             tipo_atividades,
                                             api
                                         }: InferGetStaticPropsType<typeof getStaticProps>) {
+    const roles = useSelector((state: any) => state.roles);
+    const router = useRouter();
+
+    if (roles && (roles.includes('admin') || roles.includes('associado') || roles.includes('super-admin'))) {
+        return (
+            <>
+                <Navbar api={api} titulo={"Criar evento"}/>
+                <CriarEvento categorias={categorias} api={api} tipo_atividades={tipo_atividades}/>
+            </>
+        );
+    }
+    router.push('/login');
     return (
-        <>
-            <Navbar api={api} titulo={"Criar evento"}/>
-            <CriarEvento categorias={categorias} api={api} tipo_atividades={tipo_atividades}/>
-        </>
-    );
+        <>Carregando...</>
+    )
 }
