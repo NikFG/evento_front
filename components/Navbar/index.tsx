@@ -20,6 +20,7 @@ export default function Navbar({api, titulo}: Props) {
     const [nome, setNome] = React.useState("");
 
     const user: User = useSelector(((state: any) => state.user));
+    const roles = useSelector(((state: any) => state.roles));
 
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
@@ -86,16 +87,17 @@ export default function Navbar({api, titulo}: Props) {
                             </Link>
 
                         </li>
-                        {}
-                        <li className={styles.navItem}>
-                            <Link href={"/eventos/criar"}>
-                                <a
-                                    className={styles.navLinks}
-                                    onClick={closeMobileMenu}>
-                                    Criar evento
-                                </a>
-                            </Link>
-                        </li>
+                        {(user && roles && (roles.includes('admin') || roles.includes('associado') || roles.includes('super-admin'))) &&
+                            <li className={styles.navItem}>
+                                <Link href={"/eventos/criar"}>
+                                    <a
+                                        className={styles.navLinks}
+                                        onClick={closeMobileMenu}>
+                                        Criar evento
+                                    </a>
+                                </Link>
+                            </li>
+                        }
                         <li className={styles.navItem}>
 
                             {nome ? <Link href={"/usuario"}>
