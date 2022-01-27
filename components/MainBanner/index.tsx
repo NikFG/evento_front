@@ -11,10 +11,6 @@ export default function MainBanner() {
     const user: User = useSelector(((state: any) => state.user));
     const roles: string[] = useSelector(((state: any) => state.roles));
     const router = useRouter();
-    //
-    // function handleSearch() {
-    //
-    // }
 
     return (
         <div id="home" className={styles.bannerImg}>

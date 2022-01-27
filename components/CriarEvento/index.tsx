@@ -175,7 +175,6 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     }
 
     function handleAtividadeSubmit() {
-        //melhorar datas
         let a: Atividade;
         if (idAtividade != 0) {
             a = {
