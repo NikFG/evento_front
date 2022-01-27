@@ -46,7 +46,7 @@ export default function Footer() {
 
                                 />
                                 <p>
-                                    Comeece a criar seu evento de forma rápida e fácil conosco.
+                                    Comece a criar seu evento de forma rápida e fácil conosco.
                                 </p>
                             </div>
 
