@@ -32,6 +32,7 @@ export interface UsuarioProps {
     user: User
     instituicao: Instituicao
     modelos: ModeloCertificado[]
+    associados: User[]
 
 }
 
@@ -45,7 +46,7 @@ export default function Usuario({
                                     user,
                                     instituicao,
                                     modelos,
-
+                                    associados
                                 }: UsuarioProps) {
 
     const router = useRouter();
@@ -126,10 +127,10 @@ export default function Usuario({
         await router.push('/');
     }
 
-    async function handleAddParticipante(email: string) {
+    async function handleAddAssociado(email: string): Promise<User> {
         setIsLoading(true);
         const axios = require('axios');
-        await axios.post(`${api}/instituicao/addUsuario`, {
+        const res = await axios.post(`${api}/instituicao/associados`, {
             email
         }, {
             headers: {
@@ -137,7 +138,7 @@ export default function Usuario({
 
             }
         }).then(async (r: AxiosResponse) => {
-            console.log(r);
+
             toast.success(`Usuário cadastrado com sucesso!`, {
                 position: "top-right",
                 autoClose: 5000,
@@ -147,12 +148,59 @@ export default function Usuario({
                 draggable: true,
                 progress: undefined,
             });
+            return r.data;
         })
-            .catch(((error: any) => {
-                console.error({error});
+            .catch(((error: AxiosError) => {
+                toast.error(`Houve um erro ao associar o usuário, tente novamente`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                console.error(error.response?.data);
             })).finally(() => {
                 setIsLoading(false);
             });
+        return res ?? null;
+    }
+
+    async function handleRemoveAssociado(email: string): Promise<User> {
+        setIsLoading(true);
+        const axios = require('axios');
+        const res = await axios.delete(`${api}/instituicao/associados/${email}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        }).then(async (r: AxiosResponse) => {
+            toast.success(`Associado removido com sucesso!`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            return r.data;
+        })
+            .catch(((error: AxiosError) => {
+                toast.error(`Houve um erro ao remover o associado, tente novamente`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                console.error(error.response?.data);
+            })).finally(() => {
+                setIsLoading(false);
+            });
+        return res ?? null;
     }
 
     async function handleTransferencia(email: string, permanece: boolean) {
@@ -413,9 +461,13 @@ export default function Usuario({
 
                         {(roles.includes("admin") || roles.includes('super-admin')) &&
                             <TabPanel>
-                                <InstituicaoUser instituicao={instituicao} handleAddParticipante={handleAddParticipante}
+                                <InstituicaoUser instituicao={instituicao} associados={associados}
+                                                 handleAddAssociado={handleAddAssociado}
+                                                 handleRemoveAssociado={handleRemoveAssociado}
                                                  handleEditarInstituicao={handleEditarInstituicao}
-                                                 handleTransferencia={handleTransferencia} isLoading={isLoading}/>
+                                                 handleTransferencia={handleTransferencia}
+
+                                                 isLoading={isLoading}/>
                             </TabPanel>}
                     </Tabs>
                 </Row>
