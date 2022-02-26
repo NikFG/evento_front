@@ -103,6 +103,20 @@ export const getServerSideProps: GetServerSideProps = async ({req, res}) => {
         throw e;
     });
     const modelos: ModeloCertificado[] = response.data ?? null;
+    response = await axios.get(`${api}/instituicao/associados`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }).then((res: AxiosResponse) => {
+        return res;
+    }).catch((e: AxiosError) => {
+        if (e.response!.status === 403) {
+            return [];
+        }
+        throw e;
+    });
+    const associados: User[] = response.data ?? null;
+
 
     return {
         props: {
@@ -114,14 +128,21 @@ export const getServerSideProps: GetServerSideProps = async ({req, res}) => {
             user,
             instituicao,
             modelos,
-
+            associados
         }
     }
 }
 
 export default function UsuarioPage({
                                         eventos_participados,
-                                        eventos_criados, certificados, api, token, user, instituicao, modelos
+                                        eventos_criados,
+                                        certificados,
+                                        api,
+                                        token,
+                                        user,
+                                        instituicao,
+                                        modelos,
+                                        associados
                                     }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
 
@@ -137,7 +158,7 @@ export default function UsuarioPage({
                 user={user}
                 instituicao={instituicao}
                 modelos={modelos}
-
+                associados={associados}
             />
         </>
     );
