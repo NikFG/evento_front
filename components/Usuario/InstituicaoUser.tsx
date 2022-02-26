@@ -2,14 +2,17 @@ import styles from "./Usuario.module.css";
 import {Button, Card, Col, Form, FormControl, FormGroup, FormLabel, Row, Spinner} from "react-bootstrap";
 import Image from "next/image";
 import React from "react";
-import {Instituicao} from "@types";
+import {Instituicao, User} from "@types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faMinus} from "@fortawesome/free-solid-svg-icons/faMinus";
 import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
 import {confirmAlert} from 'react-confirm-alert';
 
 export interface InstituicaoUserProps {
     instituicao: Instituicao;
-    handleAddParticipante: (email: string) => void;
+    associados: User[];
+    handleAddAssociado: (email: string) => Promise<User>;
+    handleRemoveAssociado: (email: string) => Promise<User>;
     handleTransferencia: (email: string, permanece: boolean) => void;
     handleEditarInstituicao: (nome: string, endereco: string, cidade: string) => void;
     isLoading: boolean;
@@ -17,24 +20,32 @@ export interface InstituicaoUserProps {
 
 export default function InstituicaoUser({
                                             instituicao,
-                                            handleAddParticipante,
+                                            associados,
+                                            handleAddAssociado,
+                                            handleRemoveAssociado,
                                             handleEditarInstituicao,
                                             handleTransferencia,
                                             isLoading
                                         }: InstituicaoUserProps) {
     const [email, setEmail] = React.useState("");
+    const [emailRemover, setEmailRemover] = React.useState("");
     const [nome, setNome] = React.useState("");
     const [endereco, setEndereco] = React.useState("");
     const [cidade, setCidade] = React.useState("");
     const [emailTransferencia, setEmailTransferencia] = React.useState("");
     const [permanece, setPermanece] = React.useState<boolean | undefined>(undefined);
-
+    const [associadosFiltrados, setAssociadosFiltrados] = React.useState<{ id: number, nome: string, email: string }[]>([]);
     React.useEffect(() => {
         setNome(instituicao.nome);
         setEndereco(instituicao.endereco);
         setCidade(instituicao.cidade);
+        setAssociadosFiltrados(associados.map(associado => ({
+            id: associado.id,
+            nome: associado.nome,
+            email: associado.email
+        })));
 
-    }, [instituicao.cidade, instituicao.endereco, instituicao.nome]);
+    }, [instituicao.cidade, instituicao.endereco, instituicao.nome, associados]);
 
     return (
         <>
@@ -55,6 +66,28 @@ export default function InstituicaoUser({
                             </div>
                         </Card.Body>
                     </Card>
+                    <hr/>
+                    <Row>
+                        <Col>
+                            <Card>
+                                <Card.Header>
+                                    Associados
+                                </Card.Header>
+                                <Card.Body>
+                                    {associadosFiltrados.length > 0 ?
+                                        associadosFiltrados.map(a => {
+                                            return (
+                                                <div className={"mb-2 " + styles.instituicaoAssociados} key={a.id}>
+                                                    {a.nome} - {a.email}
+                                                    <hr/>
+                                                </div>
+                                            )
+                                        })
+                                        : <p>Nenhum associado</p>}
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    </Row>
                 </Col>
                 <Col sm={12} md={7} lg={7}>
                     <Card className={"mb-3"}>
@@ -95,26 +128,58 @@ export default function InstituicaoUser({
                         <Card.Body>
                             <Form>
                                 <FormGroup className={"mb-3"} controlId={"email"}>
-                                    <FormLabel>Adicionar participante</FormLabel>
+                                    <FormLabel>Adicionar associado</FormLabel>
                                     <FormControl type={"email"} value={email}
                                                  onChange={(e) => {
                                                      setEmail(e.target.value)
                                                  }}/>
                                 </FormGroup>
                                 <Button variant={'primary'} onClick={async () => {
-                                    await handleAddParticipante(email);
+                                    const user = await handleAddAssociado(email);
+                                    if (user) {
+                                        setAssociadosFiltrados([...associadosFiltrados, {
+                                            id: user.id,
+                                            nome: user.nome,
+                                            email: user.email
+                                        }])
+                                    }
                                     setEmail('');
                                 }}>
                                     {isLoading ?
                                         <Spinner animation={"border"} role={"status"}>
                                             <span className="visually-hidden">Carregando...</span>
                                         </Spinner> :
-                                        <span><FontAwesomeIcon icon={faPlus} className={'me-2'}/> Adicionar</span>}
+                                        <span><FontAwesomeIcon icon={faPlus} className={'me-2'}/>Adicionar</span>}
                                 </Button>
                             </Form>
                         </Card.Body>
                     </Card>
-
+                    <Card className={"mb-3"}>
+                        <Card.Body>
+                            <Form>
+                                <FormGroup className={"mb-3"} controlId={"email"}>
+                                    <FormLabel>Remover associado</FormLabel>
+                                    <FormControl type={"email"} value={emailRemover}
+                                                 onChange={(e) => {
+                                                     setEmailRemover(e.target.value)
+                                                 }}/>
+                                </FormGroup>
+                                <Button variant={'primary'} onClick={async () => {
+                                    const user = await handleRemoveAssociado(emailRemover);
+                                    if (user) {
+                                        setAssociadosFiltrados(associadosFiltrados.filter(associado => associado.id !== user.id))
+                                    }
+                                    setEmailRemover('');
+                                }}>
+                                    {isLoading ?
+                                        <Spinner animation={"border"} role={"status"}>
+                                            <span className="visually-hidden">Carregando...</span>
+                                        </Spinner> :
+                                        <span><FontAwesomeIcon icon={faMinus} className={'me-2'}/>Remover</span>}
+                                </Button>
+                            </Form>
+                        </Card.Body>
+                    </Card>
                     <Card className={"mb-3"}>
                         <Card.Body>
                             <Form>
