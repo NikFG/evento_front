@@ -5,6 +5,8 @@ import {faSearch} from "@fortawesome/free-solid-svg-icons/faSearch";
 import Select from "react-select";
 import {Categoria, Instituicao} from "@types";
 import Router from "next/router";
+import {Col} from "react-bootstrap";
+
 
 export interface PesquisaProps {
     count: number
@@ -38,13 +40,14 @@ export default function Pesquisa({count, categorias, instituicoes}: PesquisaProp
             </div>
 
             <div className={"row justify-content-center mb-2"}>
-                <div className={"col-sm-9 col-md-5 col-lg-5"}>
-                    <input className={"form-control"} value={titulo} placeholder={"Pesquise nome evento"}
+                <Col sm={12} md={5} lg={4} className={'mb-2'}>
+                    <input className={"form-control"} value={titulo} placeholder={"Nome evento"}
                            onChange={(event => {
                                setTitulo(event.target.value)
                            })}/>
-                </div>
-                <div className={"col-sm-12 col-md-2 col-lg-2"}>
+                </Col>
+
+                <Col sm={12} md={4} lg={2} className={""}>
                     <button className={"btn btn-primary"} onClick={async () => {
                         // let params = [];
                         await Router.push({
@@ -61,9 +64,9 @@ export default function Pesquisa({count, categorias, instituicoes}: PesquisaProp
                             },
                         });
                     }}>
-                        <FontAwesomeIcon icon={faSearch}/>
+                        <FontAwesomeIcon icon={faSearch} className={'me-1'}/>Pesquisar
                     </button>
-                </div>
+                </Col>
             </div>
             <hr/>
             <div className={styles.pesquisaAvancada}>
