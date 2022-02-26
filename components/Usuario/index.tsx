@@ -168,6 +168,7 @@ export default function Usuario({
     }
 
     async function handleRemoveAssociado(email: string): Promise<User> {
+        setIsLoading(true);
         const axios = require('axios');
         const res = await axios.delete(`${api}/instituicao/associados/${email}`, {
             headers: {

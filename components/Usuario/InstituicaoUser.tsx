@@ -165,10 +165,28 @@ export default function InstituicaoUser({
                                                  }}/>
                                 </FormGroup>
                                 <Button variant={'primary'} onClick={async () => {
-                                    const user = await handleRemoveAssociado(emailRemover);
-                                    if (user) {
-                                        setAssociadosFiltrados(associadosFiltrados.filter(associado => associado.id !== user.id))
-                                    }
+
+
+                                    confirmAlert({
+                                        title: 'Confirmar remoção',
+                                        message: `Deseja remover o associado de email ${emailRemover}?`,
+                                        buttons: [
+                                            {
+                                                label: 'Sim',
+                                                onClick: async () => {
+                                                    const user = await handleRemoveAssociado(emailRemover);
+                                                    if (user) {
+                                                        setAssociadosFiltrados(associadosFiltrados.filter(associado => associado.email !== emailRemover))
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                label: 'Não',
+                                                onClick: () => {
+                                                }
+                                            }
+                                        ]
+                                    });
                                     setEmailRemover('');
                                 }}>
                                     {isLoading ?
