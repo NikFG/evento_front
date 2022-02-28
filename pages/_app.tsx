@@ -6,6 +6,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import "react-datepicker/dist/react-datepicker.css";
 import Head from "next/head";
 import {AppProps} from "next/app";
 import 'react-vertical-timeline-component/style.min.css';
