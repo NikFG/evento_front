@@ -8,7 +8,7 @@ export interface EventosParticipadosProps {
     eventos_participados: Evento[];
     CustomToggle: any;
     id_usuario: number;
-    handleEnviaCertificadoEmail: (id_usuario: number) => void;
+    handleDownloadCertificado: (id_usuario: number) => void;
     isLoading: boolean;
 }
 
@@ -16,7 +16,7 @@ export default function EventosParticipados({
                                                 eventos_participados,
                                                 CustomToggle,
                                                 id_usuario,
-                                                handleEnviaCertificadoEmail,
+                                                handleDownloadCertificado,
                                                 isLoading
                                             }: EventosParticipadosProps) {
     const easing = [0.6, -0.05, 0.01, 0.99];
@@ -52,6 +52,7 @@ export default function EventosParticipados({
                                 </div>
 
                                 <Accordion.Collapse eventKey={e.id!.toString()}>
+                                    {/*Criar campo verificação de certificados count com boolean*/}
                                     <>
                                         <hr/>
                                         <Card.Body>
@@ -61,14 +62,14 @@ export default function EventosParticipados({
                                                         <span className={"p-2"}>{a.nome}</span>
                                                         <Button className={"mb-2"} variant={"outline-primary"}
                                                                 onClick={async () => {
-                                                                    await handleEnviaCertificadoEmail(a.id!);
+                                                                    await handleDownloadCertificado(a.certificados![0].id);
                                                                 }} disabled={isLoading}>
                                                             {isLoading ?
                                                                 <Spinner animation={"border"} role={"status"}>
                                                                     <span
                                                                         className="visually-hidden">Carregando...</span>
                                                                 </Spinner> :
-                                                                "Envia certificado"}
+                                                                "Baixar certificado"}
                                                         </Button>
                                                     </Col>
 
