@@ -13,7 +13,11 @@ import teste from '@images/banner_aux.jpg'
 import {useSelector} from "react-redux";
 import {verificaToken} from "utils";
 import {parseCookies} from "nookies";
+import DatePicker, {registerLocale} from "react-datepicker";
+import ptBR from "date-fns/locale/pt-BR";
+import {format,parse} from "date-fns";
 
+registerLocale("pt-BR", ptBR);
 
 interface CategoriaProps {
     categorias: Categoria[],
@@ -42,13 +46,11 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     const [atividades, setAtividades] = React.useState<Atividade[]>([]);
     const [idAtividade, setIdAtividade] = React.useState(0);
     const [nomeAtividade, setNomeAtividade] = React.useState("");
-    const [data, setData] = React.useState("");
-    const [inicio, setInicio] = React.useState("");
-    const [fim, setFim] = React.useState("");
-    // const [nomeApresentador, setNomeApresentador] = React.useState("");
+    const [data, setData] = React.useState<Date | null>();
+    const [inicio, setInicio] = React.useState<Date | null>();
+    const [fim, setFim] = React.useState<Date | null>();
     const [tipo, setTipo] = React.useState<{ value: number, label: string }>();
     const [descricaoAtividade, setDescricaoAtividade] = React.useState("");
-    // const [emailApresentador, setEmailApresentador] = React.useState("");
     const [localAtividade, setLocalAtividade] = React.useState("");
     const [apresentadoresNome, setApresentadoresNome] = React.useState<Array<string>>([""]);
     const [apresentadoresEmail, setApresentadoresEmail] = React.useState<Array<string>>([""]);
@@ -164,9 +166,9 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     function limpaDados() {
         setNomeAtividade("")
         setIdAtividade(0)
-        setData("")
-        setInicio("")
-        setFim("")
+        setData(null)
+        setInicio(null)
+        setFim(null)
         setTipo({value: 0, label: ""})
         setDescricaoAtividade("")
         setLocalAtividade("");
@@ -176,18 +178,22 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
 
     function handleAtividadeSubmit() {
         let a: Atividade;
+        const dataFormatada = data ? format(data, "dd/MM/yyyy") : "";
+        const inicioFormatado = inicio ? format(inicio, "HH:mm") : "";
+        const fimFormatado = fim ? format(fim, "HH:mm") : "";
         if (idAtividade != 0) {
+
             a = {
                 id: idAtividade,
                 nome: nomeAtividade,
                 descricao: descricaoAtividade,
-                horario_fim: fim,
-                horario_inicio: inicio,
+                horario_inicio: inicioFormatado,
+                horario_fim: fimFormatado,
                 imagem: "",
                 link_transmissao: "",
                 local: localAtividade,
                 tipo_atividade_id: tipo?.value ?? 0,
-                data,
+                "data": dataFormatada,
                 apresentadores: apresentadoresNome.map((nome, i) => {
                     return {
                         nome,
@@ -212,13 +218,13 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                 id: temp_index,
                 nome: nomeAtividade,
                 descricao: descricaoAtividade,
-                horario_fim: fim,
-                horario_inicio: inicio,
+                horario_inicio: inicioFormatado,
+                horario_fim: fimFormatado,
                 imagem: "",
                 link_transmissao: "",
                 local: localAtividade,
                 tipo_atividade_id: tipo?.value ?? 0,
-                data,
+                "data": dataFormatada,
                 apresentadores: apresentadoresNome.map((nome, i) => {
                     return {
                         nome,
@@ -394,18 +400,27 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                                                setNomeAtividade(e.target.value)
                                                            }}/>
                                                     <div className="input-group mb-3">
-                                                        <span className="input-group-text"
-                                                              id="basic-addon1"><FontAwesomeIcon
-                                                            icon={faCalendar}/></span>
-                                                        <input className={"form-control"}
-                                                               placeholder={"Escolha a data"} type={"date"}
-                                                               value={data}
-                                                               onChange={(e => {
-                                                                   setData(e.target.value)
-                                                               })}/>
+                                                        {/*<span className="input-group-text"*/}
+                                                        {/*      id="basic-addon1"><FontAwesomeIcon*/}
+                                                        {/*    icon={faCalendar}/></span>*/}
+                                                        <DatePicker onChange={(date) => {
+                                                            setData(date)
+                                                        }}
+                                                                    className={"form-control"}
+                                                                    placeholderText={"Data"}
+                                                                    locale={ptBR}
+                                                                    selected={data}
+                                                                    minDate={new Date()}
+                                                                    maxDate={new Date(2030, 12, 31)}
+                                                                    showYearDropdown
+                                                                    showMonthDropdown
+                                                                    dropdownMode="select"
+                                                                    dateFormat="dd/MM/yyyy"
+                                                                    isClearable={true}
+                                                        />
                                                     </div>
                                                     <div className="input-group mb-3">
-                                                        <span className="input-group-text"
+                                                        {/*<span className="input-group-text"
                                                               id="basic-addon1"><FontAwesomeIcon
                                                             icon={faClock}/></span>
                                                         <input className={"form-control"}
@@ -413,10 +428,36 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                                                value={inicio}
                                                                onChange={(e => {
                                                                    setInicio(e.target.value)
-                                                               })}/>
+                                                               })}/>*/}
+                                                        <DatePicker onChange={(date) => {
+                                                            setInicio(date)
+                                                        }}
+                                                                    className={"form-control"}
+                                                                    placeholderText={"Horário início"}
+                                                                    locale={ptBR}
+                                                                    selected={inicio}
+                                                                    showTimeSelect
+                                                                    showTimeSelectOnly
+                                                                    timeIntervals={15}
+                                                                    dateFormat="HH:mm"
+                                                                    timeCaption="Horário"
+                                                                    isClearable={true}/>
                                                     </div>
                                                     <div className="input-group mb-3">
-                                                        <span className="input-group-text"
+                                                        <DatePicker onChange={(date) => {
+                                                            setFim(date)
+                                                        }}
+                                                                    className={"form-control"}
+                                                                    placeholderText={"Horário fim"}
+                                                                    locale={ptBR}
+                                                                    selected={fim}
+                                                                    showTimeSelect
+                                                                    showTimeSelectOnly
+                                                                    timeIntervals={15}
+                                                                    dateFormat="HH:mm"
+                                                                    timeCaption="Horário"
+                                                                    isClearable={true}/>
+                                                        {/* <span className="input-group-text"
                                                               id="basic-addon1"><FontAwesomeIcon
                                                             icon={faClock}/></span>
                                                         <input className={"form-control"}
@@ -424,7 +465,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                                                value={fim}
                                                                onChange={(e => {
                                                                    setFim(e.target.value)
-                                                               })}/>
+                                                               })}/>*/}
                                                     </div>
                                                     <Select
                                                         className={"mb-3"}
@@ -545,19 +586,15 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                                 onClick={() => {
                                                     setNomeAtividade(a.nome);
                                                     setDescricaoAtividade(a.descricao ?? "");
-                                                    if (a.data.includes("/")) {
-                                                        let temp_data = a.data.split("/");
-                                                        let temp_data2 = temp_data[2] + "-" + temp_data[1] + "-" + temp_data[0]
-                                                        setData(temp_data2);
-                                                    } else {
-                                                        setData(a.data)
-                                                    }
+                                                    setData(new Date(a.data));
                                                     let ta = tipo_atividades.find((t) => {
                                                         return t.id === a.tipo_atividade_id;
                                                     });
                                                     setTipo({value: ta?.id ?? 0, label: ta?.nome ?? ""});
-                                                    setInicio(a.horario_inicio);
-                                                    setFim(a.horario_fim);
+
+                                                    console.log(a.horario_inicio)
+                                                    setInicio(parse(a.horario_inicio,'HH:mm',new Date()));
+                                                    setFim(parse(a.horario_fim,'HH:mm',new Date()));
                                                     setIdAtividade(a.id ?? 0)
                                                     setApresentadoresNome(a.apresentadores.map((ap) => ap.nome));
                                                     setApresentadoresEmail(a.apresentadores.map((ap) => ap.email));
@@ -642,7 +679,8 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
 
                     <div className={"mt-3 " + styles.inner}>
                         <div className={"row form-group " + styles.botao}>
-                            <button type="submit" className="btn btn-outline-primary btn-lg btn-block" disabled={isLoading}>
+                            <button type="submit" className="btn btn-outline-primary btn-lg btn-block"
+                                    disabled={isLoading}>
                                 {isLoading ?
                                     <Spinner animation={"border"} role={"status"}>
                                         <span className="visually-hidden">Carregando...</span>
