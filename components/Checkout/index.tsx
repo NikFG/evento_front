@@ -114,7 +114,7 @@ export default function Checkout({taxa_evento, atividades, api, atividades_parti
                             <tr>
                                 <th scope={"col"}>#</th>
                                 <th scope="col">Atividade</th>
-                                <th scope="col">Preço</th>
+                                {/*<th scope="col">Preço</th>*/}
                                 <th scope="col">Horas atividade</th>
                                 <th scope="col"/>
                             </tr>
