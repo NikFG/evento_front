@@ -20,13 +20,14 @@ import {User} from "@types";
 export interface PerfilProps {
     logout: () => void
     user: User
-    atualizarDados: (id: number, nome: string, telefone: string, password?: string, password_confirmation?: string) => void
+    atualizarDados: (id: number, nome: string, telefone: string, password?: string, password_confirmation?: string, old_password?: string) => void
     isLoading: boolean
 }
 
 export default function Perfil({logout, user, atualizarDados, isLoading}: PerfilProps) {
     const [nome, setNome] = React.useState("");
     const [email, setEmail] = React.useState("");
+    const [senhaAtual, setSenhaAtual] = React.useState("");
     const [telefone, setTelefone] = React.useState("");
     const [senha, setSenha] = React.useState("");
     const [confirmarSenha, setConfirmarSenha] = React.useState("");
@@ -142,6 +143,14 @@ export default function Perfil({logout, user, atualizarDados, isLoading}: Perfil
                                            mask={"(99) 99999-9999"}/>
                             </FormGroup>
 
+                            <FormGroup className={"mb-3"} controlId={"senha_atual"}>
+                                <FormLabel>Senha atual</FormLabel>
+                                <FormControl type={"password"} value={senhaAtual}
+                                             onChange={(e) => {
+                                                 setSenhaAtual(e.target.value)
+                                             }}/>
+                            </FormGroup>
+
                             <FormGroup className={"mb-3"} controlId={"senha"}>
                                 <FormLabel>Nova senha</FormLabel>
                                 <FormControl type={"password"} value={senha}
@@ -159,7 +168,7 @@ export default function Perfil({logout, user, atualizarDados, isLoading}: Perfil
                             </FormGroup>
                             <div className="d-flex flex-column align-items-center text-center">
                                 <Button variant={"primary"}
-                                        onClick={() => atualizarDados(user.id!, nome, telefone, senha === "" ? undefined : senha, confirmarSenha)}
+                                        onClick={() => atualizarDados(user.id!, nome, telefone, senha === "" ? undefined : senha, confirmarSenha, senhaAtual)}
                                         disabled={isLoading}>
                                     {isLoading ?
                                         <Spinner animation={"border"} role={"status"}>
