@@ -13,6 +13,7 @@ import 'regenerator-runtime/runtime';
 import {Spinner} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
+import {setCookie} from "nookies";
 
 export interface LoginProps {
     api: string
@@ -27,6 +28,8 @@ export default function LoginForm({api, sitekey}: LoginProps) {
     const [password, setPassword] = React.useState("");
     const [isLoading, setIsLoading] = React.useState(false);
     const [isVisible, setIsVisible] = React.useState(false);
+    const [isLembrar, setIsLembrar] = React.useState(false);
+
 
     const hcaptchaRef = React.useRef<HCaptcha>(null);
     const dispatch = useDispatch();
@@ -49,6 +52,43 @@ export default function LoginForm({api, sitekey}: LoginProps) {
             const user_logado: User = value.data.user;
             const roles = value.data.roles;
             const token = value.data.access_token;
+            if (isLembrar) {
+                setCookie(null, "USER_DATA", usuario_criptografado, {
+                    maxAge: 60 * 60 * 24 * 7,
+                    path: "/",
+                    sameSite: "strict"
+                });
+
+                setCookie(null, "USER_TOKEN", token, {
+                    maxAge: 60 * 60 * 24 * 7,
+                    path: "/",
+                    sameSite: "strict"
+                });
+
+                setCookie(null, "USER_ROLES", roles, {
+                    maxAge: 60 * 60 * 24 * 7,
+                    path: "/",
+                    sameSite: "strict"
+                });
+            } else {
+                setCookie(null, "USER_DATA", usuario_criptografado, {
+                    maxAge: 0,
+                    path: "/",
+                    sameSite: "strict"
+                });
+
+                setCookie(null, "USER_TOKEN", token, {
+                    maxAge: 0,
+                    path: "/",
+                    sameSite: "strict"
+                });
+
+                setCookie(null, "USER_ROLES", roles, {
+                    maxAge: 0,
+                    path: "/",
+                    sameSite: "strict"
+                });
+            }
             dispatch(login(user_logado, roles, token));
             dispatch(lembrar(usuario_criptografado));
 
@@ -98,7 +138,7 @@ export default function LoginForm({api, sitekey}: LoginProps) {
                 await handleLogin();
             } else {
                 const error = await response.json();
-                throw new Error(error.message)
+                new Error(error.message)
             }
         } catch (error: any) {
             toast.error(`${error?.message}`, {
@@ -173,7 +213,10 @@ export default function LoginForm({api, sitekey}: LoginProps) {
 
                         <div className="form-group">
                             <div className="mb-3 form-check">
-                                <input type="checkbox" className="form-check-input" id="lembrar" name="lembrar"/>
+                                <input type="checkbox" className="form-check-input" id="lembrar" name="lembrar"
+                                       onChange={e => {
+                                           setIsLembrar(e.target.checked)
+                                       }}/>
                                 <label htmlFor="lembrar"
                                        className={"custom-control-label " + styles.unselectable}>Lembrar</label>
                             </div>

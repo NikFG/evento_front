@@ -61,18 +61,19 @@ export default function GeraCertificado({apresentadores, participantes, api, mod
             });
         });
     }
+    function handleChangeApresentadores(e: ChangeEvent<HTMLInputElement>) {
 
-    function handleChangeParticipantes(e: ChangeEvent<HTMLInputElement>) {
         if (apresentadoresSelecionados.includes(e.target.value)) {
             let index = apresentadoresSelecionados.indexOf(e.target.value);
             setApresentadoresSelecionados(apresentadoresSelecionados.filter((_, i) => i !== index))
         } else {
             let a = [...apresentadoresSelecionados, e.target.value];
+            console.log({a});
             setApresentadoresSelecionados(a);
         }
     }
 
-    function handleChangeApresentadores(e: ChangeEvent<HTMLInputElement>) {
+    function handleChangeParticipantes(e: ChangeEvent<HTMLInputElement>) {
         if (participantesSelecionados.includes(e.target.value)) {
             let index = participantesSelecionados.indexOf(e.target.value);
             setParticipantesSelecionados(participantesSelecionados.filter((_, i) => i !== index))
@@ -142,7 +143,7 @@ export default function GeraCertificado({apresentadores, participantes, api, mod
 
                                 {participantes.map((u) => {
                                     return <div className="form-check" key={u.id}>
-                                        <FormCheckInput value={u.id} onChange={handleChangeParticipantes} checked={true}/>
+                                        <FormCheckInput value={u.id} onChange={handleChangeParticipantes} defaultChecked={true}/>
                                         <FormCheckLabel>
                                             Participante - {u.nome}
                                         </FormCheckLabel>
@@ -151,7 +152,7 @@ export default function GeraCertificado({apresentadores, participantes, api, mod
                                 })}
                                 {apresentadores.map((u) => {
                                     return <div className="form-check" key={u.id}>
-                                        <FormCheckInput value={u.id} onChange={handleChangeApresentadores} checked={true}/>
+                                        <FormCheckInput value={u.id} onChange={handleChangeApresentadores} defaultChecked={true}/>
                                         <FormCheckLabel>
                                             Apresentador - {u.nome}
                                         </FormCheckLabel>

@@ -13,6 +13,7 @@ export interface Atividade {
     apresentadores: Apresentador[]
     users?: User[]
     apresentador_id?: number
+    certificados?: Certificado[]
 }
 
 export interface Apresentador {

@@ -121,7 +121,8 @@ export default function Usuario({
             }
         });
         sessionStorage.clear();
-        localStorage.removeItem("USER_LOGIN");
+        destroyCookie(null, "USER_DATA");
+        destroyCookie(null, "USER_ROLES");
         destroyCookie(null, 'USER_TOKEN');
         dispatch(logoutStore());
         await router.push('/');
@@ -244,14 +245,15 @@ export default function Usuario({
             });
     }
 
-    async function atualizarDados(id: number, nome: string, telefone: string, password?: string, password_confirmation?: string) {
+    async function atualizarDados(id: number, nome: string, telefone: string, password?: string, password_confirmation?: string, old_password?: string) {
         setIsLoading(true);
         const axios = require('axios');
         await axios.post(`${api}/user/update/${id}`, {
             nome,
             telefone,
             password,
-            password_confirmation
+            password_confirmation,
+            old_password
         }, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -328,6 +330,33 @@ export default function Usuario({
         })).finally(() => {
             setIsLoading(false);
         });
+    }
+
+    async function handleDownloadCertificado(id: number) {
+        const axios = require('axios');
+        await axios.get(`${api}/certificados/${id}/download`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+
+            }
+        }).then((r: AxiosResponse) => {
+            console.log(r.data.url);
+            window.open(r.data.url, '_blank');
+        }).catch(((error: any) => {
+            for (const v of Object.values(error.response.data)) {
+                console.error(v);
+                toast.error(`${v}`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
+        }));
+
     }
 
     async function handleEnviaCertificadoEmail(id: number) {
@@ -434,7 +463,7 @@ export default function Usuario({
                             <EventosParticipados eventos_participados={eventos_participados}
                                                  CustomToggle={CustomToggle}
                                                  id_usuario={user?.id}
-                                                 handleEnviaCertificadoEmail={handleEnviaCertificadoEmail}
+                                                 handleDownloadCertificado={handleDownloadCertificado}
                                                  isLoading={isLoading}/>
                         </TabPanel>
 

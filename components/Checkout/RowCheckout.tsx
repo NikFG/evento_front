@@ -42,7 +42,7 @@ export default function RowCheckout({a, index, handleClickAtividade, inAtividade
 
                     <span>Dia {a.data} de {a.horario_inicio} as {a.horario_fim}</span>
                 </td>
-                <td>{/*diferenca.toLocaleString("pt-br",{style: 'currency',currency:"BRL"})*/}-</td>
+                {/*<td>/!*diferenca.toLocaleString("pt-br",{style: 'currency',currency:"BRL"})*!/-</td>*/}
                 <td>{formatTime(diferenca)}</td>
                 <td>
                     {
