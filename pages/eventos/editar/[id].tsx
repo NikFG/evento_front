@@ -43,7 +43,7 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
     });
     return {
         paths,
-        fallback: 'blocking'
+        fallback: true
     }
 }
 export default function EditarEventoPage({
