@@ -591,8 +591,6 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                                         return t.id === a.tipo_atividade_id;
                                                     });
                                                     setTipo({value: ta?.id ?? 0, label: ta?.nome ?? ""});
-
-                                                    console.log(a.horario_inicio)
                                                     setInicio(parse(a.horario_inicio,'HH:mm',new Date()));
                                                     setFim(parse(a.horario_fim,'HH:mm',new Date()));
                                                     setIdAtividade(a.id ?? 0)
