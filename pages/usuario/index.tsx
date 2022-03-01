@@ -11,8 +11,10 @@ export const getServerSideProps: GetServerSideProps = async ({req, res}) => {
     const axios = require('axios');
     const api = process.env.API_SERVER;
     const token = req.cookies.USER_TOKEN;
+    const roles = req.cookies.USER_ROLES;
+    const user_criptografado = req.cookies.USER_DATA;
 
-    const token_valido = await verificaToken(api, token, undefined);
+    const token_valido = await verificaToken(api, token, user_criptografado);
     if (!token_valido) {
         const resp = await axios.post(`${api}/user/refresh`, null, {
             headers: {
