@@ -121,7 +121,8 @@ export default function Usuario({
             }
         });
         sessionStorage.clear();
-        localStorage.removeItem("USER_LOGIN");
+        destroyCookie(null, "USER_DATA");
+        destroyCookie(null, "USER_ROLES");
         destroyCookie(null, 'USER_TOKEN');
         dispatch(logoutStore());
         await router.push('/');
@@ -330,9 +331,10 @@ export default function Usuario({
             setIsLoading(false);
         });
     }
-    async function handleDownloadCertificado(id:number){
+
+    async function handleDownloadCertificado(id: number) {
         const axios = require('axios');
-        await axios.get(`${api}/certificados/${id}/download`,{
+        await axios.get(`${api}/certificados/${id}/download`, {
             headers: {
                 Authorization: `Bearer ${token}`,
 
@@ -356,6 +358,7 @@ export default function Usuario({
         }));
 
     }
+
     async function handleEnviaCertificadoEmail(id: number) {
         setIsLoading(true);
         const axios = require('axios');
