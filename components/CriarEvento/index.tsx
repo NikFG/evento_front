@@ -1,10 +1,10 @@
 import styles from "./CriarEvento.module.css";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCalendar, faClock, faEdit, faPlus, faPlusCircle, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {faEdit, faPlus, faPlusCircle, faTrash} from "@fortawesome/free-solid-svg-icons";
 import Select from 'react-select';
 import React from "react";
 import {Atividade, Categoria, Evento, TipoAtividade} from "@types";
-import {AxiosError, AxiosResponse} from "axios";
+import axios, {AxiosError, AxiosResponse} from "axios";
 import {useRouter} from "next/router";
 import {toast, ToastContainer} from "react-toastify";
 import {Button, Col, Row, Spinner} from "react-bootstrap";
@@ -16,6 +16,8 @@ import {parseCookies} from "nookies";
 import DatePicker, {registerLocale} from "react-datepicker";
 import ptBR from "date-fns/locale/pt-BR";
 import {format, parse} from "date-fns";
+import {storage} from "../../firebase/initFirebase";
+import {ref, uploadBytes, getDownloadURL, UploadResult} from 'firebase/storage';
 
 registerLocale("pt-BR", ptBR);
 
@@ -36,7 +38,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     const [breveEvento, setBreveEvento] = React.useState("");
     const [local, setLocal] = React.useState("");
     const [descricaoEvento, setDescricaoEvento] = React.useState("");
-    const [imagens, setImagens] = React.useState<FileList>();
+    const [outrasImagens, setOutrasImagens] = React.useState<FileList>();
     const [banner, setBanner] = React.useState<File | null>();
     const [bannerPreview, setBannerPreview] = React.useState<string>();
     const [imagensPreview, setImagensPreview] = React.useState<Array<File> | null>();
@@ -101,13 +103,14 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                     formData.append(k, v);
                 }
             }
-            if (imagens) {
-                Array.from(imagens).forEach(i => {
-                    formData.append("imagem[]", i);
-                });
-            }
-            if (banner)
-                formData.append("banner", banner)
+
+            /*   if (outrasImagens) {
+                   Array.from(outrasImagens).forEach(i => {
+                       formData.append("imagem[]", i);
+                   });
+               }
+               if (banner)
+                   formData.append("banner", banner)*/
 
             let url = `${api}/eventos/store`;
             if (evento_edit) {
@@ -124,19 +127,21 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                     secure: true
 
                 })
-                console.log({token})
                 token = cookies.USER_TOKEN;
             }
-            console.log({token})
 
             await axios.post(url, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": `multipart/form-data`,
                 }
-            }).then((r: AxiosResponse) => {
-                if (r.status === 201) {
-                    router.push('/')
+            }).then(async (r: AxiosResponse) => {
+                if (r.status === 200) {
+                    const id = r.data.id;
+                    await uploadFirebaseBanner(id, banner!, 'banner');
+                    if (outrasImagens && outrasImagens.length > 0)
+                        await uploadFirebaseImagens(id, outrasImagens, 'outras');
+                    await router.push('/');
                 }
             }).catch((err: AxiosError) => {
                 console.error({erro: err.response?.data})
@@ -180,6 +185,138 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
         } finally {
             setIsLoading(false);
         }
+    }
+
+    async function uploadFirebaseBanner(evento_id: number, banner: File, tipo: string) {
+        const imageRef = ref(storage, `eventos/${evento_id}/${tipo}/${banner.name}`);
+        const url = await uploadBytes(imageRef, banner).then(async (snapshot: UploadResult) => {
+            return await getDownloadURL(snapshot.ref).then((url: string) => {
+                return url;
+            }).catch((err: Error) => {
+                console.error({err})
+                return null;
+            });
+        });
+        if (url) {
+            const axios = require('axios');
+            await axios.post(`${api}/eventos/${evento_id}/uploadImagens`, {
+                imagens: [{
+                    url,
+                    nome: banner.name,
+                    tipo
+                }]
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            }).then((r: AxiosResponse) => {
+                if (r.status === 200) {
+                    console.log({r})
+                }
+            }).catch((err: AxiosError) => {
+                console.error({erro: err.response?.data})
+                if (err.response?.status !== 403 && err.response?.status !== 500) {
+
+                    for (const [_, v] of Object.entries(err.response?.data.message)) {
+                        toast.error(`${v}`, {
+                            position: "top-right",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                    }
+                } else {
+                    toast.error(`${err.response?.data.message}`, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }
+
+            });
+        }
+    }
+
+    async function uploadFirebaseImagens(evento_id: number, imagens: FileList, tipo: string) {
+        let urlList = [];
+        for (const i of Array.from(imagens)) {
+            const imageRef = ref(storage, `eventos/${evento_id}/${tipo}/${i.name}`);
+            const url = await uploadBytes(imageRef, i).then(async (snapshot: UploadResult) => {
+                return getDownloadURL(snapshot.ref).then((url: string) => {
+                    return url;
+                }).catch((err: any) => {
+                    console.error({err})
+                    return null;
+                })
+            }).catch((err: any) => {
+                console.error({err})
+                return null;
+            });
+            if (url)
+                urlList.push({
+                    url,
+                    nome: i.name,
+                    tipo
+                });
+        }
+        if (urlList.length > 0) {
+            const axios = require('axios');
+
+            await axios.post(`${api}/eventos/${evento_id}/uploadImagens`, {
+                imagens: [...urlList]
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            }).then((r: AxiosResponse) => {
+                if (r.status === 201) {
+                    toast.success(`${r.data.message}`, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }
+            }).catch((err: AxiosError) => {
+                console.error({erro: err.response?.data})
+                if (err.response?.status !== 403 && err.response?.status !== 500) {
+
+                    for (const [_, v] of Object.entries(err.response?.data.message)) {
+                        toast.error(`${v}`, {
+                            position: "top-right",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                    }
+                } else {
+                    toast.error(`${err.response?.data.message}`, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }
+
+            });
+        }
+
 
     }
 
@@ -299,16 +436,14 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
             setBannerPreview(null);
         }
 
-        if (imagens) {
-            const array = Array.from(imagens);
+        if (outrasImagens) {
+            const array = Array.from(outrasImagens);
             setImagensPreview(array);
         }
-    }, [categorias, evento_edit, banner, bannerPreview, imagens]);
+    }, [categorias, evento_edit, banner, bannerPreview, outrasImagens]);
 
     return (
         <>
-
-
             <ToastContainer
                 position="top-right"
                 autoClose={5000}
@@ -507,7 +642,8 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                                         <>
                                                             <Row key={i}>
                                                                 <Col lg={12} md={12} sm={12}>
-                                                                    <label className={'form-label'}>Nome apresentador {i + 1}</label>
+                                                                    <label className={'form-label'}>Nome
+                                                                        apresentador {i + 1}</label>
                                                                     <input
                                                                         className={"form-control mb-3"}
                                                                         type={"text"}
@@ -527,7 +663,8 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                                             </Row>
                                                             <Row key={i}>
                                                                 <Col lg={12} md={12} sm={12}>
-                                                                    <label className={'form-label'}>Email apresentador {i+1}</label>
+                                                                    <label className={'form-label'}>Email
+                                                                        apresentador {i + 1}</label>
                                                                     <input
                                                                         className={"form-control mb-3"}
                                                                         type={"text"}
@@ -611,7 +748,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                                 onClick={() => {
                                                     setNomeAtividade(a.nome);
                                                     setDescricaoAtividade(a.descricao ?? "");
-                                                    setData(a.data ? new Date(a.data) : null);
+                                                    setData(a.data ? parse(a.data, 'dd/MM/yyyy', new Date()) : null);
                                                     let ta = tipo_atividades.find((t) => {
                                                         return t.id === a.tipo_atividade_id;
                                                     });
@@ -674,7 +811,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                    onChange={(e) => {
                                        if (e.target.files) {
                                            // @ts-ignore
-                                           setImagens([...e.target.files]);
+                                           setOutrasImagens([...e.target.files]);
                                        }
                                    }}/>
                         </div>

@@ -226,6 +226,7 @@ export default function InstituicaoUser({
                                                 label: 'Sim',
                                                 onClick: async () => {
                                                     setPermanece(true)
+                                                    return;
                                                 }
                                             },
                                             {
@@ -238,7 +239,7 @@ export default function InstituicaoUser({
                                         ],
                                         //@ts-ignore
                                         afterClose: () => {
-                                            if (permanece) {
+                                            if (permanece===true) {
                                                 confirmAlert({
                                                     closeOnEscape: false,
                                                     closeOnClickOutside: false,
