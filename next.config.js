@@ -2,7 +2,7 @@ const withImages = require('next-images')
 module.exports = {
     reactStrictMode: false,
     images: {
-        domains: ['via.placeholder.com', 'avatars.dicebear.com', 'eventos-imagens.s3.sa-east-1.amazonaws.com']
+        domains: ['via.placeholder.com', 'avatars.dicebear.com','firebasestorage.googleapis.com']
     },
     withImages: withImages()
 }
