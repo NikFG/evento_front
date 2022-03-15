@@ -4,7 +4,9 @@ import React, {FormEvent} from "react";
 import {FormControl, FormGroup, FormLabel, Row, Col, Form, Button, Spinner} from "react-bootstrap";
 import {ToastContainer, toast} from "react-toastify";
 import {useRouter} from "next/router";
-import {AxiosError} from "axios";
+import {AxiosError, AxiosResponse} from "axios";
+import {ref, uploadBytes, getDownloadURL, UploadResult} from 'firebase/storage';
+import {storage} from "../../firebase/initFirebase";
 
 export interface ModeloCertificadoProps {
     api: string
@@ -72,21 +74,14 @@ export default function ModeloCertificado({api, token}: ModeloCertificadoProps) 
         formData.append('nome_assinatura', nomeAssinatura);
         formData.append('cargo_assinatura', cargoAssinatura);
         formData.append('titulo', titulo);
-        if (background) {
-            formData.append('imagem_fundo', background);
-        }
-        if (logo) {
-            formData.append('logo', logo);
-        }
-        if (assinatura) {
-            formData.append('assinatura', assinatura);
-        }
+
         await axios.post(`${api}/modelos/store`, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": `multipart/form-data`,
             }
-        }).then(async () => {
+        }).then(async (res: AxiosResponse) => {
+            await uploadImagens(res.data.id);
             await toast.success("Modelo criado!!", {
                 position: "top-right",
                 autoClose: 5000,
@@ -98,6 +93,7 @@ export default function ModeloCertificado({api, token}: ModeloCertificadoProps) 
             });
             await router.back();
         }).catch((err: AxiosError) => {
+            console.log({err})
             for (const v of Object.values(err.response!.data)) {
                 console.log(v);
                 toast.error(`${v}`, {
@@ -112,6 +108,53 @@ export default function ModeloCertificado({api, token}: ModeloCertificadoProps) 
             }
         }).finally(() => {
             setIsLoading(false);
+        });
+
+    }
+
+    async function uploadImagens(id_modelo: number) {
+        const path = `images/modelo/${id_modelo}`
+
+        const logoRef = ref(storage, `${path}/${logo!.name}`);
+        const backgroundRef = ref(storage, `${path}/${background!.name}`);
+        const assinaturaRef = ref(storage, `${path}/${assinatura!.name}`);
+
+        const urlLogo = await uploadBytes(logoRef, logo!).then(async (snapshot: UploadResult) => {
+            return await getDownloadURL(snapshot.ref).then((url: string) => {
+                return url;
+            }).catch((err: Error) => {
+                console.error({err})
+                return null;
+            });
+        });
+
+        const urlBackground = await uploadBytes(backgroundRef, background!).then(async (snapshot: UploadResult) => {
+            return await getDownloadURL(snapshot.ref).then((url: string) => {
+                return url;
+            }).catch((err: Error) => {
+                console.error({err})
+                return null;
+            });
+        });
+
+        const urlAssinatura = await uploadBytes(assinaturaRef, assinatura!).then(async (snapshot: UploadResult) => {
+            return await getDownloadURL(snapshot.ref).then((url: string) => {
+                return url;
+            }).catch((err: Error) => {
+                console.error({err})
+                return null;
+            });
+        });
+
+        const axios = require('axios');
+        await axios.post(`${api}/modelos/uploadImagens/${id_modelo}`, {
+            "logo": urlLogo,
+            "imagem_fundo": urlBackground,
+            "assinatura": urlAssinatura,
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
         });
 
     }
