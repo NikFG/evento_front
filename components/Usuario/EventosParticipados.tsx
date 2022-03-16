@@ -3,6 +3,8 @@ import {Accordion, Button, Card, Col, Row, Spinner} from "react-bootstrap";
 import React from "react";
 import {Evento} from "@types";
 import {motion} from "framer-motion";
+import {faTimesCircle, faDownload} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export interface EventosParticipadosProps {
     eventos_participados: Evento[];
@@ -40,7 +42,7 @@ export default function EventosParticipados({
                 <motion.div variants={fadeInUp}
                             whileHover={{scale: 1.05}}
                             whileTap={{scale: 0.95}}
-                            className={"col-xxl-3 col-lg-4 col-md-3 col-sm-1 " + styles.eventos} key={e.id}>
+                            className={"col-xxl-3 col-lg-4 col-md-3 col-sm-12 " + styles.eventos} key={e.id}>
                     <Card>
                         <Card.Header>
                             {e.nome}
@@ -58,19 +60,32 @@ export default function EventosParticipados({
                                         <Card.Body>
                                             {e.atividades.map(a =>
                                                 <Row key={a.id} className={"mb-2"}>
+
+                                                    <span className={"p-2"}>{a.nome}</span>
+
                                                     <Col sm={"auto"} md={"auto"} lg={"auto"}>
-                                                        <span className={"p-2"}>{a.nome}</span>
-                                                        <Button className={"mb-2"} variant={"outline-primary"}
-                                                                onClick={async () => {
-                                                                    await handleDownloadCertificado(a.certificados![0].id);
-                                                                }} disabled={isLoading}>
-                                                            {isLoading ?
-                                                                <Spinner animation={"border"} role={"status"}>
+
+                                                        {(a.certificados && a.certificados.length > 0) ?
+                                                            <Button className={"mb-2"} variant={"outline-primary"}
+                                                                    onClick={async () => {
+                                                                        await handleDownloadCertificado(a.certificados![0].id);
+                                                                    }} disabled={isLoading}>
+                                                                {isLoading ?
+                                                                    <Spinner animation={"border"} role={"status"}>
                                                                     <span
                                                                         className="visually-hidden">Carregando...</span>
-                                                                </Spinner> :
-                                                                "Baixar certificado"}
-                                                        </Button>
+                                                                    </Spinner> :
+                                                                    <span>
+                                                                        <FontAwesomeIcon icon={faDownload}
+                                                                                         className={'me-2'}/>
+                                                                        Baixar certificado
+                                                                    </span>}
+                                                            </Button> :
+                                                            <Button style={{"cursor": 'default'}} variant={'secondary'}>
+                                                                <FontAwesomeIcon icon={faTimesCircle}
+                                                                                 className={'me-2'}/>
+                                                                Certificado indisponível
+                                                            </Button>}
                                                     </Col>
 
                                                 </Row>

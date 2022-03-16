@@ -1,15 +1,17 @@
 import styles from "./GeraCertificado.module.css";
-import {Col, Row, Container, Form, Button} from "react-bootstrap";
-import React, {ChangeEvent, FormEvent} from "react";
+import {Button, Col, Container, Row} from "react-bootstrap";
+import React, {ChangeEvent} from "react";
 import FormCheckInput from "react-bootstrap/FormCheckInput";
 import FormCheckLabel from "react-bootstrap/FormCheckLabel";
 import {useRouter} from "next/router";
-import {Apresentador, Atividade, ModeloCertificado, User} from "@types";
+import {Apresentador, ModeloCertificado, User} from "@types";
 import {AxiosResponse} from "axios";
 import {toast, ToastContainer} from "react-toastify";
 import Select from "react-select";
-import {parseCookies} from "nookies";
 import Link from "next/link";
+import {getDownloadURL, ref, uploadBytes, UploadResult} from "firebase/storage";
+import {storage} from "../../firebase/initFirebase";
+import {useSelector} from "react-redux";
 
 export interface GeraCertificadoProps {
     api: string
@@ -23,6 +25,7 @@ export default function GeraCertificado({apresentadores, participantes, api, mod
     const [apresentadoresSelecionados, setApresentadoresSelecionados] = React.useState<Array<string>>([...apresentadores.map(a => a.id!.toString())]);
     const [modelo, setModelo] = React.useState<{ label: string, value: string } | null>();
     const router = useRouter();
+    let token = useSelector((state: any) => state.token);
 
     async function handleSubmit() {
 
@@ -32,12 +35,27 @@ export default function GeraCertificado({apresentadores, participantes, api, mod
         formData.append('participantes', JSON.stringify(participantesSelecionados));
         formData.append('apresentadores', JSON.stringify(apresentadoresSelecionados));
         formData.append('modelo', modelo!.value);
-        const {USER_TOKEN} = parseCookies();
+
         await axios.post(`${api}/certificados/atividade/${id}`, formData, {
             headers: {
-                'Authorization': `Bearer ${USER_TOKEN}`
+                'Authorization': `Bearer ${token}`
             }
         }).then(async (res: AxiosResponse<any>) => {
+            const lista = res.data;
+            const url = lista.forEach((l: any) => {
+                const pdfRef = ref(storage, `certificados/${l.id}/arquivo.pdf`);
+                const pdfFile = new File([b64toBlob(l.pdf,'application/pdf',512)], 'Arquivo.pdf', {type: 'application/pdf'});
+
+                return uploadBytes(pdfRef, pdfFile).then(async (snapshot: UploadResult) => {
+                    return await getDownloadURL(snapshot.ref).then((url: string) => {
+                        return url;
+                    }).catch((err: Error) => {
+                        console.error({err})
+                        return null;
+                    });
+                });
+            });
+            console.log({url})
             await toast.success(`Participantes confirmados com sucesso!`, {
                 position: "top-right",
                 autoClose: 5000,
@@ -61,6 +79,26 @@ export default function GeraCertificado({apresentadores, participantes, api, mod
             });
         });
     }
+
+    function b64toBlob(b64Data: string, contentType: string, sliceSize: number) {
+        const byteCharacters = atob(b64Data);
+        const byteArrays = [];
+
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+        }
+
+        return new Blob(byteArrays, {type: contentType});
+    }
+
     function handleChangeApresentadores(e: ChangeEvent<HTMLInputElement>) {
 
         if (apresentadoresSelecionados.includes(e.target.value)) {
@@ -143,7 +181,8 @@ export default function GeraCertificado({apresentadores, participantes, api, mod
 
                                 {participantes.map((u) => {
                                     return <div className="form-check" key={u.id}>
-                                        <FormCheckInput value={u.id} onChange={handleChangeParticipantes} defaultChecked={true}/>
+                                        <FormCheckInput value={u.id} onChange={handleChangeParticipantes}
+                                                        defaultChecked={true}/>
                                         <FormCheckLabel>
                                             Participante - {u.nome}
                                         </FormCheckLabel>
@@ -152,7 +191,8 @@ export default function GeraCertificado({apresentadores, participantes, api, mod
                                 })}
                                 {apresentadores.map((u) => {
                                     return <div className="form-check" key={u.id}>
-                                        <FormCheckInput value={u.id} onChange={handleChangeApresentadores} defaultChecked={true}/>
+                                        <FormCheckInput value={u.id} onChange={handleChangeApresentadores}
+                                                        defaultChecked={true}/>
                                         <FormCheckLabel>
                                             Apresentador - {u.nome}
                                         </FormCheckLabel>

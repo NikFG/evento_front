@@ -6,6 +6,8 @@ import {GetServerSideProps, InferGetServerSidePropsType} from "next";
 import {Evento} from "@types";
 import Navbar from "@components/Navbar";
 import {motion} from "framer-motion";
+import {app, storage} from '../firebase/initFirebase';
+
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const axios = require('axios');

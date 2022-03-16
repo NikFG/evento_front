@@ -65,9 +65,9 @@ export default function EventoComp({evento, api}: EventoProps) {
                                 </button>}
                         </div>
                         <div className={styles.divImagem}>
-                            <Image src={evento.banner!} width={2000} height={1000}
+                            <Image src={evento.banner!} width={3000} height={1000}
                                    className={styles.imagem}
-                                   objectFit={'cover'}
+                                   // objectFit={''}
                                    objectPosition={'center'}
                                    blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="}
                                    alt={"banner do evento"}
