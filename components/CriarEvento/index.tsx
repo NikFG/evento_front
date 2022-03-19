@@ -411,6 +411,14 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
         }
     }
 
+    function removeImagem(id: number) {
+        //remove item from outrasimagens
+        let novasImagens = Array.from(outrasImagens!).filter((_, i) => i != id);
+        let list = new DataTransfer();
+        novasImagens.forEach(i => list.items.add(i));
+        setOutrasImagens(list.files);
+    }
+
     React.useEffect(() => {
         if (evento_edit && bannerPreview == null) {
             setBreveEvento(evento_edit.breve_descricao);
@@ -807,35 +815,53 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                             <label htmlFor="formFileMultiple" className="form-label">Selecione as demais imagens
                                 para
                                 exibição</label>
-                            <input className="form-control" type="file" id="formFileMultiple" multiple
+                            <input className="form-control" type="file" id="formFileMultiple" multiple accept="image/*"
                                    onChange={(e) => {
                                        if (e.target.files) {
-                                           // @ts-ignore
-                                           setOutrasImagens([...e.target.files]);
+                                           if (outrasImagens) {
+                                               // @ts-ignore
+                                               setOutrasImagens([...outrasImagens, ...e.target.files]);
+                                           } else {
+                                               // @ts-ignore
+                                               setOutrasImagens([...e.target.files]);
+                                           }
                                        }
                                    }}/>
                         </div>
-                        {imagensPreview ? imagensPreview.map((i, index) => {
-                            return (
-                                <Row key={index}>
-                                    <Image src={URL.createObjectURL(i)} objectFit={'cover'}
-                                           objectPosition={'center'}
-                                           className={"mt-2 ms-4"}
-                                           height={400}
-                                           width={400}
-                                           alt={'imagem ' + index}/>
-                                </Row>)
-                        }) : evento_edit?.imagens && evento_edit.imagens.map((i, index) => {
-                            return (
-                                <Row key={i.id}>
-                                    <Image src={i.imagem} objectFit={'cover'}
-                                           objectPosition={'center'}
-                                           className={"mt-2 ms-4"}
-                                           height={400}
-                                           width={400}
-                                           alt={'imagem ' + index}/>
-                                </Row>)
-                        })}
+                        <Row>
+                            {imagensPreview ? imagensPreview.map((i, index) => {
+                                return (
+                                    <Col lg={'4'} md={'6'} sm={'12'} key={index}>
+                                        <div className={'align-items-center mb-3'} style={{textAlign: "center"}}>
+                                            <Image src={URL.createObjectURL(i)} objectFit={'cover'}
+                                                   objectPosition={'center'}
+                                                   className={"mt-2 ms-4"}
+                                                   height={400}
+                                                   width={400}
+                                                   alt={'imagem ' + index}/>
+                                            <Button onClick={() => removeImagem(index)}
+                                                    variant={'danger'}>Remover</Button>
+                                        </div>
+                                    </Col>
+
+                                )
+                                //TODO: melhorar a remoção de imagens editadas
+                            }) : evento_edit?.imagens && evento_edit.imagens.map((i, index) => {
+                                return (
+                                    <Col lg={'4'} md={'6'} sm={'12'} key={index}>
+                                        <div className={'align-items-center mb-3'} style={{textAlign: "center"}}>
+                                            <Image src={i.imagem} objectFit={'cover'}
+                                                   objectPosition={'center'}
+                                                   className={"mt-2 ms-4"}
+                                                   height={400}
+                                                   width={400}
+                                                   alt={'imagem ' + index}/>
+                                            <Button variant={'danger'}>Remover</Button>
+                                        </div>
+                                    </Col>
+                                )
+                            })}
+                        </Row>
                     </div>
 
                     <div className={"mt-3 " + styles.inner}>
