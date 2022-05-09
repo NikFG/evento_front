@@ -35,7 +35,7 @@ export default function GridEventos({eventos, categorias, instituicoes, pesquisa
                     <div className="col-10">
                         <div className="section-title text-center" style={{paddingBottom: "40px"}}>
                             <div className="line m-auto"/>
-                            <h3 className={''}>Os maiores eventos você entra aqui!</h3>
+                            <h3 className={''}>Os maiores eventos você encontra aqui!</h3>
                         </div>
                     </div>
                 </Row>
