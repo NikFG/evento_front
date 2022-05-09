@@ -14,6 +14,7 @@ export interface Atividade {
     users?: User[]
     apresentador_id?: number
     certificados?: Certificado[]
+    url?: string
 }
 
 export interface Apresentador {

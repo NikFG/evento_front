@@ -1,6 +1,13 @@
 import styles from "./EventoComp.module.css";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCalendarAlt, faMapMarkerAlt, faBullhorn, faTicketAlt, faClock} from "@fortawesome/free-solid-svg-icons";
+import {
+    faCalendarAlt,
+    faMapMarkerAlt,
+    faBullhorn,
+    faTicketAlt,
+    faClock,
+    faLink
+} from "@fortawesome/free-solid-svg-icons";
 import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
 import Footer from "@components/Footer";
 import Image from 'next/image';
@@ -10,6 +17,7 @@ import {useRouter} from "next/router";
 import CarouselBootstrap from "@components/CarouselBootstrap";
 import {isDesktop} from 'react-device-detect';
 import {Button} from "react-bootstrap";
+import Link from "next/link";
 
 
 export interface EventoProps {
@@ -67,7 +75,7 @@ export default function EventoComp({evento, api}: EventoProps) {
                         <div className={styles.divImagem}>
                             <Image src={evento.banner!} width={3000} height={1000}
                                    className={styles.imagem}
-                                   // objectFit={''}
+                                // objectFit={''}
                                    objectPosition={'center'}
                                    blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="}
                                    alt={"banner do evento"}
@@ -231,10 +239,18 @@ export default function EventoComp({evento, api}: EventoProps) {
                                              style={{marginTop: "30px"}}>
                                             <h4 className={styles.eventTitle}>{a2.nome}</h4>
                                             <p className={styles.justificar}>{a2.descricao}</p>
-                                            <div className={""}>
-                                                <FontAwesomeIcon icon={faClock}/> Início: {a2.horario_inicio} <br/>
-                                                <FontAwesomeIcon icon={faClock}/> Fim: {a2.horario_fim} <br/>
-                                                <FontAwesomeIcon icon={faMapMarkerAlt}/> {a2.local}
+                                            <div className={"mt-2"}>
+                                                <FontAwesomeIcon className={'mt-2 me-1'}
+                                                                 icon={faClock}/> Início: {a2.horario_inicio} <br/>
+                                                <FontAwesomeIcon className={'mt-2 me-1'}
+                                                                 icon={faClock}/> Fim: {a2.horario_fim} <br/>
+                                                <FontAwesomeIcon className={'mt-2 me-1'} icon={faMapMarkerAlt}/> {a2.local}
+                                                <br/>
+                                                {a2.url && <>
+                                                    <FontAwesomeIcon className={'mt-2 me-1'} icon={faLink}/>
+                                                    <a href={a2.url} target={'_blank'}  rel="noopener noreferrer">
+                                                        Link de participação
+                                                    </a></>}
                                             </div>
                                         </div>
                                     </div>

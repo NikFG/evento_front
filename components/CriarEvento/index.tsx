@@ -56,6 +56,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
     const [localAtividade, setLocalAtividade] = React.useState("");
     const [apresentadoresNome, setApresentadoresNome] = React.useState<Array<string>>([""]);
     const [apresentadoresEmail, setApresentadoresEmail] = React.useState<Array<string>>([""]);
+    const [urlAtividade, setUrlAtividade] = React.useState("");
     let token = useSelector((state: any) => state.token);
     const user_criptografado = useSelector((state: any) => state.user_criptografado);
 
@@ -331,6 +332,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
         setLocalAtividade("");
         setApresentadoresNome([""]);
         setApresentadoresEmail([""]);
+        setUrlAtividade("");
     }
 
     function handleAtividadeSubmit() {
@@ -351,6 +353,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                 local: localAtividade,
                 tipo_atividade_id: tipo?.value ?? 0,
                 "data": dataFormatada,
+                url: urlAtividade,
                 apresentadores: apresentadoresNome.map((nome, i) => {
                     return {
                         nome,
@@ -382,6 +385,7 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                 local: localAtividade,
                 tipo_atividade_id: tipo?.value ?? 0,
                 "data": dataFormatada,
+                url: urlAtividade,
                 apresentadores: apresentadoresNome.map((nome, i) => {
                     return {
                         nome,
@@ -643,6 +647,15 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                                            placeholder={"Local da atividade"}
                                                            value={localAtividade} onChange={(e) => {
                                                         setLocalAtividade(e.target.value)
+                                                    }}/>
+                                                </div>
+                                                <div className={'form-group'}>
+                                                    <label htmlFor={'local'} className={'form-label'}>Link da
+                                                        atividade</label>
+                                                    <input className={"form-control mb-3"} type={"text"} id={'local'}
+                                                           placeholder={"Link da atividade"}
+                                                           value={urlAtividade} onChange={(e) => {
+                                                        setUrlAtividade(e.target.value);
                                                     }}/>
                                                 </div>
                                                 {apresentadoresNome.map((a, i) => {
