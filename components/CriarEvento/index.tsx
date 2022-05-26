@@ -435,7 +435,13 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
 
             });
             setCatSelecionada({value: (cat?.id) ?? 0, label: cat?.nome ?? ""});
+            if (evento_edit.imagens && evento_edit.imagens.length > 0) {
+                evento_edit.imagens.filter((i) => i.tipo_imagem_id === 1).forEach((i) => {
+                    setBannerPreview(i.imagem);
+                });
 
+
+            }
         }
         if (banner) {
             const reader = new FileReader();
@@ -860,20 +866,24 @@ export default function CriarEvento({categorias, tipo_atividades, api, evento_ed
                                 )
                                 //TODO: melhorar a remoção de imagens editadas
                             }) : evento_edit?.imagens && evento_edit.imagens.map((i, index) => {
-                                return (
-                                    <Col lg={'4'} md={'6'} sm={'12'} key={index}>
-                                        <div className={'align-items-center mb-3'} style={{textAlign: "center"}}>
-                                            <Image src={i.imagem} objectFit={'cover'}
-                                                   objectPosition={'center'}
-                                                   className={"mt-2 ms-4"}
-                                                   height={400}
-                                                   width={400}
-                                                   alt={'imagem ' + index}/>
-                                            <Button variant={'danger'}>Remover</Button>
-                                        </div>
-                                    </Col>
-                                )
-                            })}
+                                    if (i.tipo_imagem_id !== 1)
+                                        return (
+
+                                            <Col lg={'4'} md={'6'} sm={'12'} key={index}>
+                                                <div className={'align-items-center mb-3'} style={{textAlign: "center"}}>
+                                                    <Image src={i.imagem} objectFit={'cover'}
+                                                           objectPosition={'center'}
+                                                           className={"mt-2 ms-4"}
+                                                           height={400}
+                                                           width={400}
+                                                           alt={'imagem ' + index}/>
+                                                    {/*<Button variant={'danger'}>Remover</Button>*/}
+                                                </div>
+                                            </Col>
+                                        )
+                                }
+                            )
+                            }
                         </Row>
                     </div>
 
