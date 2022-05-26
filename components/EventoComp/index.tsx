@@ -98,7 +98,7 @@ export default function EventoComp({evento, api}: EventoProps) {
                 </section>
                 {
                     //@ts-ignore
-                    evento.imagens?.length > 0 ?
+                    evento.imagens?.filter((i => i.tipo_imagem_id !== 1)).length > 0 ?
                         <section id={"imagens do evento"} className={"mt-3 mb-3"}>
                             <div className={"container"}>
                                 <div className={"row"}>
@@ -223,9 +223,10 @@ export default function EventoComp({evento, api}: EventoProps) {
                                                 return (
                                                     <div key={apr.id}>
                                                         <div className={"container-fluid"}>
-                                                            <Image src={"https://via.placeholder.com/168?text=168x168"}
-                                                                   alt={"imagem de " + apr.nome} width={168}
-                                                                   height={168}/>
+                                                            <Image
+                                                                src={`https://avatars.dicebear.com/api/initials/${apr.nome}.svg?radius=50`}
+                                                                alt={"usuario"}
+                                                                width={168} height={168}/>
                                                         </div>
                                                         <div className={"row mb-3"}>
                                                             Por: {apr.nome}
@@ -244,11 +245,12 @@ export default function EventoComp({evento, api}: EventoProps) {
                                                                  icon={faClock}/> Início: {a2.horario_inicio} <br/>
                                                 <FontAwesomeIcon className={'mt-2 me-1'}
                                                                  icon={faClock}/> Fim: {a2.horario_fim} <br/>
-                                                <FontAwesomeIcon className={'mt-2 me-1'} icon={faMapMarkerAlt}/> {a2.local}
+                                                <FontAwesomeIcon className={'mt-2 me-1'}
+                                                                 icon={faMapMarkerAlt}/> {a2.local}
                                                 <br/>
                                                 {a2.url && <>
                                                     <FontAwesomeIcon className={'mt-2 me-1'} icon={faLink}/>
-                                                    <a href={a2.url} target={'_blank'}  rel="noopener noreferrer">
+                                                    <a href={a2.url} target={'_blank'} rel="noopener noreferrer">
                                                         Link de participação
                                                     </a></>}
                                             </div>
