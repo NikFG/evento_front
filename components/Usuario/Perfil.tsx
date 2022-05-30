@@ -64,7 +64,7 @@ export default function Perfil({logout, user, atualizarDados, isLoading}: Perfil
                         </div>
                     </Card.Body>
                 </Card>
-                <Card className={"mt-3"}>
+            {/*    <Card className={"mt-3"}>
                     <ListGroup variant={"flush"}>
                         <ListGroupItem
                             className={"d-flex justify-content-between align-items-center flex-wrap"}>
@@ -109,7 +109,7 @@ export default function Perfil({logout, user, atualizarDados, isLoading}: Perfil
                             <span className="text-secondary">https://bootdey.com</span>
                         </ListGroupItem>
                     </ListGroup>
-                </Card>
+                </Card>*/}
             </Col>
 
 
