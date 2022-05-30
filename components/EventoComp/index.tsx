@@ -113,26 +113,26 @@ export default function EventoComp({evento, api}: EventoProps) {
                 <section id={"informacoes"} className={"section text-center mt-3 mb-3"}>
                     <div className={"container"}>
                         <div className="row">
-                            <div className="col-sm-12 col-md-6 col-lg-3">
+                            <div className="col-sm-12 col-md-6 col-lg-4">
                                 <FontAwesomeIcon icon={faCalendarAlt} size={"4x"}/>
                                 <h3 className={"mt-2"}>
                                     {atividades[0].data}<br/>
-                                    a
+                                    até
                                     <br/>{evento.atividades[evento.atividades.length - 1].data}
                                 </h3>
 
                             </div>
-                            <div className="col-sm-12 col-md-6 col-lg-3">
+                            <div className="col-sm-12 col-md-6 col-lg-4">
                                 <FontAwesomeIcon icon={faMapMarkerAlt} size={"4x"}/>
                                 <h3 className={"mt-2"}>{evento.local}</h3>
 
                             </div>
-                            <div className="col-sm-12 col-md-6 col-lg-3">
+                           {/* <div className="col-sm-12 col-md-6 col-lg-3">
                                 <FontAwesomeIcon icon={faTicketAlt} size={"4x"}/>
                                 <h3 className={"mt-2"}>{evento.expectativa_participantes}<br/>Ingressos</h3>
 
-                            </div>
-                            <div className="col-sm-12 col-md-6 col-lg-3">
+                            </div>*/}
+                            <div className="col-sm-12 col-md-6/ col-lg-4">
                                 <FontAwesomeIcon icon={faBullhorn} size={"4x"}/>
                                 <h3 className={"mt-2"}>
                                     {String(evento.apresentadores_count).padStart(2, '0')}<br/>Apresentadores
